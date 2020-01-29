@@ -487,6 +487,7 @@ namespace MochaDBStudio.GUI.Controls {
             explorerTree.ImageList =imageList;
             explorerTree.BackColor = Color.WhiteSmoke;
             explorerTree.NodeMouseDoubleClick+=ExplorerTree_NodeMouseDoubleClick;
+            explorerTree.KeyDown+=ExplorerTree_KeyDown;
 
             #endregion
 
@@ -565,6 +566,17 @@ namespace MochaDBStudio.GUI.Controls {
                 }
             } else {
 
+            }
+        }
+
+        private void ExplorerTree_KeyDown(object sender,KeyEventArgs e) {
+            if(e.KeyCode == Keys.Delete) {
+                if(explorerTree.SelectedNode.Tag=="Table")
+                    DB.RemoveTable(explorerTree.SelectedNode.Text);
+                else if(explorerTree.SelectedNode.Tag=="Column")
+                    DB.RemoveColumn(explorerTree.SelectedNode.Parent.Text,explorerTree.SelectedNode.Text);
+                else if(explorerTree.SelectedNode.Tag=="Sector")
+                    DB.RemoveSector(explorerTree.SelectedNode.Text);
             }
         }
 
