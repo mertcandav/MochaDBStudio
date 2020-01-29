@@ -1,0 +1,14 @@
+~~ Full compatible with MochaQ Run commands. ~~
+~~ Partially compatible with MochaQ Run commands. ~~
+
+close: Close from terminal.
+clear: Clear all inputs.
+
+release: Namespace of release commands.
+release -version: Show release version.
+release -distro: Show release distribution.
+
+cnc: Namespace of connection commands.
+cnc -c Database path: Connect.
+cnc -c Database path,Password: Connect.
+cnc -d: Disconnect.
