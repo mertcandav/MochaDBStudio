@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <Reference Include="MochaDB">
-      <HintPath>..\..\MochaDB\MochaDB\bin\Debug\netcoreapp3.1\MochaDB.dll</HintPath>
+      <HintPath>..\..\MochaDB\MochaDB\bin\Debug\netstandard2.1\MochaDB.dll</HintPath>
     </Reference>
   </ItemGroup>
 
