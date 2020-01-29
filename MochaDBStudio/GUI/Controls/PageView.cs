@@ -486,8 +486,11 @@ namespace MochaDBStudio.GUI.Controls {
             explorerTree.BorderStyle = BorderStyle.None;
             explorerTree.ImageList =imageList;
             explorerTree.BackColor = Color.WhiteSmoke;
+            explorerTree.LabelEdit=true;
             explorerTree.NodeMouseDoubleClick+=ExplorerTree_NodeMouseDoubleClick;
             explorerTree.KeyDown+=ExplorerTree_KeyDown;
+            explorerTree.BeforeLabelEdit+=ExplorerTree_BeforeLabelEdit;
+            explorerTree.AfterLabelEdit+=ExplorerTree_AfterLabelEdit;
 
             #endregion
 
@@ -577,6 +580,33 @@ namespace MochaDBStudio.GUI.Controls {
                     DB.RemoveColumn(explorerTree.SelectedNode.Parent.Text,explorerTree.SelectedNode.Text);
                 else if(explorerTree.SelectedNode.Tag=="Sector")
                     DB.RemoveSector(explorerTree.SelectedNode.Text);
+            } else if(e.KeyCode==Keys.F2) {
+                if(explorerTree.SelectedNode!=null)
+                    explorerTree.SelectedNode.BeginEdit();
+            }
+        }
+
+        private void ExplorerTree_BeforeLabelEdit(object sender,NodeLabelEditEventArgs e) {
+            string tag = e.Node.Tag as string;
+            e.CancelEdit =
+                tag=="Tables" ? true :
+                tag=="Columns" ? true :
+                tag=="Sectors" ? true :
+                tag=="Terminal" ? true : false;
+        }
+
+        private void ExplorerTree_AfterLabelEdit(object sender,NodeLabelEditEventArgs e) {
+            try {
+                if(explorerTree.SelectedNode.Tag=="Table") {
+                    DB.RenameTable(e.Node.Text,e.Label);
+                } else if(explorerTree.SelectedNode.Tag=="Column") {
+                    DB.RenameColumn(e.Node.Parent.Parent.Text,e.Node.Text,e.Label);
+                } else if(explorerTree.SelectedNode.Tag=="Sector") {
+                    DB.RenameSector(e.Node.Text,e.Label);
+                }
+            } catch(Exception excep) {
+                e.CancelEdit=true;
+                MessageBox.Show(excep.Message,"MochaDB Studio",MessageBoxButtons.OK,MessageBoxIcon.Error);
             }
         }
 
