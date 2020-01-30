@@ -41,13 +41,13 @@ namespace MochaDBStudio.Dialogs {
         public ScriptDialog() {
             //Build.
             openItem = new MenuSelectionItem(
-                "Open","Open exists MochaScript file.",Resources.ConnectDatabase);
+                "Open","Open exists MochaScript file.",Resources.ScriptDocument);
             openItem.Location = new Point(20,20);
             openItem.Click+=OpenItem_Click;
             Controls.Add(openItem);
 
             createItem = new MenuSelectionItem(
-                "Create","Create new MochaScript file.",Resources.AddDatabase);
+                "Create","Create new MochaScript file.",Resources.ScriptDocument);
             createItem.Location = new Point(20,openItem.Location.X + openItem.Height + 20);
             createItem.Click+=CreateItem_Click;
             Controls.Add(createItem);
