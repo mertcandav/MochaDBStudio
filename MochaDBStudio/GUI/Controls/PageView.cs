@@ -779,6 +779,8 @@ namespace MochaDBStudio.GUI.Controls {
         private RichTextBox scriptBox;
         private Terminal terminal;
 
+        private MochaScriptDebugger debugger;
+
         #endregion
 
         #region Constructors
@@ -877,6 +879,15 @@ namespace MochaDBStudio.GUI.Controls {
 
         #endregion
 
+        #region debugger
+
+        private void Debugger_Echo(object sender,MochaScriptEchoEventArgs e) {
+            terminal.AddInput(new TerminalInput(string.Empty,
+                (string)e.Message,null,terminal.Font),false);
+        }
+
+        #endregion
+
         #region Methods
 
         /// <summary>
@@ -930,7 +941,14 @@ namespace MochaDBStudio.GUI.Controls {
         /// <summary>
         /// MochaScript debugger.
         /// </summary>
-        public MochaScriptDebugger Debugger { get; private set; }
+        public MochaScriptDebugger Debugger {
+            get =>
+                debugger;
+            set {
+                debugger=value;
+                debugger.Echo+=Debugger_Echo;
+            }
+        }
 
         #endregion
     }
