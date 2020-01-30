@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Text;
+using System.Linq;
 using System.Windows.Forms;
 using MochaDB;
 using MochaDBStudio.Properties;
@@ -26,6 +27,7 @@ namespace MochaDBStudio.GUI.Controls {
 
         private string input;
         private int caretIndex;
+        private bool useUserInput;
 
         #endregion
 
@@ -39,10 +41,12 @@ namespace MochaDBStudio.GUI.Controls {
             Image = Resources.Terminal;
             BackColor = Color.FromArgb(17,17,17);
             Dock = DockStyle.Fill;
+            Base="[MochaDB_Studio]";
 
             inputs = new List<TerminalInput>();
             input = string.Empty;
             caretIndex = 0;
+            useUserInput=true;
             
             VerScroll = new VScrollBar();
             VerScroll.Dock = DockStyle.Right;
@@ -95,13 +99,15 @@ namespace MochaDBStudio.GUI.Controls {
                 DrawInput(e.Graphics,index);
             }
 
-            //Draw InputLine.
-            DrawBase(e.Graphics,InputLineRect.Y - VerScroll.Value);
-            e.Graphics.DrawString(Input,InputFont,Brushes.Gainsboro,
-                CurrentTitleWidth - HorScroll.Value,InputLineRect.Y - VerScroll.Value);
+            if(UseUserInput) {
+                //Draw InputLine.
+                DrawBase(e.Graphics,InputLineRect.Y - VerScroll.Value);
+                e.Graphics.DrawString(Input,InputFont,Brushes.Gainsboro,
+                    CurrentTitleWidth - HorScroll.Value,InputLineRect.Y - VerScroll.Value);
 
-            //Caret.
-            DrawCaret(e.Graphics);
+                //Caret.
+                DrawCaret(e.Graphics);
+            }
         }
 
         /// <summary>
@@ -188,7 +194,7 @@ namespace MochaDBStudio.GUI.Controls {
         #region Keyboard
 
         protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e) {
-            if(!ProcessKey(e.KeyCode)) {
+            if(UseUserInput && !ProcessKey(e.KeyCode)) {
                 if(e.KeyCode == Keys.Enter) {
                     ProcessCommand();
                     Input = "";
@@ -237,7 +243,7 @@ namespace MochaDBStudio.GUI.Controls {
         }
 
         protected override bool ProcessKeyMessage(ref Message m) {
-            if(m.Msg == WM_CHAR) {
+            if(UseUserInput && m.Msg == WM_CHAR) {
                 int CharValue = m.WParam.ToInt32();
 
                 if(!IsBannedChar(CharValue)) {
@@ -260,6 +266,14 @@ namespace MochaDBStudio.GUI.Controls {
             inputs.Clear();
             Invalidate();
             AdapteScrolls();
+        }
+
+        /// <summary>
+        /// Set base string.
+        /// </summary>
+        /// <param name="value">Value to set base string.</param>
+        public void SetBase(string value) {
+            Base="[" + value + "]";
         }
 
         /// <summary>
@@ -367,6 +381,7 @@ namespace MochaDBStudio.GUI.Controls {
             if(size.Height > vertical)
                 vertical = size.Height;
 
+            vertical += 5000;
             VerScroll.Maximum = vertical;
             HorScroll.Maximum = horizontal;
 
@@ -399,7 +414,7 @@ namespace MochaDBStudio.GUI.Controls {
                 VerScroll.Value = 0;
             } else {
                 if(VerScroll.Visible) {
-                    int verticalvalue = VerScroll.Maximum - 150;
+                    int verticalvalue = VerScroll.Maximum - 150 - 5000;
 
                     if(verticalvalue > 0) {
                         VerScroll.Value = verticalvalue;
@@ -565,6 +580,16 @@ namespace MochaDBStudio.GUI.Controls {
         public void ProcessCommand() {
             string tInput = Input.TrimStart().TrimEnd();
 
+            var result =
+                from value in BannedCommandNamespaces
+                where tInput.StartsWith(value)
+                select value;
+
+            if(result.Count() > 0) {
+                TerminalErrorEcho("Can't use this command namespace in this terminal!");
+                return;
+            }
+
             TerminalInputProcessEventArgs args = new TerminalInputProcessEventArgs(tInput);
             OnInputProcessing(this,args);
             if(args.Cancel)
@@ -579,9 +604,9 @@ namespace MochaDBStudio.GUI.Controls {
                 } else if(tInput == "close") {
                     PageView parent = Parent as PageView;
                     parent.Remove(this);
-                } else if(tInput.Length >= 7 && tInput[0..7] == "release") {
+                } else if(tInput.StartsWith("release")) {
                     release(tInput);
-                } else if(tInput.Length >= 3 && tInput[0..3] == "cnc") {
+                } else if(tInput.StartsWith("cnc")) {
                     cnc(tInput);
                 } else if(DB != null) {
                     mochaquery(tInput);
@@ -596,10 +621,39 @@ namespace MochaDBStudio.GUI.Controls {
         #region Properties
 
         /// <summary>
+        /// Current base.
+        /// </summary>
+        public string Base { get; private set; }
+
+        /// <summary>
+        /// Use user input write and enter.
+        /// </summary>
+        public bool UseUserInput {
+            get =>
+                useUserInput;
+            set {
+                if(value==useUserInput)
+                    return;
+
+                if(!value) {
+                    Input=string.Empty;
+                }
+
+                useUserInput=value;
+                Invalidate();
+            }
+        }
+
+        /// <summary>
         /// Entered command history.
         /// </summary>
         public List<string> History { get; private set; }
             = new List<string>(new string[] { "" });
+
+        /// <summary>
+        /// Banned command namespaces.
+        /// </summary>
+        public string[] BannedCommandNamespaces { get; set; }
 
         /// <summary>
         /// Index of selected index.
@@ -636,7 +690,7 @@ namespace MochaDBStudio.GUI.Controls {
         public TerminalInput CurrentTitle =>
             DB switch
             {
-                null => new TerminalInput("[MochaDBStudio~]","",Color.GreenYellow,BaseFont,InputFont),
+                null => new TerminalInput(Base,"",Color.GreenYellow,BaseFont,InputFont),
                 _ => new TerminalInput("[" + DB.Name + "]","",Color.GreenYellow,BaseFont,InputFont)
             };
 
@@ -737,6 +791,7 @@ namespace MochaDBStudio.GUI.Controls {
                     return;
 
                 input = value;
+                caretIndex=value.Length;
 
                 Invalidate();
                 AdapteScrolls();

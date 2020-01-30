@@ -62,8 +62,9 @@ namespace MochaDBStudio {
 
             if(e.Item == databaseItem) {
                 DatabaseDialog.ShowDialog(tab);
-            }
-            else if(e.Item == terminalItem) {
+            } else if(e.Item ==scriptItem) {
+                ScriptDialog.ShowDialog(tab);
+            } else if(e.Item == terminalItem) {
                 Terminal terminal = new Terminal();
                 tab.Add(terminal);
             }
@@ -104,6 +105,7 @@ namespace MochaDBStudio {
 
         private SlideMenu slideMenu;
         private MenuListItem databaseItem;
+        private MenuListItem scriptItem;
         private MenuListItem terminalItem;
 
         private PictureBox togglePicture;
@@ -145,6 +147,17 @@ namespace MochaDBStudio {
             databaseItem.BackColor = slideMenu.BackColor;
 
             slideMenu.ItemListener.AddItem(databaseItem,false);
+
+            #endregion
+
+            #region scriptItem
+
+            scriptItem = new MenuListItem();
+            scriptItem.Title = "MochaScript";
+            scriptItem.Image = Resources.ScriptDocument;
+            scriptItem.BackColor = slideMenu.BackColor;
+
+            slideMenu.ItemListener.AddItem(scriptItem,false);
 
             #endregion
 

@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using MochaDB;
+using MochaDB.MochaScript;
+using MochaDBStudio.Engine;
+using MochaDBStudio.GUI.Components;
 using MochaDBStudio.Properties;
 
 namespace MochaDBStudio.GUI.Controls {
@@ -18,7 +22,11 @@ namespace MochaDBStudio.GUI.Controls {
         private Page selectedTab;
         private int selectedIndex;
         private bool closeable;
+        private Color entryColor;
+        private bool hideExplorerButton;
+        private int itemHeight;
 
+        private FlatToolTip tip;
         private FlatButton stripButton;
         private ContextMenuStrip itemStrip;
 
@@ -34,9 +42,12 @@ namespace MochaDBStudio.GUI.Controls {
             SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint |
                 ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserMouse,true);
 
+            tip = new FlatToolTip();
+            itemHeight=30;
+            entryColor=Color.LightGray;
+            hideExplorerButton=false;
             ForeColor = Color.Black;
             tabPages = new List<Page>();
-            ItemSize = new Size(10,30);
             selectedTab = null;
             selectedIndex = -1;
             closeable = true;
@@ -45,7 +56,7 @@ namespace MochaDBStudio.GUI.Controls {
 
             stripButton = new FlatButton();
             stripButton.Text = "▼";
-            stripButton.Size = new Size(20,ItemSize.Height -2);
+            stripButton.Size = new Size(20,ItemHeight -2);
             stripButton.Location = new Point(ClientSize.Width-stripButton.Width,0);
             stripButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             stripButton.Click+=StripButton_Click;
@@ -77,14 +88,14 @@ namespace MochaDBStudio.GUI.Controls {
             e.Graphics.SmoothingMode = SmoothingMode.HighSpeed;
             e.Graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
-            stripButton.Height=ItemSize.Height;
+            if(!hideExplorerButton) {
+                if(TabCount==0) {
+                    stripButton.Hide();
+                    return;
+                }
 
-            if(TabCount==0) {
-                stripButton.Hide();
-                return;
+                stripButton.Show();
             }
-
-            stripButton.Show();
 
             if(DrawIndex >TabCount-1)
                 DrawIndex=0;
@@ -101,7 +112,7 @@ namespace MochaDBStudio.GUI.Controls {
             }
 
             //Items.
-            using(SolidBrush BackBrush = new SolidBrush(Color.LightGray)) {
+            using(SolidBrush BackBrush = new SolidBrush(entryColor)) {
                 for(intvalue = DrawIndex; intvalue < TabCount; intvalue++) {
                     rect = GetRect(intvalue);
 
@@ -127,17 +138,17 @@ namespace MochaDBStudio.GUI.Controls {
                     using(SolidBrush ForeBrush = new SolidBrush(ForeColor))
                         e.Graphics.DrawString(TabPages[intvalue].Text,Font,ForeBrush,rect,SFormat);
                 }
+             
+                if(TabCount >0)
+                    e.Graphics.FillRectangle(BackBrush,0,ItemHeight - 2,Width,2);
             }
-
-            if(TabCount >0)
-                e.Graphics.FillRectangle(Brushes.LightGray,0,ItemSize.Height - 2,Width,2);
         }
 
         #endregion
 
         #region stripButton
 
-        private void StripButton_Click(object sender,System.EventArgs e) {
+        private void StripButton_Click(object sender,EventArgs e) {
             itemStrip.Show(this,stripButton.Location.X,stripButton.Height);
         }
 
@@ -170,6 +181,22 @@ namespace MochaDBStudio.GUI.Controls {
             }
         }
 
+        protected override void OnMouseHover(EventArgs e) {
+            tip.Hide(this);
+            Page page = GetHoveringPage();
+            if(page != null) {
+                Rectangle pageRect = GetHoveringRect();
+                tip.Show(page.Tip,this,pageRect.X,pageRect.Y+pageRect.Height);
+            }
+
+            base.OnMouseHover(e);
+        }
+
+        protected override void OnMouseLeave(EventArgs e) {
+            tip.Hide(this);
+            base.OnMouseLeave(e);
+        }
+
         #endregion
 
         #region Methods
@@ -179,9 +206,9 @@ namespace MochaDBStudio.GUI.Controls {
         /// </summary>
         /// <param name="page">Page object to add.</param>
         public void Add(Page page) {
-            page.Size = new Size(Width,Height - ItemSize.Height);
+            page.Size = new Size(Width,Height - ItemHeight);
             page.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
-            page.Location = new Point(0,ItemSize.Height);
+            page.Location = new Point(0,ItemHeight);
             tabPages.Add(page);
             Controls.Add(page);
             SelectedTab = page;
@@ -269,7 +296,7 @@ namespace MochaDBStudio.GUI.Controls {
             }
 
             Rectangle rect = new Rectangle(x,0,
-                TextRenderer.MeasureText(TabPages[index].Text,Font).Width + 35,ItemSize.Height);
+                TextRenderer.MeasureText(TabPages[index].Text,Font).Width + 35,ItemHeight);
             return rect;
         }
 
@@ -300,6 +327,19 @@ namespace MochaDBStudio.GUI.Controls {
                     return rect;
             }
             return new Rectangle();
+        }
+
+        /// <summary>
+        /// Set explorer button visible.
+        /// </summary>
+        /// <param name="state">Visible state to set.</param>
+        public void SetExplorerButtonVisible(bool state) {
+            if(state)
+                stripButton.Show();
+            else
+                stripButton.Hide();
+
+            hideExplorerButton=!state;
         }
 
         #endregion
@@ -368,9 +408,19 @@ namespace MochaDBStudio.GUI.Controls {
         }
 
         /// <summary>
-        /// Page title size.
+        /// Page title height.
         /// </summary>
-        public Size ItemSize { get; set; }
+        public int ItemHeight {
+            get =>
+                itemHeight;
+            set {
+                if(value==itemHeight)
+                    return;
+
+                itemHeight=value;
+                stripButton.Height=value-2;
+            }
+        }
 
         /// <summary>
         /// Draw and use close pies.
@@ -387,13 +437,28 @@ namespace MochaDBStudio.GUI.Controls {
             }
         }
 
+        /// <summary>
+        /// Active color.
+        /// </summary>
+        public Color EntryColor {
+            get =>
+                entryColor;
+            set {
+                if(value == entryColor)
+                    return;
+
+                entryColor = value;
+                Invalidate();
+            }
+        }
+
         #endregion
     }
 
     /// <summary>
     /// Page for PageView.
     /// </summary>
-    public abstract class Page:Panel {
+    public class Page:Panel {
         #region Constructors
 
         /// <summary>
@@ -533,7 +598,9 @@ namespace MochaDBStudio.GUI.Controls {
             #region tab
 
             tab = new PageView();
+            tab.EntryColor = Color.Gray;
             tab.BackColor = Color.White;
+            tab.ItemHeight = 26;
             tab.Location = new Point(explorerTree.Width,0);
             tab.Size = new Size(ClientSize.Width - tab.Location.X,ClientSize.Height);
             tab.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
@@ -564,7 +631,7 @@ namespace MochaDBStudio.GUI.Controls {
                     Terminal terminal = new Terminal();
                     terminal.Name="Terminal";
                     terminal.DB=DB;
-                    terminal.InputProcessing+=Terminal_InputProcessing;
+                    terminal.BannedCommandNamespaces = new[] { "cnc" };
                     tab.Add(terminal);
                 }
             } else {
@@ -607,18 +674,6 @@ namespace MochaDBStudio.GUI.Controls {
             } catch(Exception excep) {
                 e.CancelEdit=true;
                 MessageBox.Show(excep.Message,"MochaDB Studio",MessageBoxButtons.OK,MessageBoxIcon.Error);
-            }
-        }
-
-        #endregion
-
-        #region terminal
-
-        private void Terminal_InputProcessing(object sender,TerminalInputProcessEventArgs e) {
-            if(e.Input.StartsWith("cnc")) {
-                e.Cancel=true;
-                Terminal terminal = sender as Terminal;
-                terminal.TerminalErrorEcho("Can't use the connection commands in database terminal!");
             }
         }
 
@@ -709,6 +764,173 @@ namespace MochaDBStudio.GUI.Controls {
         /// MochaDatabase object.
         /// </summary>
         public MochaDatabase DB { get; private set; }
+
+        #endregion
+    }
+
+    /// <summary>
+    /// Page for MochaScript pages.
+    /// </summary>
+    public sealed class ScriptPage:Page {
+        #region Fields
+
+        private PageView tab;
+        private Page editPage;
+        private RichTextBox scriptBox;
+        private Terminal terminal;
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Create new ScriptPage.
+        /// </summary>
+        /// <param name="path">Path of MochaScript file.</param>
+        public ScriptPage(string path) {
+            Debugger = new MochaScriptDebugger(path);
+            Image=Resources.ScriptDocument;
+            Text=FileSystem.GetFileInfo(path).Name[0..^12];
+            Tip=path;
+
+            #region tab
+
+            tab = new PageView();
+            tab.Dock=DockStyle.Fill;
+            tab.EntryColor = Color.Gray;
+            tab.ItemHeight = 26;
+            tab.SetExplorerButtonVisible(false);
+            tab.Closeable=false;
+            Controls.Add(tab);
+
+            #endregion
+
+            #region editPage
+
+            editPage = new Page();
+            editPage.Image=Resources.ScriptDocument;
+            editPage.Text="Script";
+
+            scriptBox = new RichTextBox();
+            scriptBox.Multiline = true;
+            scriptBox.AcceptsTab = true;
+            scriptBox.MaxLength = int.MaxValue;
+            scriptBox.ForeColor = Color.White;
+            scriptBox.BackColor = Color.FromArgb(24,24,24);
+            scriptBox.Dock = DockStyle.Fill;
+            scriptBox.BorderStyle = BorderStyle.None;
+            scriptBox.Font = new Font("Consolas",13,FontStyle.Regular,GraphicsUnit.Pixel);
+            scriptBox.WordWrap = false;
+            scriptBox.Text=Debugger.MochaScript;
+            scriptBox.TextChanged+=ScriptBox_TextChanged;
+            scriptBox.KeyDown+=ScriptBox_KeyDown;
+            editPage.Controls.Add(scriptBox);
+
+            tab.Add(editPage);
+
+            #endregion
+
+            #region outputTerminal
+
+            terminal = new Terminal();
+            terminal.SetBase(Text);
+            terminal.InputProcessing+=Terminal_InputProcessing;
+            terminal.BannedCommandNamespaces = new[] { "cnc" };
+            tab.Add(terminal);
+
+            #endregion
+        }
+
+        #endregion
+
+        #region scriptBox
+
+        private void ScriptBox_TextChanged(object sender,EventArgs e) {
+            if(scriptBox.Text!=Debugger.MochaScript && editPage.Text[0]!='*') {
+                editPage.Text=editPage.Text.Insert(0,"*");
+            } else if(scriptBox.Text==Debugger.MochaScript && editPage.Text[0]=='*') {
+                editPage.Text=editPage.Text.Remove(0,1);
+            }
+        }
+
+        private void ScriptBox_KeyDown(object sender,KeyEventArgs e) {
+            if(e.KeyCode==Keys.F5) {
+                DebugAsync();
+            } else if(e.Control && e.KeyCode ==Keys.S) {
+                Save();
+            }
+        }
+
+        #endregion
+
+        #region terminal
+
+        private void Terminal_InputProcessing(object sender,TerminalInputProcessEventArgs e) {
+            if(e.Input == "save") {
+                e.Cancel=true;
+                Save();
+            } else if(e.Input=="debug") {
+                e.Cancel=true;
+                DebugAsync();
+            }
+        }
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Debug MochaScript codes asynchronous.
+        /// </summary>
+        public void DebugAsync() {
+            tab.SelectedIndex=1;
+            terminal.UseUserInput=false;
+            terminal.AddInput(new TerminalInput(string.Empty,
+                "Debugging MochaScript code and running...",null,terminal.Font),false);
+            Task debugTask = new Task(() => {
+                try {
+                    Debugger.DebugRun();
+                    terminal.AddInput(new TerminalInput(string.Empty,
+                        "This MochaScript code debugged and runed sucessfully.\n",Color.LimeGreen,null,terminal.Font),false);
+                } catch(Exception excep) {
+                    terminal.AddInput(new TerminalInput(string.Empty,
+                        excep.Message + "\n",Color.Red,null,terminal.Font),false);
+                }
+                terminal.UseUserInput=true;
+            });
+            debugTask.Start();
+        }
+
+        /// <summary>
+        /// Save MochaScript from editor.
+        /// </summary>
+        public void Save() {
+            string path = Debugger.ScriptPath;
+            Debugger.Dispose();
+            FileSystem.WriteTextFile(path,scriptBox.Text);
+            Debugger = new MochaScriptDebugger(path);
+            if(editPage.Text[0]=='*') {
+                editPage.Text=editPage.Text.Remove(0,1);
+            }
+        }
+
+        #endregion
+
+        #region Overrides
+
+        protected override void Dispose(bool disposing) {
+            Debugger.Dispose();
+            base.Dispose(disposing);
+        }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// MochaScript debugger.
+        /// </summary>
+        public MochaScriptDebugger Debugger { get; private set; }
 
         #endregion
     }
