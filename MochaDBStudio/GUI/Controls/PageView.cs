@@ -894,6 +894,7 @@ namespace MochaDBStudio.GUI.Controls {
         /// Debug MochaScript codes asynchronous.
         /// </summary>
         public void DebugAsync() {
+            Save();
             tab.SelectedIndex=1;
             terminal.UseUserInput=false;
             terminal.AddInput(new TerminalInput(string.Empty,
