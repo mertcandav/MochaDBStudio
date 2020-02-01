@@ -883,7 +883,7 @@ namespace MochaDBStudio.GUI.Controls {
 
         private void Debugger_Echo(object sender,MochaScriptEchoEventArgs e) {
             terminal.AddInput(new TerminalInput(string.Empty,
-                (string)e.Message,null,terminal.Font),false);
+                e.Message == null ? "nil" : (string)e.Message,null,terminal.Font),false);
         }
 
         #endregion

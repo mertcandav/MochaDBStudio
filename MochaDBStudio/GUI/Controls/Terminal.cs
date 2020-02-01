@@ -816,8 +816,8 @@ namespace MochaDBStudio.GUI.Controls {
         /// <param name="baseFont">Font for base input.</param>
         /// <param name="inputFont">Font for input.</param>
         public TerminalInput(string basevalue,string input,Font baseFont,Font inputFont) {
-            this.Base = basevalue;
-            this.Input = input;
+            Base = basevalue;
+            Input = input;
             BaseForeColor = Color.GreenYellow;
             ForeColor = Color.Gainsboro;
             Size BaseSize = TextRenderer.MeasureText(basevalue,baseFont);
