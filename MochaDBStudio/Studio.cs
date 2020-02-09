@@ -55,6 +55,16 @@ namespace MochaDBStudio {
 
         #endregion
 
+        #region Overrides
+
+        protected override void OnLoad(EventArgs e) {
+            base.OnLoad(e);
+
+            Focus();
+        }
+
+        #endregion
+
         #region slideMenu
 
         private void ItemListener_ItemClicked(object sender,ItemListViewItemEventArgs e) {

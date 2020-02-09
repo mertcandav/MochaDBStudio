@@ -12,6 +12,7 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>MochaDBStudio.snk</AssemblyOriginatorKeyFile>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
+    <StartupObject>MochaDBStudio.Program</StartupObject>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

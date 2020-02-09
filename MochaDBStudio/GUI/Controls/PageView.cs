@@ -512,9 +512,11 @@ namespace MochaDBStudio.GUI.Controls {
         private TreeView explorerTree;
         private ImageList imageList;
 
-        private TreeNode sectorsNode;
-        private TreeNode tablesNode;
-        private TreeNode terminalNode;
+        private TreeNode
+            sectorsNode,
+            stacksNode,
+            tablesNode,
+            terminalNode;
 
         #endregion
 
@@ -552,6 +554,7 @@ namespace MochaDBStudio.GUI.Controls {
             explorerTree.ImageList =imageList;
             explorerTree.BackColor = Color.WhiteSmoke;
             explorerTree.LabelEdit=true;
+            explorerTree.PathSeparator="/";
             explorerTree.NodeMouseDoubleClick+=ExplorerTree_NodeMouseDoubleClick;
             explorerTree.KeyDown+=ExplorerTree_KeyDown;
             explorerTree.BeforeLabelEdit+=ExplorerTree_BeforeLabelEdit;
@@ -568,6 +571,18 @@ namespace MochaDBStudio.GUI.Controls {
             sectorsNode.SelectedImageIndex=sectorsNode.ImageIndex;
 
             explorerTree.Nodes.Add(sectorsNode);
+
+            #endregion
+
+            #region stacksNode
+
+            stacksNode = new TreeNode();
+            stacksNode.Text="Stacks";
+            stacksNode.Tag="Stacks";
+            stacksNode.ImageIndex =0;
+            stacksNode.SelectedImageIndex=stacksNode.ImageIndex;
+
+            explorerTree.Nodes.Add(stacksNode);
 
             #endregion
 
@@ -623,6 +638,17 @@ namespace MochaDBStudio.GUI.Controls {
 
         #endregion
 
+        #region Terminal Events
+
+        private void Terminal_InputProcessing(object sender,TerminalInputProcessEventArgs e) {
+            if(e.Input == "disconnect") {
+                PageView parent = Parent as PageView;
+                parent.Remove(this);
+            }
+        }
+
+        #endregion
+
         #region explorerTree
 
         private void ExplorerTree_NodeMouseDoubleClick(object sender,TreeNodeMouseClickEventArgs e) {
@@ -632,10 +658,9 @@ namespace MochaDBStudio.GUI.Controls {
                     terminal.Name="Terminal";
                     terminal.DB=DB;
                     terminal.BannedCommandNamespaces = new[] { "cnc" };
+                    terminal.InputProcessing+=Terminal_InputProcessing;
                     tab.Add(terminal);
                 }
-            } else {
-
             }
         }
 
@@ -647,6 +672,11 @@ namespace MochaDBStudio.GUI.Controls {
                     DB.RemoveColumn(explorerTree.SelectedNode.Parent.Text,explorerTree.SelectedNode.Text);
                 else if(explorerTree.SelectedNode.Tag=="Sector")
                     DB.RemoveSector(explorerTree.SelectedNode.Text);
+                else if(explorerTree.SelectedNode.Tag=="Stack")
+                    DB.RemoveStack(explorerTree.SelectedNode.Text);
+                else if(explorerTree.SelectedNode.Tag=="StackItem")
+                    DB.RemoveStackItem(GetStackItemStackName(explorerTree.SelectedNode),
+                        GetStackItemPath(explorerTree.SelectedNode));
             } else if(e.KeyCode==Keys.F2) {
                 if(explorerTree.SelectedNode!=null)
                     explorerTree.SelectedNode.BeginEdit();
@@ -659,6 +689,7 @@ namespace MochaDBStudio.GUI.Controls {
                 tag=="Tables" ? true :
                 tag=="Columns" ? true :
                 tag=="Sectors" ? true :
+                tag=="Stacks" ? true :
                 tag=="Terminal" ? true : false;
         }
 
@@ -670,6 +701,11 @@ namespace MochaDBStudio.GUI.Controls {
                     DB.RenameColumn(e.Node.Parent.Parent.Text,e.Node.Text,e.Label);
                 } else if(explorerTree.SelectedNode.Tag=="Sector") {
                     DB.RenameSector(e.Node.Text,e.Label);
+                } else if(explorerTree.SelectedNode.Tag=="Stack") {
+                    DB.RenameStack(e.Node.Text,e.Label);
+                } else if(explorerTree.SelectedNode.Tag=="StackItem") {
+                    DB.RenameStackItem(GetStackItemStackName(explorerTree.SelectedNode),e.Label,
+                        GetStackItemPath(explorerTree.SelectedNode));
                 }
             } catch(Exception excep) {
                 e.CancelEdit=true;
@@ -680,6 +716,40 @@ namespace MochaDBStudio.GUI.Controls {
         #endregion
 
         #region Methods
+
+        /// <summary>
+        /// Return stack item path.
+        /// </summary>
+        /// <param name="node">StackItem node.</param>
+        public string GetStackItemPath(TreeNode node) {
+            string cachepath = node.FullPath.Remove(0,node.FullPath.IndexOf("Stacks/")+7);
+            return cachepath.Remove(0,cachepath.IndexOf("/")+1);
+        }
+
+        /// <summary>
+        /// Return stack name of stack item.
+        /// </summary>
+        /// <param name="node">StackItem node.</param>
+        public string GetStackItemStackName(TreeNode node) {
+            string cachepath = node.FullPath.Remove(0,node.FullPath.IndexOf("Stacks/")+7);
+            return cachepath[0..cachepath.IndexOf("/")];
+        }
+
+        /// <summary>
+        /// Return TreeNode from MochaStackItem.
+        /// </summary>
+        /// <param name="item">MochaStackItem object.</param>
+        public TreeNode GetMochaStackItemNODE(MochaStackItem item) {
+            TreeNode node = new TreeNode(item.Name);
+            node.Tag="StackItem";
+
+            if(item.Items.Count>0)
+                for(int index = 0; index < item.Items.Count; index++) {
+                    node.Nodes.Add(GetMochaStackItemNODE(item.Items[index]));
+                }
+
+            return node;
+        }
 
         /// <summary>
         /// Check page exists and select if true. Return true if selected but can not selected return false.
@@ -716,6 +786,21 @@ namespace MochaDBStudio.GUI.Controls {
                 explorerTree.Nodes[0].Nodes.Add(cacheNode);
             }
 
+            IList<MochaStack> stacks = DB.GetStacks();
+            for(int index =0; index < stacks.Count; index++) {
+                cacheNode = new TreeNode();
+                cacheNode.Text =stacks[index].Name;
+                cacheNode.Tag="Stack";
+                cacheNode.ImageIndex=4;
+                cacheNode.SelectedImageIndex=cacheNode.ImageIndex;
+
+                if(stacks[index].Items.Count >0)
+                    for(int itemIndex = 0; itemIndex < stacks[index].Items.Count; itemIndex++)
+                        cacheNode.Nodes.Add(GetMochaStackItemNODE(stacks[index].Items[itemIndex]));
+
+                explorerTree.Nodes[1].Nodes.Add(cacheNode);
+            }
+
             IList<MochaColumn> columns;
             IList<MochaTable> tables = DB.GetTables();
             for(int index = 0; index < tables.Count; index++) {
@@ -742,7 +827,7 @@ namespace MochaDBStudio.GUI.Controls {
                     columnsNode.Nodes.Add(columnNode);
                 }
 
-                explorerTree.Nodes[1].Nodes.Add(cacheNode);
+                explorerTree.Nodes[2].Nodes.Add(cacheNode);
             }
         }
 

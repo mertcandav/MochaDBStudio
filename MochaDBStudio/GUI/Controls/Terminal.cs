@@ -540,7 +540,7 @@ namespace MochaDBStudio.GUI.Controls {
             }
         }
 
-        public void mochaquery(string arg) {
+        public void mochaq(string arg) {
             if(DB == null) {
                 AddInput(new TerminalInput(TerminalTitle.Base,"Command is not found!",TerminalTitle.BaseForeColor,
                     Color.Red,BaseFont,InputFont),false);
@@ -609,7 +609,7 @@ namespace MochaDBStudio.GUI.Controls {
                 } else if(tInput.StartsWith("cnc")) {
                     cnc(tInput);
                 } else if(DB != null) {
-                    mochaquery(tInput);
+                    mochaq(tInput);
                 } else {
                     AddInput(new TerminalInput(CurrentTitle.Base,"Command is not found!",Color.Red,BaseFont,InputFont),false);
                 }
@@ -791,7 +791,8 @@ namespace MochaDBStudio.GUI.Controls {
                     return;
 
                 input = value;
-                caretIndex=value.Length;
+                if(caretIndex>input.Length-1)
+                    caretIndex=value.Length;
 
                 Invalidate();
                 AdapteScrolls();
