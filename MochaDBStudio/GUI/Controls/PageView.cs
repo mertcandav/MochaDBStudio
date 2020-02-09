@@ -770,6 +770,7 @@ namespace MochaDBStudio.GUI.Controls {
         public void RefreshExplorer() {
             explorerTree.Nodes[0].Nodes.Clear();
             explorerTree.Nodes[1].Nodes.Clear();
+            explorerTree.Nodes[2].Nodes.Clear();
 
             TreeNode
                 columnsNode,
