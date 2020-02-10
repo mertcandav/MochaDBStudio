@@ -260,6 +260,7 @@ namespace MochaDBStudio.Dialogs {
 
             try {
                 MochaDatabase db = new MochaDatabase(connectPathInput.Text,connectPasswordInput.Text);
+                db.Connect();
                 ConnectionPage dbPage = new ConnectionPage(db);
                 dbPage.Tip=connectPathInput.Text;
                 pageView.Add(dbPage);
