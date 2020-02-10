@@ -259,15 +259,17 @@ namespace MochaDBStudio.Dialogs {
             }
 
             try {
-                MochaDatabase db = new MochaDatabase(connectPathInput.Text,connectPasswordInput.Text);
+                MochaDatabase db = new MochaDatabase("path=" +connectPathInput.Text +"; password="+connectPasswordInput.Text);
                 db.Connect();
                 ConnectionPage dbPage = new ConnectionPage(db);
                 dbPage.Tip=connectPathInput.Text;
                 pageView.Add(dbPage);
-                ConnectCancelButton_Click(null,null);
-                CancelButton_Click(null,null);
+                Hide();
+                Application.OpenForms[0].TopMost=true;
+                Application.OpenForms[0].TopMost=false;
                 MessageBox.Show("Connected database successfully.","MochaDB Studio",
                     MessageBoxButtons.OK,MessageBoxIcon.Information);
+                Close();
             } catch(Exception excep) {
                 if(excep.Message == "MochaDB database password does not match the password specified!")
                     connectPasswordInput.BorderColor = Color.Red;
