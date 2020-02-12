@@ -669,7 +669,7 @@ namespace MochaDBStudio.GUI.Controls {
                 if(explorerTree.SelectedNode.Tag=="Table")
                     DB.RemoveTable(explorerTree.SelectedNode.Text);
                 else if(explorerTree.SelectedNode.Tag=="Column")
-                    DB.RemoveColumn(explorerTree.SelectedNode.Parent.Text,explorerTree.SelectedNode.Text);
+                    DB.RemoveColumn(explorerTree.SelectedNode.Parent.Parent.Text,explorerTree.SelectedNode.Text);
                 else if(explorerTree.SelectedNode.Tag=="Sector")
                     DB.RemoveSector(explorerTree.SelectedNode.Text);
                 else if(explorerTree.SelectedNode.Tag=="Stack")

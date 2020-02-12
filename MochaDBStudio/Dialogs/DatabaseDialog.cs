@@ -259,8 +259,7 @@ namespace MochaDBStudio.Dialogs {
             }
 
             try {
-                MochaDatabase db = new MochaDatabase("path=" +connectPathInput.Text +"; password="+connectPasswordInput.Text);
-                db.Connect();
+                MochaDatabase db = new MochaDatabase("autoconnect=True; path=" +connectPathInput.Text +"; password="+connectPasswordInput.Text);
                 ConnectionPage dbPage = new ConnectionPage(db);
                 dbPage.Tip=connectPathInput.Text;
                 pageView.Add(dbPage);
