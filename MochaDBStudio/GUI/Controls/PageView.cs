@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using MochaDB;
 using MochaDB.MochaScript;
+using MochaDB.Querying;
 using MochaDBStudio.Engine;
 using MochaDBStudio.GUI.Components;
 using MochaDBStudio.Properties;
@@ -777,7 +778,7 @@ namespace MochaDBStudio.GUI.Controls {
                 cacheNode,
                 columnNode;
 
-            IList<MochaSector> sectors = DB.GetSectors();
+            MochaCollectionResult<MochaSector> sectors = DB.GetSectors();
             for(int index = 0; index < sectors.Count; index++) {
                 cacheNode = new TreeNode();
                 cacheNode.Text =sectors[index].Name;
@@ -787,7 +788,7 @@ namespace MochaDBStudio.GUI.Controls {
                 explorerTree.Nodes[0].Nodes.Add(cacheNode);
             }
 
-            IList<MochaStack> stacks = DB.GetStacks();
+            MochaCollectionResult<MochaStack> stacks = DB.GetStacks();
             for(int index =0; index < stacks.Count; index++) {
                 cacheNode = new TreeNode();
                 cacheNode.Text =stacks[index].Name;
@@ -802,8 +803,8 @@ namespace MochaDBStudio.GUI.Controls {
                 explorerTree.Nodes[1].Nodes.Add(cacheNode);
             }
 
-            IList<MochaColumn> columns;
-            IList<MochaTable> tables = DB.GetTables();
+            MochaCollectionResult<MochaColumn> columns;
+            MochaCollectionResult<MochaTable> tables = DB.GetTables();
             for(int index = 0; index < tables.Count; index++) {
                 columnsNode = new TreeNode();
                 columnsNode.Text ="Columns";
