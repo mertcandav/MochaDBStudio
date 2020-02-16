@@ -1,11 +1,11 @@
-﻿using System;
+﻿using MochaDB;
+using MochaDBStudio.Properties;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Linq;
 using System.Windows.Forms;
-using MochaDB;
-using MochaDBStudio.Properties;
 
 namespace MochaDBStudio.GUI.Controls {
     /// <summary>
@@ -47,7 +47,7 @@ namespace MochaDBStudio.GUI.Controls {
             input = string.Empty;
             caretIndex = 0;
             useUserInput=true;
-            
+
             VerScroll = new VScrollBar();
             VerScroll.Dock = DockStyle.Right;
             VerScroll.Width = 13;
@@ -63,7 +63,7 @@ namespace MochaDBStudio.GUI.Controls {
             HorScroll.Visible = false;
             HorScroll.Maximum = 0;
             HorScroll.ValueChanged += HorScroll_ValueChanged;
-            
+
             Controls.Add(HorScroll);
         }
 
@@ -547,16 +547,17 @@ namespace MochaDBStudio.GUI.Controls {
                 return;
             }
 
-            try {
-                DB.Query.Run(arg);
-            } catch {
+            DB.Query.MochaQ.Command = arg;
+            if(DB.Query.MochaQ.IsRunQuery()) {
                 try {
-                    string rData = DB.Query.GetRun(arg).ToString();
-                    TerminalEcho(rData);
-                } catch(Exception excep) {
-                    TerminalErrorEcho(excep.Message);
-                }
-            }
+                    DB.Query.Run(arg);
+                } catch(Exception excep) { TerminalErrorEcho(excep.Message); }
+            } else if(DB.Query.MochaQ.IsGetRunQuery()) {
+                try {
+                    TerminalEcho(DB.Query.GetRun(arg).ToString());
+                } catch(Exception excep) { TerminalErrorEcho(excep.Message); }
+            } else
+                TerminalErrorEcho("Invalid query or this query is not supported from Terminal!");
         }
 
         public void release(string arg) {
