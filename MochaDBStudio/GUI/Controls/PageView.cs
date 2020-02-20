@@ -654,14 +654,56 @@ namespace MochaDBStudio.GUI.Controls {
 
         private void ExplorerTree_NodeMouseDoubleClick(object sender,TreeNodeMouseClickEventArgs e) {
             if(e.Node.Level == 0 && e.Node.Text =="Terminal") {
-                if(!ControlAndSelectPage("Terminal")) {
-                    Terminal terminal = new Terminal();
-                    terminal.Name="Terminal";
-                    terminal.DB=DB;
-                    terminal.BannedCommandNamespaces = new[] { "cnc" };
-                    terminal.InputProcessing+=Terminal_InputProcessing;
-                    tab.Add(terminal);
+                if(ControlAndSelectPage("Terminal"))
+                    return;
+
+                Terminal terminal = new Terminal();
+                terminal.Name="Terminal";
+                terminal.DB=DB;
+                terminal.BannedCommandNamespaces = new[] { "cnc" };
+                terminal.InputProcessing+=Terminal_InputProcessing;
+                tab.Add(terminal);
+            } else if(e.Node.Tag == "Table") {
+                if(ControlAndSelectPage("Table_" + e.Node.Text))
+                    return;
+
+                Page page = new Page();
+                page.Name="Table_" + e.Node.Text;
+                page.Text=e.Node.Text;
+                page.Image=Resources.Table;
+                FlatGrid grid = new FlatGrid();
+                grid.Dock = DockStyle.Fill;
+                MochaTable table = DB.GetTable(e.Node.Text);
+                for(int columnIndex = 0; columnIndex < table.Columns.Count; columnIndex++)
+                    grid.Columns.Add(table.Columns[columnIndex].Name,table.Columns[columnIndex].Name);
+                for(int rowIndex = 0; rowIndex<table.Rows.Count; rowIndex++) {
+                    string[] datas = new string[table.Columns.Count];
+                    for(int dataIndex = 0; dataIndex < table.Rows[rowIndex].Datas.Count; dataIndex++)
+                        datas[dataIndex] = table.Rows[rowIndex].Datas[dataIndex].ToString();
+                    grid.Rows.Add(datas);
                 }
+                page.Controls.Add(grid);
+                tab.Add(page);
+            } else if(e.Node.Tag == "Sectors") {
+                if(ControlAndSelectPage("Sectors"))
+                    return;
+
+                Page page = new Page();
+                page.Name="Sectors";
+                page.Text ="Sectors";
+                page.Image=Resources.Sector;
+                FlatGrid grid = new FlatGrid();
+                grid.Dock = DockStyle.Fill;
+                grid.Columns.Add("Name","Name");
+                grid.Columns.Add("Description","Description");
+                grid.Columns.Add("Data","Data");
+                var sectors = DB.GetSectors();
+                for(int sectorIndex = 0; sectorIndex < sectors.Count; sectorIndex++) {
+                    var sector = sectors[sectorIndex].Value;
+                    grid.Rows.Add(sector.Name,sector.Description,sector.Data);
+                }
+                page.Controls.Add(grid);
+                tab.Add(page);
             }
         }
 
