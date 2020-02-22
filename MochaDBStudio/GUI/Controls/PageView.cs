@@ -56,7 +56,8 @@ namespace MochaDBStudio.GUI.Controls {
             #region stripButton
 
             stripButton = new FlatButton();
-            stripButton.Text = "▼";
+            stripButton.Text = "V";
+            stripButton.Font=new Font("Consolas",10,FontStyle.Bold);
             stripButton.Size = new Size(20,ItemHeight -2);
             stripButton.Location = new Point(ClientSize.Width-stripButton.Width,0);
             stripButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
@@ -86,7 +87,7 @@ namespace MochaDBStudio.GUI.Controls {
         }
 
         protected override void OnPaint(PaintEventArgs e) {
-            e.Graphics.SmoothingMode = SmoothingMode.HighSpeed;
+            e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
             e.Graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
             if(!hideExplorerButton) {
@@ -775,7 +776,7 @@ namespace MochaDBStudio.GUI.Controls {
         /// <param name="node">StackItem node.</param>
         public string GetStackItemStackName(TreeNode node) {
             string cachepath = node.FullPath.Remove(0,node.FullPath.IndexOf("Stacks/")+7);
-            return cachepath[0..cachepath.IndexOf("/")];
+            return cachepath.Substring(0,cachepath.IndexOf("/"));
         }
 
         /// <summary>
@@ -921,7 +922,8 @@ namespace MochaDBStudio.GUI.Controls {
         public ScriptPage(string path) {
             Debugger = new MochaScriptDebugger(path);
             Image=Resources.ScriptDocument;
-            Text=FileSystem.GetFileInfo(path).Name[0..^12];
+            Text=FileSystem.GetFileInfo(path).Name;
+            Text=Text.Substring(0,Text.Length-12);
             Tip=path;
 
             #region tab

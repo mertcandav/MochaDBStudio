@@ -132,6 +132,16 @@ namespace MochaDBStudio.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Icon1 {
+            get {
+                object obj = ResourceManager.GetObject("Icon1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Menu {
             get {
                 object obj = ResourceManager.GetObject("Menu", resourceCulture);
@@ -180,7 +190,7 @@ namespace MochaDBStudio.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 1.0.0.
+        ///   Looks up a localized string similar to 2.0.0.
         /// </summary>
         internal static string Version {
             get {

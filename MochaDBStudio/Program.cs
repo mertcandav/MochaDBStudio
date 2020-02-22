@@ -20,7 +20,6 @@ namespace MochaDBStudio {
         /// </summary>
         private static void RunApplication() {
             Control.CheckForIllegalCrossThreadCalls = false;
-            Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Studio());

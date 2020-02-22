@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Windows.Forms;
 
@@ -44,6 +45,7 @@ namespace MochaDBStudio.GUI.Controls {
         }
 
         protected override void OnPaint(PaintEventArgs e) {
+            e.Graphics.SmoothingMode=SmoothingMode.AntiAlias;
             e.Graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
             //Text.

@@ -42,6 +42,7 @@ namespace MochaDBStudio.GUI.Controls {
             BackColor = Color.FromArgb(17,17,17);
             Dock = DockStyle.Fill;
             Base="[MochaDB_Studio]";
+            BannedCommandNamespaces=new string[0];
 
             inputs = new List<TerminalInput>();
             input = string.Empty;
@@ -108,6 +109,8 @@ namespace MochaDBStudio.GUI.Controls {
                 //Caret.
                 DrawCaret(e.Graphics);
             }
+
+            AdapteScrolls();
         }
 
         /// <summary>
@@ -265,7 +268,6 @@ namespace MochaDBStudio.GUI.Controls {
         public void Clear() {
             inputs.Clear();
             Invalidate();
-            AdapteScrolls();
         }
 
         /// <summary>
@@ -290,7 +292,6 @@ namespace MochaDBStudio.GUI.Controls {
                 HistoryIndex = History.Count - 1;
             }
             Invalidate(ClientRectangle);
-            AdapteScrolls();
             ScrollCaret();
         }
 
@@ -308,7 +309,6 @@ namespace MochaDBStudio.GUI.Controls {
                 HistoryIndex = History.Count - 1;
             }
             Invalidate(ClientRectangle);
-            AdapteScrolls();
             ScrollCaret();
         }
 
@@ -689,11 +689,8 @@ namespace MochaDBStudio.GUI.Controls {
         /// Current title.
         /// </summary>
         public TerminalInput CurrentTitle =>
-            DB switch
-            {
-                null => new TerminalInput(Base,"",Color.GreenYellow,BaseFont,InputFont),
-                _ => new TerminalInput("[" + DB.Name + "]","",Color.GreenYellow,BaseFont,InputFont)
-            };
+            DB == null ? new TerminalInput(Base,"",Color.GreenYellow,BaseFont,InputFont) :
+            new TerminalInput("[" + DB.Name + "]","",Color.GreenYellow,BaseFont,InputFont);
 
         /// <summary>
         /// Base title of Terminal.
@@ -755,7 +752,7 @@ namespace MochaDBStudio.GUI.Controls {
             get {
                 int sWidth = 0;
                 if(!string.IsNullOrEmpty(Input)) {
-                    sWidth = MeasureString(Input[0..CaretIndex],InputFont).Width;
+                    sWidth = MeasureString(Input.Substring(0,CaretIndex),InputFont).Width;
                 }
                 Rectangle rect = new Rectangle(CurrentTitleWidth + sWidth,
                 InputLineRect.Y,(int)InputFont.Size / 2 + 1,InputFont.Height);
@@ -796,7 +793,6 @@ namespace MochaDBStudio.GUI.Controls {
                     caretIndex=value.Length;
 
                 Invalidate();
-                AdapteScrolls();
                 ScrollCaret();
             }
         }

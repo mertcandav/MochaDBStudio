@@ -94,10 +94,7 @@ namespace MochaDBStudio.GUI.Controls {
         /// <summary>
         /// Placeholder.
         /// </summary>
-        public string Placeholder {
-            get => input.PlaceholderText;
-            set => input.PlaceholderText = value;
-        }
+        public string Placeholder { get; set; }
 
         /// <summary>
         /// Color or border. Set transparent for disable.
