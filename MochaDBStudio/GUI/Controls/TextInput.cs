@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Text;
 using System.Windows.Forms;
 
 namespace MochaDBStudio.GUI.Controls {
@@ -25,12 +26,14 @@ namespace MochaDBStudio.GUI.Controls {
             ForeColor = Color.Black;
             input.BorderStyle = BorderStyle.None;
             input.Font = Font;
-            input.SizeChanged+=İnput_SizeChanged;
-            input.TextChanged+=İnput_TextChanged;
+            input.SizeChanged+=Input_SizeChanged;
+            input.TextChanged+=Input_TextChanged;
+            input.LostFocus+=Input_LostFocus;
             AdapdateSize();
             input.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left;
             Controls.Add(input);
             borderColor = Color.DodgerBlue;
+            input.Hide();
         }
 
         #endregion
@@ -44,22 +47,43 @@ namespace MochaDBStudio.GUI.Controls {
         #region Drawing
 
         protected override void OnPaint(PaintEventArgs e) {
-            if(BorderColor != Color.Transparent && input.CanSelect)
+            e.Graphics.TextRenderingHint=TextRenderingHint.ClearTypeGridFit;
+
+            if(BorderColor != Color.Transparent)
                 using(Pen BorderPen = new Pen(BorderColor,2))
                     e.Graphics.DrawRectangle(BorderPen,1,1,ClientSize.Width-2,ClientSize.Height-2);
+
+            e.Graphics.DrawString(Placeholder,Font,Brushes.DimGray,new Rectangle(input.Location,input.Size),new StringFormat() {
+                LineAlignment = StringAlignment.Center });
         }
 
         #endregion
 
         #region input
 
-        private void İnput_TextChanged(object sender,EventArgs e) {
+        private void Input_TextChanged(object sender,EventArgs e) {
             TextChanged?.Invoke(sender,e);
         }
 
-        private void İnput_SizeChanged(object sender,EventArgs e) {
+        private void Input_SizeChanged(object sender,EventArgs e) {
             AdapdateSize();
         }
+
+        private void Input_LostFocus(object sender,EventArgs e) {
+            input.Visible=!string.IsNullOrEmpty(input.Text);
+        }
+
+        #endregion
+
+        #region Overrides
+
+        protected override void OnClick(EventArgs e) {
+            base.OnClick(e);
+            input.Show();
+            input.Focus();
+        }
+
+
 
         #endregion
 
@@ -119,9 +143,13 @@ namespace MochaDBStudio.GUI.Controls {
             set => input.ReadOnly =value;
         }
 
-        public override string Text { 
+        public override string Text {
             get => input.Text;
-            set => input.Text=value; }
+            set {
+                input.Text=value;
+                input.Visible=!string.IsNullOrEmpty(value);
+            }
+        }
         public override Color BackColor {
             get => base.BackColor;
             set {
