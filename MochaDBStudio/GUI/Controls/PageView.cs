@@ -699,7 +699,7 @@ namespace MochaDBStudio.GUI.Controls {
                 grid.Columns.Add("Data","Data");
                 var sectors = DB.GetSectors();
                 for(int sectorIndex = 0; sectorIndex < sectors.Count; sectorIndex++) {
-                    var sector = sectors[sectorIndex].Value;
+                    var sector = sectors[sectorIndex];
                     grid.Rows.Add(sector.Name,sector.Description,sector.Data);
                 }
                 page.Controls.Add(grid);
@@ -823,7 +823,7 @@ namespace MochaDBStudio.GUI.Controls {
             MochaCollectionResult<MochaSector> sectors = DB.GetSectors();
             for(int index = 0; index < sectors.Count; index++) {
                 cacheNode = new TreeNode();
-                cacheNode.Text =sectors[index].Value.Name;
+                cacheNode.Text =sectors[index].Name;
                 cacheNode.Tag="Sector";
                 cacheNode.ImageIndex=4;
                 cacheNode.SelectedImageIndex=cacheNode.ImageIndex;
@@ -833,14 +833,14 @@ namespace MochaDBStudio.GUI.Controls {
             MochaCollectionResult<MochaStack> stacks = DB.GetStacks();
             for(int index =0; index < stacks.Count; index++) {
                 cacheNode = new TreeNode();
-                cacheNode.Text =stacks[index].Value.Name;
+                cacheNode.Text =stacks[index].Name;
                 cacheNode.Tag="Stack";
                 cacheNode.ImageIndex=4;
                 cacheNode.SelectedImageIndex=cacheNode.ImageIndex;
 
-                if(stacks[index].Value.Items.Count >0)
-                    for(int itemIndex = 0; itemIndex < stacks[index].Value.Items.Count; itemIndex++)
-                        cacheNode.Nodes.Add(GetMochaStackItemNODE(stacks[index].Value.Items[itemIndex]));
+                if(stacks[index].Items.Count >0)
+                    for(int itemIndex = 0; itemIndex < stacks[index].Items.Count; itemIndex++)
+                        cacheNode.Nodes.Add(GetMochaStackItemNODE(stacks[index].Items[itemIndex]));
 
                 explorerTree.Nodes[1].Nodes.Add(cacheNode);
             }
@@ -855,7 +855,7 @@ namespace MochaDBStudio.GUI.Controls {
                 columnsNode.SelectedImageIndex=tablesNode.ImageIndex;
 
                 cacheNode = new TreeNode();
-                cacheNode.Text =tables[index].Value.Name;
+                cacheNode.Text =tables[index].Name;
                 cacheNode.Tag="Table";
                 cacheNode.ImageIndex =1;
                 cacheNode.SelectedImageIndex=cacheNode.ImageIndex;
@@ -864,7 +864,7 @@ namespace MochaDBStudio.GUI.Controls {
                 columns = DB.GetColumns(cacheNode.Text);
                 for(int columnIndex = 0; columnIndex < columns.Count; columnIndex++) {
                     columnNode = new TreeNode();
-                    columnNode.Text =columns[columnIndex].Value.Name;
+                    columnNode.Text =columns[columnIndex].Name;
                     columnNode.Tag="Column";
                     columnNode.ImageIndex=3;
                     columnNode.SelectedImageIndex=columnNode.ImageIndex;
