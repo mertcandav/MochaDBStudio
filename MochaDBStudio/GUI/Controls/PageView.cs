@@ -646,6 +646,7 @@ namespace MochaDBStudio.GUI.Controls {
             if(e.Input == "disconnect") {
                 PageView parent = Parent as PageView;
                 parent.Remove(this);
+                e.Cancel=true;
             }
         }
 
