@@ -1,16 +1,17 @@
-﻿using System;
+﻿using MochaDB;
+using MochaDB.FileSystem;
+using MochaDB.MochaScript;
+using MochaDB.Querying;
+using MochaDBStudio.Engine;
+using MochaDBStudio.GUI.Components;
+using MochaDBStudio.Properties;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using MochaDB;
-using MochaDB.MochaScript;
-using MochaDB.Querying;
-using MochaDBStudio.Engine;
-using MochaDBStudio.GUI.Components;
-using MochaDBStudio.Properties;
 
 namespace MochaDBStudio.GUI.Controls {
     /// <summary>
@@ -87,7 +88,7 @@ namespace MochaDBStudio.GUI.Controls {
         }
 
         protected override void OnPaint(PaintEventArgs e) {
-            e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
+            e.Graphics.SmoothingMode = SmoothingMode.HighSpeed;
             e.Graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
             if(!hideExplorerButton) {
@@ -140,7 +141,7 @@ namespace MochaDBStudio.GUI.Controls {
                     using(SolidBrush ForeBrush = new SolidBrush(ForeColor))
                         e.Graphics.DrawString(TabPages[intvalue].Text,Font,ForeBrush,rect,SFormat);
                 }
-             
+
                 if(TabCount >0)
                     e.Graphics.FillRectangle(BackBrush,0,ItemHeight - 2,Width,2);
             }
@@ -518,6 +519,7 @@ namespace MochaDBStudio.GUI.Controls {
             sectorsNode,
             stacksNode,
             tablesNode,
+            fileSystemNode,
             terminalNode;
 
         #endregion
@@ -544,6 +546,7 @@ namespace MochaDBStudio.GUI.Controls {
             imageList.Images.Add("Terminal",Resources.Terminal);
             imageList.Images.Add("Dot",Resources.Dot);
             imageList.Images.Add("Sector",Resources.Sector);
+            imageList.Images.Add("Disk",Resources.Disk);
 
             #endregion
 
@@ -597,6 +600,18 @@ namespace MochaDBStudio.GUI.Controls {
             tablesNode.SelectedImageIndex=tablesNode.ImageIndex;
 
             explorerTree.Nodes.Add(tablesNode);
+
+            #endregion
+
+            #region fileSystemNode
+
+            fileSystemNode = new TreeNode();
+            fileSystemNode.Text="FileSystem";
+            fileSystemNode.Tag="FileSystem";
+            fileSystemNode.ImageIndex =0;
+            fileSystemNode.SelectedImageIndex=fileSystemNode.ImageIndex;
+
+            explorerTree.Nodes.Add(fileSystemNode);
 
             #endregion
 
@@ -665,8 +680,17 @@ namespace MochaDBStudio.GUI.Controls {
                 terminal.BannedCommandNamespaces = new[] { "cnc" };
                 terminal.InputProcessing+=Terminal_InputProcessing;
                 tab.Add(terminal);
+            } else if(e.Node.Tag=="Disk") {
+                if(ControlAndSelectPage($"FileSystem_{e.Node.Text}"))
+                    return;
+
+                FileSystemPage fspage = new FileSystemPage();
+                fspage.Tag=$"FileSystem_{e.Node.Text}";
+                fspage.FileSystem=DB.FileSystem;
+                fspage.Path=e.Node.Text;
+                tab.Add(fspage);
             } else if(e.Node.Tag == "Table") {
-                if(ControlAndSelectPage("Table_" + e.Node.Text))
+                if(ControlAndSelectPage($"Table_{e.Node.Text}"))
                     return;
 
                 Page page = new Page();
@@ -719,6 +743,8 @@ namespace MochaDBStudio.GUI.Controls {
                     DB.RemoveSector(explorerTree.SelectedNode.Text);
                 else if(explorerTree.SelectedNode.Tag=="Stack")
                     DB.RemoveStack(explorerTree.SelectedNode.Text);
+                else if(explorerTree.SelectedNode.Tag=="Disk")
+                    DB.FileSystem.RemoveDisk(explorerTree.SelectedNode.Text);
                 else if(explorerTree.SelectedNode.Tag=="StackItem")
                     DB.RemoveStackItem(GetStackItemStackName(explorerTree.SelectedNode),
                         GetStackItemPath(explorerTree.SelectedNode));
@@ -735,6 +761,8 @@ namespace MochaDBStudio.GUI.Controls {
                 tag=="Columns" ? true :
                 tag=="Sectors" ? true :
                 tag=="Stacks" ? true :
+                tag=="FileSystem" ? true :
+                tag=="Disk" ? true :
                 tag=="Terminal" ? true : false;
         }
 
@@ -816,6 +844,7 @@ namespace MochaDBStudio.GUI.Controls {
             explorerTree.Nodes[0].Nodes.Clear();
             explorerTree.Nodes[1].Nodes.Clear();
             explorerTree.Nodes[2].Nodes.Clear();
+            explorerTree.Nodes[3].Nodes.Clear();
 
             TreeNode
                 columnsNode,
@@ -833,7 +862,7 @@ namespace MochaDBStudio.GUI.Controls {
             }
 
             MochaCollectionResult<MochaStack> stacks = DB.GetStacks();
-            for(int index =0; index < stacks.Count; index++) {
+            for(int index = 0; index < stacks.Count; index++) {
                 cacheNode = new TreeNode();
                 cacheNode.Text =stacks[index].Name;
                 cacheNode.Tag="Stack";
@@ -875,6 +904,17 @@ namespace MochaDBStudio.GUI.Controls {
 
                 explorerTree.Nodes[2].Nodes.Add(cacheNode);
             }
+
+            MochaCollectionResult<MochaDisk> disks = DB.FileSystem.GetDisks();
+            for(int index = 0; index < disks.Count; index++) {
+                IMochaDisk disk = disks[index];
+                cacheNode=new TreeNode();
+                cacheNode.Text=disk.Root;
+                cacheNode.Tag="Disk";
+                cacheNode.ImageIndex=5;
+                cacheNode.SelectedImageIndex=cacheNode.ImageIndex;
+                explorerTree.Nodes[3].Nodes.Add(cacheNode);
+            }
         }
 
         #endregion
@@ -895,6 +935,160 @@ namespace MochaDBStudio.GUI.Controls {
         /// MochaDatabase object.
         /// </summary>
         public MochaDatabase DB { get; private set; }
+
+        #endregion
+    }
+
+    /// <summary>
+    /// page for MochaDB FileSystems.
+    /// </summary>
+    public sealed class FileSystemPage:Page {
+        #region Fields
+
+        private Panel topPanel;
+        private TextInput pathBox;
+        private FlatGrid exploreGrid;
+        private FlatButton backButton;
+        private string path;
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Create new FileSystemPage.
+        /// </summary>
+        public FileSystemPage() {
+            Text="FileSystem";
+            Image=Resources.Disk;
+
+            #region topPanel
+
+            topPanel=new Panel();
+            topPanel.Dock=DockStyle.Top;
+            topPanel.BackColor=Color.Gray;
+            topPanel.Height=25;
+            Controls.Add(topPanel);
+
+            #endregion
+
+            #region backButton
+
+            backButton=new FlatButton();
+            backButton.Location=Point.Empty;
+            backButton.Size=new Size(30,topPanel.Height);
+            backButton.Anchor=AnchorStyles.Bottom|AnchorStyles.Top|AnchorStyles.Left;
+            backButton.Text="<";
+            backButton.Font=new Font("Consolas",14,FontStyle.Bold);
+            backButton.Click+=BackButton_Click;
+            topPanel.Controls.Add(backButton);
+
+            #endregion
+
+            #region pathBox
+
+            pathBox=new TextInput();
+            pathBox.Readonly=true;
+            pathBox.Location=new Point(backButton.Width,0);
+            pathBox.Anchor=AnchorStyles.Top|AnchorStyles.Right|AnchorStyles.Left;
+            pathBox.Size=new Size(topPanel.Width-backButton.Width,topPanel.Height);
+            topPanel.Controls.Add(pathBox);
+
+            #endregion
+
+            #region exploreGrid
+
+            exploreGrid=new FlatGrid();
+            exploreGrid.CellBorderStyle=DataGridViewCellBorderStyle.None;
+            exploreGrid.SelectionMode=DataGridViewSelectionMode.FullRowSelect;
+            exploreGrid.Columns.Add(new DataGridViewImageColumn() {
+                Name="Type",
+                HeaderText=string.Empty,
+                AutoSizeMode=DataGridViewAutoSizeColumnMode.NotSet,
+                ImageLayout=DataGridViewImageCellLayout.Zoom
+            });
+            exploreGrid.Columns.Add("Name","Name");
+            exploreGrid.Columns.Add("Description","Description");
+            exploreGrid.Location=new Point(0,topPanel.Height);
+            exploreGrid.Size=new Size(Width,Height-exploreGrid.Location.Y);
+            exploreGrid.Anchor=AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            exploreGrid.CellDoubleClick+=ExploreGrid_CellDoubleClick;
+            Controls.Add(exploreGrid);
+
+            #endregion
+        }
+
+        #endregion
+
+        #region backButton
+
+        private void BackButton_Click(object sender,EventArgs e) {
+            int dex = Path.LastIndexOf('/');
+            Path=dex == -1 ? Path : Path.Substring(0,dex);
+        }
+
+        #endregion
+
+        #region exploreGrid
+
+        private void ExploreGrid_CellDoubleClick(object sender,DataGridViewCellEventArgs e) {
+            if(exploreGrid.Rows[e.RowIndex].Cells[0].Tag!="Folder")
+                return;
+
+            if(e.ColumnIndex==-1 || e.RowIndex==-1)
+                return;
+
+            Path+=$"/{exploreGrid.Rows[e.RowIndex].Cells[1].Value}";
+        }
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Load path content.
+        /// </summary>
+        public void ReadPath() {
+            exploreGrid.Rows.Clear();
+
+            IMochaCollectionResult<MochaDirectory> directories = FileSystem.GetDirectories(Path);
+            IMochaCollectionResult<MochaFile> files = FileSystem.GetFiles(Path);
+            for(int index = 0; index < directories.Count; index++) {
+                IMochaDirectory directory = directories[index];
+                exploreGrid.Rows.Add(Resources.Folder,directory.Name,directory.Description);
+                exploreGrid.Rows[exploreGrid.Rows.Count-1].Cells[0].Tag="Folder";
+            }
+            for(int index = 0; index < files.Count; index++) {
+                IMochaFile file = files[index];
+                exploreGrid.Rows.Add(Resources.File,file.FullName,file.Description);
+                exploreGrid.Rows[exploreGrid.Rows.Count-1].Cells[0].Tag="File";
+            }
+        }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Current path.
+        /// </summary>
+        public string Path {
+            get =>
+                path;
+            set {
+                if(value==path)
+                    return;
+
+                path=value;
+                pathBox.Text=value;
+                ReadPath();
+            }
+        }
+
+        /// <summary>
+        /// FileSystem of database.
+        /// </summary>
+        public MochaFileSystem FileSystem { get; set; }
 
         #endregion
     }

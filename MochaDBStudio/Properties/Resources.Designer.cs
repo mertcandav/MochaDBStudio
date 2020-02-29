@@ -91,6 +91,16 @@ namespace MochaDBStudio.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Disk {
+            get {
+                object obj = ResourceManager.GetObject("Disk", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Stable.
         /// </summary>
         internal static string Distribution {
@@ -105,6 +115,16 @@ namespace MochaDBStudio.Properties {
         internal static System.Drawing.Bitmap Dot {
             get {
                 object obj = ResourceManager.GetObject("Dot", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap File {
+            get {
+                object obj = ResourceManager.GetObject("File", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

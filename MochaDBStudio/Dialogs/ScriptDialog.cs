@@ -1,9 +1,9 @@
-﻿using System;
-using System.Drawing;
-using System.Windows.Forms;
-using MochaDBStudio.Engine;
+﻿using MochaDBStudio.Engine;
 using MochaDBStudio.GUI.Controls;
 using MochaDBStudio.Properties;
+using System;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace MochaDBStudio.Dialogs {
     /// <summary>
@@ -91,7 +91,7 @@ namespace MochaDBStudio.Dialogs {
             createPathInput.Width =createPanel.Width - 50;
             createPathInput.Location=new Point(25,createNameInput.Location.Y + createNameInput.Height+20);
             createPathInput.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left;
-            createPathInput.ReadOnly = true;
+            createPathInput.Readonly = true;
             createPathInput.TextChanged+=CreatePathInput_TextChanged;
             createPanel.Controls.Add(createPathInput);
 

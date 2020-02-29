@@ -29,18 +29,18 @@ namespace MochaDBStudio.GUI.Controls {
             BorderStyle = BorderStyle.None;
             EnableHeadersVisualStyles = false;
             AllowUserToResizeRows = false;
+            AllowUserToAddRows=false;
+            AllowUserToDeleteRows=false;
             SelectionMode = DataGridViewSelectionMode.CellSelect;
             BackgroundColor = Color.White;
             BackColor = BackgroundColor;
             GridColor = Color.DodgerBlue;
             ReadOnly=true;
-            AllowUserToAddRows=false;
             ForeColor = Color.Black;
             Font = new Font("Arial",11f,FontStyle.Regular,GraphicsUnit.Pixel);
-            
+
             ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            AllowUserToResizeRows = false;
 
             ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
             ColumnHeadersDefaultCellStyle.BackColor = Color.DodgerBlue;
@@ -50,13 +50,13 @@ namespace MochaDBStudio.GUI.Controls {
             RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
             RowHeadersDefaultCellStyle.BackColor = Color.DodgerBlue;
             RowHeadersDefaultCellStyle.ForeColor = Color.White;
-            
+
             DefaultCellStyle.BackColor = BackgroundColor;
             CellBorderStyle = DataGridViewCellBorderStyle.Single;
 
             DefaultCellStyle.SelectionBackColor = Color.RoyalBlue;
             DefaultCellStyle.SelectionForeColor = Color.White;
-            
+
             RowHeadersDefaultCellStyle.SelectionBackColor = Color.RoyalBlue;
             RowHeadersDefaultCellStyle.SelectionForeColor = Color.White;
 

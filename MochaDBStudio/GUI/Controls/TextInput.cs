@@ -54,7 +54,8 @@ namespace MochaDBStudio.GUI.Controls {
                     e.Graphics.DrawRectangle(BorderPen,1,1,ClientSize.Width-2,ClientSize.Height-2);
 
             e.Graphics.DrawString(Placeholder,Font,Brushes.DimGray,new Rectangle(input.Location,input.Size),new StringFormat() {
-                LineAlignment = StringAlignment.Center });
+                LineAlignment = StringAlignment.Center
+            });
         }
 
         #endregion
@@ -138,7 +139,7 @@ namespace MochaDBStudio.GUI.Controls {
         /// <summary>
         /// Read only.
         /// </summary>
-        public bool ReadOnly {
+        public bool Readonly {
             get => input.ReadOnly;
             set => input.ReadOnly =value;
         }

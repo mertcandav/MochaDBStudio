@@ -1,5 +1,5 @@
-﻿using System;
-using MochaDBStudio.GUI.Controls;
+﻿using MochaDBStudio.GUI.Controls;
+using System;
 
 namespace MochaDBStudio.GUI {
     /// <summary>

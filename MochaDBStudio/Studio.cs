@@ -21,14 +21,14 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 // OR OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
 using MochaDBStudio.Dialogs;
 using MochaDBStudio.GUI;
 using MochaDBStudio.GUI.Controls;
 using MochaDBStudio.Properties;
+using System;
+using System.ComponentModel;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace MochaDBStudio {
     /// <summary>

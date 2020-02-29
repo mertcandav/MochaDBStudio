@@ -1,10 +1,10 @@
-﻿using System;
-using System.Drawing;
-using System.Windows.Forms;
-using MochaDB;
+﻿using MochaDB;
 using MochaDBStudio.Engine;
 using MochaDBStudio.GUI.Controls;
 using MochaDBStudio.Properties;
+using System;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace MochaDBStudio.Dialogs {
     /// <summary>
@@ -15,11 +15,11 @@ namespace MochaDBStudio.Dialogs {
 
         private PageView pageView;
 
-        private MenuSelectionItem 
+        private MenuSelectionItem
             connectItem,
             createItem;
 
-        private FlatButton 
+        private FlatButton
             cancelButton,
             connectCancelButton,
             connectConnectButton,
@@ -28,7 +28,7 @@ namespace MochaDBStudio.Dialogs {
             createCreateButton,
             createCancelButton;
 
-        private Panel 
+        private Panel
             connectPanel,
             createPanel;
 
@@ -92,7 +92,7 @@ namespace MochaDBStudio.Dialogs {
             connectPathInput.Width =connectPanel.Width - 50;
             connectPathInput.Location=new Point(25,20);
             connectPathInput.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left;
-            connectPathInput.ReadOnly = true;
+            connectPathInput.Readonly = true;
             connectPathInput.TextChanged+=ConnectPathInput_TextChanged;
             connectPanel.Controls.Add(connectPathInput);
 
@@ -162,7 +162,7 @@ namespace MochaDBStudio.Dialogs {
             createPathInput.Width =createPanel.Width - 50;
             createPathInput.Location=new Point(25,createNameInput.Location.Y + createNameInput.Height+20);
             createPathInput.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left;
-            createPathInput.ReadOnly = true;
+            createPathInput.Readonly = true;
             createPathInput.TextChanged+=CreatePathInput_TextChanged;
             createPanel.Controls.Add(createPathInput);
 
