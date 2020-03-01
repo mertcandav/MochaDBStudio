@@ -1222,6 +1222,7 @@ namespace MochaDBStudio.GUI.Controls {
         public void DebugAsync() {
             Save();
             tab.SelectedIndex=1;
+            terminal.Focus();
             terminal.UseUserInput=false;
             terminal.AddInput(new TerminalInput(string.Empty,
                 "Debugging MochaScript code and running...",null,terminal.Font),false);

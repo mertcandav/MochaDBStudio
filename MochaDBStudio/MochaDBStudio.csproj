@@ -56,7 +56,8 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MochaDB">
+    <Reference Include="MochaDB, Version=3.1.0.0, Culture=neutral, PublicKeyToken=142bb2bbf4e7e3dd, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\MochaDB\MochaDB\bin\Debug\netstandard1.3\MochaDB.dll</HintPath>
     </Reference>
     <Reference Include="System" />
