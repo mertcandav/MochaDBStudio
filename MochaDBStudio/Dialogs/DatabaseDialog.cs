@@ -15,6 +15,9 @@ namespace MochaDBStudio.Dialogs {
 
         private PageView pageView;
 
+        private CheckBox
+            connectLogCheck;
+
         private MenuSelectionItem
             connectItem,
             createItem;
@@ -116,6 +119,13 @@ namespace MochaDBStudio.Dialogs {
             connectPasswordInput.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left;
             connectPasswordInput.TextChanged +=ConnectPasswordInput_TextChanged;
             connectPanel.Controls.Add(connectPasswordInput);
+
+            connectLogCheck = new CheckBox();
+            connectLogCheck.Text= "Keep Log";
+            connectLogCheck.AutoSize=true;
+            connectLogCheck.Location = new Point(connectPasswordInput.Location.X,
+                connectPasswordInput.Location.Y + connectPasswordInput.Height + 20);
+            connectPanel.Controls.Add(connectLogCheck);
 
             connectConnectButton = new FlatButton();
             connectConnectButton.BackColor = Color.YellowGreen;
@@ -259,7 +269,10 @@ namespace MochaDBStudio.Dialogs {
             }
 
             try {
-                MochaDatabase db = new MochaDatabase("autoconnect=True; path=" +connectPathInput.Text +"; password="+connectPasswordInput.Text);
+                MochaDatabase db = new MochaDatabase($@"
+                    AutoConnect=True; Path={connectPathInput.Text};
+                    Password={connectPasswordInput.Text};
+                    Logs={connectLogCheck.Checked}");
                 ConnectionPage dbPage = new ConnectionPage(db);
                 dbPage.Tip=connectPathInput.Text;
                 pageView.Add(dbPage);

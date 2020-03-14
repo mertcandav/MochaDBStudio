@@ -1,5 +1,6 @@
 ﻿using MochaDB;
 using MochaDB.FileSystem;
+using MochaDB.Logging;
 using MochaDB.MochaScript;
 using MochaDB.Querying;
 using MochaDBStudio.Engine;
@@ -520,6 +521,7 @@ namespace MochaDBStudio.GUI.Controls {
             stacksNode,
             tablesNode,
             fileSystemNode,
+            logsNode,
             terminalNode;
 
         #endregion
@@ -532,7 +534,7 @@ namespace MochaDBStudio.GUI.Controls {
         /// <param name="db">MochaDatabase.</param>
         public ConnectionPage(MochaDatabase db) {
             DB = db;
-            DB.ChangeContent+=DB_ChangeContent;
+            DB.Changed+=DB_ChangeContent;
             Tag=DB;
             Text=DB.Name;
             Image = Resources.Database;
@@ -554,7 +556,7 @@ namespace MochaDBStudio.GUI.Controls {
 
             explorerTree = new TreeView();
             explorerTree.Dock = DockStyle.Left;
-            explorerTree.Width=150;
+            explorerTree.Width=170;
             explorerTree.BorderStyle = BorderStyle.None;
             explorerTree.ImageList =imageList;
             explorerTree.BackColor = Color.WhiteSmoke;
@@ -612,6 +614,18 @@ namespace MochaDBStudio.GUI.Controls {
             fileSystemNode.SelectedImageIndex=fileSystemNode.ImageIndex;
 
             explorerTree.Nodes.Add(fileSystemNode);
+
+            #endregion
+
+            #region logsNode
+
+            logsNode = new TreeNode();
+            logsNode.Text="Logs";
+            logsNode.Tag="Logs";
+            logsNode.ImageIndex =0;
+            logsNode.SelectedImageIndex=logsNode.ImageIndex;
+
+            explorerTree.Nodes.Add(logsNode);
 
             #endregion
 
@@ -730,6 +744,12 @@ namespace MochaDBStudio.GUI.Controls {
                 }
                 page.Controls.Add(grid);
                 tab.Add(page);
+            } else if(e.Node.Tag == "Log") {
+                if(MessageBox.Show(
+                    $"It will be restored to the log with the ID '{e.Node.Text}'.\n                                       Are you sure?",
+                    "MochaDB Studio",MessageBoxButtons.YesNo,MessageBoxIcon.Warning)==DialogResult.Yes) {
+                    DB.RestoreToLog(e.Node.Text);
+                }
             }
         }
 
@@ -748,6 +768,8 @@ namespace MochaDBStudio.GUI.Controls {
                 else if(explorerTree.SelectedNode.Tag=="StackItem")
                     DB.RemoveStackItem(GetStackItemStackName(explorerTree.SelectedNode),
                         GetStackItemPath(explorerTree.SelectedNode));
+                else if(explorerTree.SelectedNode.Tag=="Logs")
+                    DB.ClearLogs();
             } else if(e.KeyCode==Keys.F2) {
                 if(explorerTree.SelectedNode!=null)
                     explorerTree.SelectedNode.BeginEdit();
@@ -763,7 +785,9 @@ namespace MochaDBStudio.GUI.Controls {
                 tag=="Stacks" ? true :
                 tag=="FileSystem" ? true :
                 tag=="Disk" ? true :
-                tag=="Terminal" ? true : false;
+                tag=="Terminal" ? true :
+                tag=="Logs" ? true :
+                tag=="Log" ? true : false;
         }
 
         private void ExplorerTree_AfterLabelEdit(object sender,NodeLabelEditEventArgs e) {
@@ -845,13 +869,14 @@ namespace MochaDBStudio.GUI.Controls {
             explorerTree.Nodes[1].Nodes.Clear();
             explorerTree.Nodes[2].Nodes.Clear();
             explorerTree.Nodes[3].Nodes.Clear();
+            explorerTree.Nodes[4].Nodes.Clear();
 
             TreeNode
                 columnsNode,
                 cacheNode,
                 columnNode;
 
-            MochaCollectionResult<MochaSector> sectors = DB.GetSectors();
+            var sectors = DB.GetSectors();
             for(int index = 0; index < sectors.Count; index++) {
                 cacheNode = new TreeNode();
                 cacheNode.Text =sectors[index].Name;
@@ -861,7 +886,7 @@ namespace MochaDBStudio.GUI.Controls {
                 explorerTree.Nodes[0].Nodes.Add(cacheNode);
             }
 
-            MochaCollectionResult<MochaStack> stacks = DB.GetStacks();
+            var stacks = DB.GetStacks();
             for(int index = 0; index < stacks.Count; index++) {
                 cacheNode = new TreeNode();
                 cacheNode.Text =stacks[index].Name;
@@ -877,7 +902,7 @@ namespace MochaDBStudio.GUI.Controls {
             }
 
             MochaCollectionResult<MochaColumn> columns;
-            MochaCollectionResult<MochaTable> tables = DB.GetTables();
+            var tables = DB.GetTables();
             for(int index = 0; index < tables.Count; index++) {
                 columnsNode = new TreeNode();
                 columnsNode.Text ="Columns";
@@ -905,7 +930,7 @@ namespace MochaDBStudio.GUI.Controls {
                 explorerTree.Nodes[2].Nodes.Add(cacheNode);
             }
 
-            MochaCollectionResult<MochaDisk> disks = DB.FileSystem.GetDisks();
+            var disks = DB.FileSystem.GetDisks();
             for(int index = 0; index < disks.Count; index++) {
                 IMochaDisk disk = disks[index];
                 cacheNode=new TreeNode();
@@ -914,6 +939,17 @@ namespace MochaDBStudio.GUI.Controls {
                 cacheNode.ImageIndex=5;
                 cacheNode.SelectedImageIndex=cacheNode.ImageIndex;
                 explorerTree.Nodes[3].Nodes.Add(cacheNode);
+            }
+
+            var logs = DB.GetLogs();
+            for(int index = 0; index < logs.Count; index++) {
+                MochaLog log = logs[index];
+                cacheNode = new TreeNode();
+                cacheNode.Text=log.ID;
+                cacheNode.Tag="Log";
+                cacheNode.ImageIndex=3;
+                cacheNode.SelectedImageIndex=cacheNode.ImageIndex;
+                explorerTree.Nodes[4].Nodes.Add(cacheNode);
             }
         }
 
