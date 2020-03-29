@@ -1,10 +1,10 @@
-﻿using MochaDB;
+﻿using System;
+using System.Drawing;
+using System.Windows.Forms;
+using MochaDB;
 using MochaDBStudio.Engine;
 using MochaDBStudio.GUI.Controls;
 using MochaDBStudio.Properties;
-using System;
-using System.Drawing;
-using System.Windows.Forms;
 
 namespace MochaDBStudio.Dialogs {
     /// <summary>

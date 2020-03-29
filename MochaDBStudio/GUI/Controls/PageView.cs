@@ -1,18 +1,20 @@
-﻿using MochaDB;
-using MochaDB.FileSystem;
-using MochaDB.Logging;
-using MochaDB.MochaScript;
-using MochaDB.Querying;
-using MochaDBStudio.Engine;
-using MochaDBStudio.GUI.Components;
-using MochaDBStudio.Properties;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MochaDB;
+using MochaDB.FileSystem;
+using MochaDB.Logging;
+using MochaDB.Mhql;
+using MochaDB.MochaScript;
+using MochaDB.Querying;
+using MochaDBStudio.Engine;
+using MochaDBStudio.Editor;
+using MochaDBStudio.GUI.Components;
+using MochaDBStudio.Properties;
 
 namespace MochaDBStudio.GUI.Controls {
     /// <summary>
@@ -713,11 +715,13 @@ namespace MochaDBStudio.GUI.Controls {
                 page.Image=Resources.Table;
                 FlatGrid grid = new FlatGrid();
                 grid.Dock = DockStyle.Fill;
-                MochaTable table = DB.GetTable(e.Node.Text);
-                for(int columnIndex = 0; columnIndex < table.Columns.Count; columnIndex++)
+                var table = DB.ExecuteScalar($@"
+                    USE {e.Node.Text}
+                    RETURN") as MochaTableResult;
+                for(int columnIndex = 0; columnIndex < table.Columns.Length; columnIndex++)
                     grid.Columns.Add(table.Columns[columnIndex].Name,table.Columns[columnIndex].Name);
-                for(int rowIndex = 0; rowIndex<table.Rows.Count; rowIndex++) {
-                    string[] datas = new string[table.Columns.Count];
+                for(int rowIndex = 0; rowIndex<table.Rows.Length; rowIndex++) {
+                    string[] datas = new string[table.Columns.Length];
                     for(int dataIndex = 0; dataIndex < table.Rows[rowIndex].Datas.Count; dataIndex++)
                         datas[dataIndex] = table.Rows[rowIndex].Datas[dataIndex].ToString();
                     grid.Rows.Add(datas);
@@ -1137,7 +1141,7 @@ namespace MochaDBStudio.GUI.Controls {
 
         private PageView tab;
         private Page editPage;
-        private RichTextBox scriptBox;
+        private CodeEditor scriptBox;
         private Terminal terminal;
 
         private MochaScriptDebugger debugger;
@@ -1174,17 +1178,13 @@ namespace MochaDBStudio.GUI.Controls {
             editPage = new Page();
             editPage.Image=Resources.ScriptDocument;
             editPage.Text="Script";
-
-            scriptBox = new RichTextBox();
-            scriptBox.Multiline = true;
-            scriptBox.AcceptsTab = true;
-            scriptBox.MaxLength = int.MaxValue;
+            scriptBox = new CodeEditor();
             scriptBox.ForeColor = Color.White;
             scriptBox.BackColor = Color.FromArgb(24,24,24);
             scriptBox.Dock = DockStyle.Fill;
             scriptBox.BorderStyle = BorderStyle.None;
-            scriptBox.Font = new Font("Consolas",13,FontStyle.Regular,GraphicsUnit.Pixel);
-            scriptBox.WordWrap = false;
+            scriptBox.Language = Language.MochaScript;
+            //scriptBox.Font = new Font("Consolas",13,FontStyle.Regular,GraphicsUnit.Pixel);
             scriptBox.Text=Debugger.MochaScript;
             scriptBox.TextChanged+=ScriptBox_TextChanged;
             scriptBox.KeyDown+=ScriptBox_KeyDown;

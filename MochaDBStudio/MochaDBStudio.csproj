@@ -37,7 +37,7 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>0</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <NoWarn>CS0252</NoWarn>
     <Prefer32Bit>false</Prefer32Bit>
@@ -56,12 +56,15 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MochaDB, Version=3.1.0.0, Culture=neutral, PublicKeyToken=142bb2bbf4e7e3dd, processorArchitecture=MSIL">
+    <Reference Include="MochaDB, Version=3.4.2.0, Culture=neutral, PublicKeyToken=142bb2bbf4e7e3dd, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\MochaDB\MochaDB\bin\Debug\netstandard1.3\MochaDB.dll</HintPath>
+      <HintPath>..\..\MochaDB\out\net4\MochaDB.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Linq.Dynamic, Version=1.0.6132.35681, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Linq.Dynamic.1.0.7\lib\net40\System.Linq.Dynamic.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -79,6 +82,21 @@
     <Compile Include="Dialogs\ScriptDialog.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Editor\Char.cs" />
+    <Compile Include="Editor\CommandManager.cs" />
+    <Compile Include="Editor\Commands.cs" />
+    <Compile Include="Editor\CodeEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editor\Hotkeys.cs" />
+    <Compile Include="Editor\LimitedStack.cs" />
+    <Compile Include="Editor\Line.cs" />
+    <Compile Include="Editor\LinesAccessor.cs" />
+    <Compile Include="Editor\Place.cs" />
+    <Compile Include="Editor\Range.cs" />
+    <Compile Include="Editor\Style.cs" />
+    <Compile Include="Editor\SyntaxHighlighter.cs" />
+    <Compile Include="Editor\TextSource.cs" />
     <Compile Include="Engine\FileSystem.cs" />
     <Compile Include="GUI\Animator.cs" />
     <Compile Include="GUI\Components\FlatToolTip.cs">
@@ -112,6 +130,9 @@
     <Compile Include="Studio.cs">
       <SubType>Form</SubType>
     </Compile>
+    <EmbeddedResource Include="Editor\CodeEditor.resx">
+      <DependentUpon>CodeEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -122,6 +143,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -183,5 +205,6 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

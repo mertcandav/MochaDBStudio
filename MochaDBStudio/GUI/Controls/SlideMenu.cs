@@ -1,8 +1,8 @@
-﻿using MochaDBStudio.Properties;
-using System;
+﻿using System;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
+using MochaDBStudio.Properties;
 
 namespace MochaDBStudio.GUI.Controls {
     /// <summary>

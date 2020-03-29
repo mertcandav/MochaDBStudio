@@ -1,11 +1,11 @@
-﻿using MochaDB;
-using MochaDBStudio.Properties;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Linq;
 using System.Windows.Forms;
+using MochaDB;
+using MochaDBStudio.Properties;
 
 namespace MochaDBStudio.GUI.Controls {
     /// <summary>
