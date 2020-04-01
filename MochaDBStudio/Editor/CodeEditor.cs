@@ -1911,8 +1911,6 @@ namespace MochaDBStudio.Editor {
 
         protected override void OnHandleCreated(EventArgs e) {
             base.OnHandleCreated(e);
-            /*foreach (var timer in new List<Timer>(timersToReset.Keys))
-                ResetTimer(timer);*/
             for(int i = 0; i < new List<Timer>(timersToReset.Keys).Count; i++) ResetTimer(timer);
             timersToReset.Clear();
 
@@ -2113,6 +2111,7 @@ namespace MochaDBStudio.Editor {
 
             if(!string.IsNullOrEmpty(text))
                 InsertText(text);
+            OnTextChanged();
         }
 
         /// <summary>

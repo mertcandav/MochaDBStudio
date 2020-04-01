@@ -547,7 +547,7 @@ namespace MochaDBStudio.GUI.Controls {
                 return;
             }
 
-            DB.Query.MochaQ.Command = arg;
+            DB.Query.MochaQ = arg;
             if(DB.Query.MochaQ.IsRunQuery()) {
                 try {
                     DB.Query.Run(arg);

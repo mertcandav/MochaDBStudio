@@ -1,5 +1,4 @@
-﻿#pragma warning disable
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -16,6 +15,7 @@ namespace MochaDBStudio.Editor {
             keywordStyle = new TextStyle(new SolidBrush(Color.FromArgb(255,110,110)),Brushes.Transparent,FontStyle.Bold),
             commentStyle = new TextStyle(new SolidBrush(Color.FromArgb(87,166,74)),Brushes.Transparent,FontStyle.Regular),
             numberStyle = new TextStyle(Brushes.LightGreen,Brushes.Transparent,FontStyle.Regular),
+            tagStyle = new TextStyle(Brushes.LightSeaGreen,Brushes.Transparent,FontStyle.Bold),
             stringStyle = new TextStyle(new SolidBrush(Color.FromArgb(235,185,0)),Brushes.Transparent,FontStyle.Regular),
             parameterStyle = new TextStyle(Brushes.LightSkyBlue,Brushes.Transparent,FontStyle.Regular),
             funcStyle = new TextStyle(new SolidBrush(Color.FromArgb(255,220,155)),Brushes.Transparent,FontStyle.Regular);
@@ -57,13 +57,15 @@ String|Char|Long|Integer|Short|ULong|UInteger|UShort|Decimal|Double|Float|Boolea
         /// Highlight Mhql code.
         /// </summary>
         public virtual void Mhql() {
-            currentTb.VisibleRange.ClearStyle(stringStyle,numberStyle,funcStyle,keywordStyle,commentStyle);
+            currentTb.VisibleRange.ClearStyle(tagStyle,stringStyle,numberStyle,funcStyle,keywordStyle,commentStyle);
+            currentTb.VisibleRange.SetStyle(tagStyle,@"\@\w.*?(( )|\n|$)");
             currentTb.VisibleRange.SetStyle(numberStyle,"^[0-9]*$");
             currentTb.VisibleRange.SetStyle(keywordStyle,
-@"\b(USE|RETURN|ORDERBY|ASC|DESC|MUST|AND|GROUPBY|FROM|AS|SELECT)\b",
+@"\b(USE|RETURN|ORDERBY|ASC|DESC|MUST|AND|GROUPBY|FROM|AS|SELECT|REMOVE)\b",
 RegexOptions.IgnoreCase|RegexOptions.CultureInvariant);
             currentTb.VisibleRange.SetStyle(funcStyle,@"\(.*\)",RegexOptions.Multiline);
             currentTb.VisibleRange.SetStyle(commentStyle,@"/\*.*\*/",RegexOptions.Multiline);
+            currentTb.VisibleRange.SetStyle(stringStyle,@""".*""");
         }
     }
 
@@ -71,8 +73,8 @@ RegexOptions.IgnoreCase|RegexOptions.CultureInvariant);
     /// Language
     /// </summary>
     public enum Language {
-        None,
-        Mhql,
-        MochaScript
+        None = 0,
+        Mhql = 1,
+        MochaScript = 2
     }
 }

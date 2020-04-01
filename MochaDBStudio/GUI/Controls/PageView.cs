@@ -524,6 +524,7 @@ namespace MochaDBStudio.GUI.Controls {
             tablesNode,
             fileSystemNode,
             logsNode,
+            mhqlNode,
             terminalNode;
 
         #endregion
@@ -631,6 +632,18 @@ namespace MochaDBStudio.GUI.Controls {
 
             #endregion
 
+            #region mhqlNode
+
+            mhqlNode = new TreeNode();
+            mhqlNode.Text="Mhql";
+            mhqlNode.Tag="Mhql";
+            mhqlNode.ImageIndex =3;
+            mhqlNode.SelectedImageIndex=mhqlNode.ImageIndex;
+
+            explorerTree.Nodes.Add(mhqlNode);
+
+            #endregion
+
             #region terminalNode
 
             terminalNode = new TreeNode();
@@ -721,10 +734,7 @@ namespace MochaDBStudio.GUI.Controls {
                 for(int columnIndex = 0; columnIndex < table.Columns.Length; columnIndex++)
                     grid.Columns.Add(table.Columns[columnIndex].Name,table.Columns[columnIndex].Name);
                 for(int rowIndex = 0; rowIndex<table.Rows.Length; rowIndex++) {
-                    string[] datas = new string[table.Columns.Length];
-                    for(int dataIndex = 0; dataIndex < table.Rows[rowIndex].Datas.Count; dataIndex++)
-                        datas[dataIndex] = table.Rows[rowIndex].Datas[dataIndex].ToString();
-                    grid.Rows.Add(datas);
+                    grid.Rows.Add(table.Rows[rowIndex].Datas.ToArray());
                 }
                 page.Controls.Add(grid);
                 tab.Add(page);
@@ -754,6 +764,58 @@ namespace MochaDBStudio.GUI.Controls {
                     "MochaDB Studio",MessageBoxButtons.YesNo,MessageBoxIcon.Warning)==DialogResult.Yes) {
                     DB.RestoreToLog(e.Node.Text);
                 }
+            } else if(e.Node.Tag == "Mhql") {
+                if(ControlAndSelectPage("Mhql"))
+                    return;
+
+                Page page = new Page();
+                page.Name="Mhql";
+                page.Text=e.Node.Text;
+                page.Image=Resources.Table;
+
+                CodeEditor editor = new CodeEditor {
+                    Location = Point.Empty,
+                    Size = new Size(page.Width,page.Height/2),
+                    BackColor = Color.Black,
+                    Language = Language.Mhql
+                };
+
+                FlatGrid grid = new FlatGrid {
+                    Dock = DockStyle.Bottom,
+                    Size = new Size(0,200)
+                };
+
+                editor.KeyDown += new KeyEventHandler((obj,arg) => {
+                    try {
+                        if(arg.KeyCode == Keys.F5) {
+                            grid.Columns.Clear();
+                            var mhqlcmd = new MhqlCommand(editor.Text);
+                            if(mhqlcmd.IsExecuteCompatible())
+                                DB.ExecuteCommand(mhqlcmd);
+                            else {
+                                var reader = DB.ExecuteReader(mhqlcmd);
+                                if(reader.Read()) {
+                                    if(reader.Value is MochaTableResult) {
+                                        var table = reader.Value as MochaTableResult;
+                                        for(int columnIndex = 0; columnIndex < table.Columns.Length; columnIndex++)
+                                            grid.Columns.Add(table.Columns[columnIndex].Name,table.Columns[columnIndex].Name);
+                                        for(int rowIndex = 0; rowIndex<table.Rows.Length; rowIndex++) {
+                                            grid.Rows.Add(table.Rows[rowIndex].Datas.ToArray());
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } catch(MochaException excep) {
+                        MessageBox.Show(excep.Message,"MochaDB Studio",
+                        MessageBoxButtons.OK,MessageBoxIcon.Error);
+                    } catch(Exception excep) { MessageBox.Show(excep.Message,"MochaDB Studio",
+                        MessageBoxButtons.OK,MessageBoxIcon.Error); }
+                });
+
+                page.Controls.Add(editor);
+                page.Controls.Add(grid);
+                tab.Add(page);
             }
         }
 
@@ -791,7 +853,8 @@ namespace MochaDBStudio.GUI.Controls {
                 tag=="Disk" ? true :
                 tag=="Terminal" ? true :
                 tag=="Logs" ? true :
-                tag=="Log" ? true : false;
+                tag=="Log" ? true :
+                tag=="Mhql" ? true : false;
         }
 
         private void ExplorerTree_AfterLabelEdit(object sender,NodeLabelEditEventArgs e) {
