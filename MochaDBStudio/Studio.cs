@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Drawing;
+using System.Windows.Forms;
 
 namespace MochaDBStudio {
     /// <summary>
@@ -19,6 +20,13 @@ namespace MochaDBStudio {
 
     // Designer.
     public partial class Studio {
+        #region Components
+
+        private Panel
+            titlePanel;
+
+        #endregion
+
         /// <summary>
         /// Initialize.
         /// </summary>
@@ -28,6 +36,17 @@ namespace MochaDBStudio {
             Text = "MochaDB Studio";
             StartPosition = FormStartPosition.CenterScreen;
             FormBorderStyle = FormBorderStyle.None;
+            Size = new Size(810,470);
+
+            #endregion
+
+            #region titlePanel
+
+            titlePanel = new Panel();
+            titlePanel.Dock = DockStyle.Top;
+            titlePanel.Height = 30;
+            titlePanel.BackColor = Color.FromArgb(60,60,60);
+            Controls.Add(titlePanel);
 
             #endregion
         }
