@@ -17,6 +17,32 @@ namespace MochaDBStudio {
         }
 
         #endregion
+
+        #region closeButton
+
+        private void CloseButton_Click(object sender,System.EventArgs e) {
+            Application.Exit();
+        }
+
+        #endregion
+
+        #region fsButton
+
+        private void FsButton_Click(object sender,System.EventArgs e) {
+            WindowState =
+                WindowState == FormWindowState.Maximized ?
+                    FormWindowState.Normal : FormWindowState.Maximized;
+        }
+
+        #endregion
+
+        #region minimizeButton
+
+        private void MinimizeButton_Click(object sender,System.EventArgs e) {
+            WindowState = FormWindowState.Minimized;
+        }
+
+        #endregion
     }
 
     // Designer.
@@ -59,7 +85,7 @@ namespace MochaDBStudio {
             #region closeButton
 
             closeButton = new sbutton();
-            closeButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+            closeButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right | AnchorStyles.Top;
             closeButton.Text = "X";
             closeButton.ForeColor = Color.White;
             closeButton.BackColor = titlePanel.BackColor;
@@ -67,6 +93,8 @@ namespace MochaDBStudio {
             closeButton.MouseDownColor = Color.Red;
             closeButton.Size = new Size(30,titlePanel.Height);
             closeButton.Location = new Point(titlePanel.Width - closeButton.Width,0);
+            closeButton.Click += CloseButton_Click;
+            closeButton.TabStop = false;
             titlePanel.Controls.Add(closeButton);
 
             #endregion
@@ -74,7 +102,7 @@ namespace MochaDBStudio {
             #region fsButton
 
             fsButton = new sbutton();
-            fsButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+            fsButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right | AnchorStyles.Top;
             fsButton.Text = "□";
             fsButton.Font = new Font(fsButton.Font.Name,13);
             fsButton.ForeColor = Color.White;
@@ -83,6 +111,8 @@ namespace MochaDBStudio {
             fsButton.MouseDownColor = Color.DodgerBlue;
             fsButton.Size = new Size(30,titlePanel.Height);
             fsButton.Location = new Point(closeButton.Location.X - fsButton.Width,0);
+            fsButton.TabStop = false;
+            fsButton.Click +=FsButton_Click;
             titlePanel.Controls.Add(fsButton);
 
             #endregion
@@ -90,7 +120,7 @@ namespace MochaDBStudio {
             #region minimizeButton
 
             minimizeButton = new sbutton();
-            minimizeButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+            minimizeButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right | AnchorStyles.Top;
             minimizeButton.Text = "̶";
             minimizeButton.ForeColor = Color.White;
             minimizeButton.BackColor = titlePanel.BackColor;
@@ -98,6 +128,8 @@ namespace MochaDBStudio {
             minimizeButton.MouseDownColor = Color.DodgerBlue;
             minimizeButton.Size = new Size(30,titlePanel.Height);
             minimizeButton.Location = new Point(fsButton.Location.X - closeButton.Width,0);
+            minimizeButton.TabStop = false;
+            minimizeButton.Click +=MinimizeButton_Click;
             titlePanel.Controls.Add(minimizeButton);
 
             #endregion
