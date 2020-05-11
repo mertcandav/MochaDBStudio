@@ -53,7 +53,14 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Icon.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>MochaDBStudio.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MochaDB, Version=3.4.2.0, Culture=neutral, PublicKeyToken=142bb2bbf4e7e3dd, processorArchitecture=MSIL">
@@ -76,73 +83,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Dialogs\DatabaseDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\ScriptDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Editor\Char.cs" />
-    <Compile Include="Editor\CommandManager.cs" />
-    <Compile Include="Editor\Commands.cs" />
-    <Compile Include="Editor\CodeEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Editor\Hotkeys.cs" />
-    <Compile Include="Editor\LimitedStack.cs" />
-    <Compile Include="Editor\Line.cs" />
-    <Compile Include="Editor\LinesAccessor.cs" />
-    <Compile Include="Editor\Place.cs" />
-    <Compile Include="Editor\Range.cs" />
-    <Compile Include="Editor\Style.cs" />
-    <Compile Include="Editor\SyntaxHighlighter.cs" />
-    <Compile Include="Editor\TextSource.cs" />
-    <Compile Include="Engine\FileSystem.cs" />
-    <Compile Include="GUI\Animator.cs" />
-    <Compile Include="GUI\Components\FlatToolTip.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="GUI\Controls\FlatButton.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="GUI\Controls\FlatGrid.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="GUI\Controls\MenuItemListView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="GUI\Controls\PageView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="GUI\Controls\SlideMenu.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="GUI\Controls\Terminal.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="GUI\Controls\TextInput.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="GUI\Enums.cs" />
-    <Compile Include="GUI\Events.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Studio.cs">
       <SubType>Form</SubType>
     </Compile>
-    <EmbeddedResource Include="Editor\CodeEditor.resx">
-      <DependentUpon>CodeEditor.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
+    <None Include="MochaDBStudio.snk" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -156,47 +112,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\AddDatabase.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ConnectDatabase.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Database.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Dot.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Folder.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Icon.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Icon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Menu.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ScriptDocument.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Sector.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Table.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Terminal.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Icon.ico" />
-    <None Include="Resources\Disk.png" />
-    <None Include="Resources\File.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
