@@ -86,6 +86,9 @@
     <Compile Include="gui\sbutton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="gui\spanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

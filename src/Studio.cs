@@ -6,7 +6,7 @@ namespace MochaDBStudio {
     /// <summary>
     /// Main window of application.
     /// </summary>
-    public sealed partial class Studio: Form {
+    public sealed partial class Studio:Form {
         #region Constructors
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace MochaDBStudio {
     public partial class Studio {
         #region Components
 
-        private Panel
+        private spanel
             titlePanel;
 
         private sbutton
@@ -74,10 +74,12 @@ namespace MochaDBStudio {
 
             #region titlePanel
 
-            titlePanel = new Panel();
+            titlePanel = new spanel();
             titlePanel.Dock = DockStyle.Top;
             titlePanel.Height = 30;
             titlePanel.BackColor = Color.FromArgb(60,60,60);
+            titlePanel.Moveable = true;
+            titlePanel.Tag = this;
             Controls.Add(titlePanel);
 
             #endregion
