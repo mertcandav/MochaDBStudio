@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
+using System.Windows.Forms.Layout;
 
 namespace MochaDBStudio.gui {
     /// <summary>
@@ -12,8 +13,8 @@ namespace MochaDBStudio.gui {
         /// Constructor.
         /// </summary>
         public sContextMenu() {
-            ShowImageMargin = false;
-            ShowCheckMargin = false;
+            ImageScalingSize = new Size(17, 17);
+            ShowCheckMargin = true;
         }
 
         #endregion

@@ -97,6 +97,10 @@ namespace MochaDBStudio {
         private slidemenu
             connectionMenu;
 
+        private sContextMenu
+            connectionCM,
+            helpCM;
+
         #endregion
 
         /// <summary>
@@ -193,6 +197,22 @@ namespace MochaDBStudio {
 
             #endregion
 
+            #region connectionCM
+
+            connectionCM = new sContextMenu();
+            connectionCM.ForeColor = Color.White;
+            connectionCM.BackColor = titlePanel.BackColor;
+            connectionCM.Items.Add(new sContextMenuItem("Create",
+                connectionCM.BackColor,Color.Gray) {
+                Image = Resources.Create
+            });
+            connectionCM.Items.Add(new sContextMenuItem("Connect",
+                connectionCM.BackColor,Color.Gray) {
+                Image = Resources.Connect
+            });
+
+            #endregion
+
             #region connectionButton
 
             connectionButton = new sbutton();
@@ -205,7 +225,24 @@ namespace MochaDBStudio {
             connectionButton.MouseDownColor = Color.DodgerBlue;
             connectionButton.Size = new Size(70,titlePanel.Height);
             connectionButton.Location = new Point(iconButton.Width + 5,0);
+            connectionButton.ContextMenu = connectionCM;
             titlePanel.Controls.Add(connectionButton);
+
+            #endregion
+
+            #region helpCM
+
+            helpCM = new sContextMenu();
+            helpCM.ForeColor = Color.White;
+            helpCM.BackColor = titlePanel.BackColor;
+            helpCM.Items.Add(new sContextMenuItem("MochaDB Documentation",
+                helpCM.BackColor,Color.Gray) {
+                Image = Resources.Documentation
+            });
+            helpCM.Items.Add(new sContextMenuItem("About MochaDB Studio",
+                helpCM.BackColor,Color.Gray) {
+                Image = Resources.Information
+            });
 
             #endregion
 
@@ -221,6 +258,7 @@ namespace MochaDBStudio {
             helpButton.MouseDownColor = Color.DodgerBlue;
             helpButton.Size = new Size(70,titlePanel.Height);
             helpButton.Location = new Point(connectionButton.Location.X + connectionButton.Width,0);
+            helpButton.ContextMenu = helpCM;
             titlePanel.Controls.Add(helpButton);
 
             #endregion

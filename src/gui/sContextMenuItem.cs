@@ -13,7 +13,6 @@ namespace MochaDBStudio.gui {
         /// Constructor.
         /// </summary>
         public sContextMenuItem() {
-            
         }
 
         /// <summary>
@@ -43,8 +42,18 @@ namespace MochaDBStudio.gui {
                 MouseEnter ? MouseEnterColor : BackColor))
                 e.Graphics.FillRectangle(bgBrush,0,0,Width,Height);
 
+            using(var centerFormat = new StringFormat() {
+                LineAlignment = StringAlignment.Center
+            })
             using(var foreBrush = new SolidBrush(ForeColor)) {
-                e.Graphics.DrawString(Text,Font,foreBrush,ContentRectangle);
+                if(Image != null) {
+                    e.Graphics.DrawImage(Image,10,5,15,Height-10);
+                    e.Graphics.DrawString(Text,Font,foreBrush,new
+                        Rectangle(new Point(ContentRectangle.X + 30,0),ContentRectangle.Size),
+                        centerFormat);
+                } else {
+                    e.Graphics.DrawString(Text,Font,foreBrush,ContentRectangle);
+                }
             }
         }
 
