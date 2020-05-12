@@ -56,7 +56,9 @@ namespace MochaDBStudio {
         private sbutton
             closeButton,
             fsButton,
-            minimizeButton;
+            minimizeButton,
+            connectionButton,
+            helpButton;
 
         private PictureBox
             iconPB;
@@ -149,6 +151,38 @@ namespace MochaDBStudio {
             minimizeButton.TabStop = false;
             minimizeButton.Click +=MinimizeButton_Click;
             titlePanel.Controls.Add(minimizeButton);
+
+            #endregion
+
+            #region connectionButton
+
+            connectionButton = new sbutton();
+            connectionButton.Font = new Font("Microsoft Sans Serif",9);
+            connectionButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right | AnchorStyles.Top;
+            connectionButton.Text = "Connection";
+            connectionButton.ForeColor = Color.White;
+            connectionButton.BackColor = titlePanel.BackColor;
+            connectionButton.MouseEnterColor = Color.Gray;
+            connectionButton.MouseDownColor = Color.DodgerBlue;
+            connectionButton.Size = new Size(70,titlePanel.Height);
+            connectionButton.Location = new Point(iconPB.Width + 5,0);
+            titlePanel.Controls.Add(connectionButton);
+
+            #endregion
+
+            #region helpButton
+
+            helpButton = new sbutton();
+            helpButton.Font = new Font("Microsoft Sans Serif",9);
+            helpButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right | AnchorStyles.Top;
+            helpButton.Text = "Help";
+            helpButton.ForeColor = Color.White;
+            helpButton.BackColor = titlePanel.BackColor;
+            helpButton.MouseEnterColor = Color.Gray;
+            helpButton.MouseDownColor = Color.DodgerBlue;
+            helpButton.Size = new Size(70,titlePanel.Height);
+            helpButton.Location = new Point(connectionButton.Location.X + connectionButton.Width,0);
+            titlePanel.Controls.Add(helpButton);
 
             #endregion
         }

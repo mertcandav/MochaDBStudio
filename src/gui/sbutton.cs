@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Text;
+using System.Runtime.Remoting.Contexts;
 using System.Windows.Forms;
 
 namespace MochaDBStudio.gui {
@@ -59,9 +61,18 @@ namespace MochaDBStudio.gui {
             MouseDown = false;
         }
 
+        protected override void OnMouseClick(MouseEventArgs e) {
+            if(ContextMenu != null) {
+                if(ContextMenu.Size.Height + Location.Y + Height <= Screen.FromControl(this).WorkingArea.Height)
+                    ContextMenu.Show(this,new Point(0,Location.Y + Height));
+            }
+        }
+
         #endregion
 
         #region Properties
+
+        public sContextMenu ContextMenu { get; set; }
 
         private bool
             mouseEnter = false;
