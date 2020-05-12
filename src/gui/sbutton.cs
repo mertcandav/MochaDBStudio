@@ -6,7 +6,7 @@ namespace MochaDBStudio.gui {
     /// <summary>
     /// Button for MochaDB Studio.
     /// </summary>
-    public class sbutton: Control {
+    public class sbutton:Control {
         #region Constructors
 
         /// <summary>
@@ -15,7 +15,7 @@ namespace MochaDBStudio.gui {
         public sbutton() {
             SetStyle(
                 ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer |
-                ControlStyles.ResizeRedraw, true);
+                ControlStyles.ResizeRedraw,true);
         }
 
         #endregion
@@ -29,7 +29,7 @@ namespace MochaDBStudio.gui {
         }
 
         protected override void OnPaint(PaintEventArgs e) {
-            using(var centerFormat = new StringFormat() { 
+            using(var centerFormat = new StringFormat() {
                 FormatFlags = StringFormatFlags.NoWrap,
                 Alignment = StringAlignment.Center,
                 LineAlignment = StringAlignment.Center
@@ -71,7 +71,8 @@ namespace MochaDBStudio.gui {
         public bool MouseEnter {
             get {
                 return mouseEnter;
-            } protected set {
+            }
+            protected set {
                 if(value == mouseEnter)
                     return;
 
@@ -88,7 +89,8 @@ namespace MochaDBStudio.gui {
         public Color MouseEnterColor {
             get {
                 return mouseEnterColor;
-            } set {
+            }
+            set {
                 if(value == mouseEnterColor)
                     return;
 
@@ -106,7 +108,8 @@ namespace MochaDBStudio.gui {
         public bool MouseDown {
             get {
                 return mouseDown;
-            } protected set {
+            }
+            protected set {
                 if(value == mouseDown)
                     return;
 

@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
 using MochaDBStudio.gui;
+using MochaDBStudio.Properties;
 
 namespace MochaDBStudio {
     /// <summary>
@@ -57,6 +58,9 @@ namespace MochaDBStudio {
             fsButton,
             minimizeButton;
 
+        private PictureBox
+            iconPB;
+
         #endregion
 
         /// <summary>
@@ -81,6 +85,18 @@ namespace MochaDBStudio {
             titlePanel.Moveable = true;
             titlePanel.Tag = this;
             Controls.Add(titlePanel);
+
+            #endregion
+
+            #region iconPB
+
+            iconPB = new PictureBox();
+            iconPB.Anchor = AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left;
+            iconPB.Location = Point.Empty;
+            iconPB.Size = new Size(30,titlePanel.Height);
+            iconPB.Image = Resources.MochaDB_Logo.ToBitmap();
+            iconPB.SizeMode = PictureBoxSizeMode.CenterImage;
+            titlePanel.Controls.Add(iconPB);
 
             #endregion
 

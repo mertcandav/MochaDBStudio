@@ -70,6 +70,16 @@ namespace MochaDBStudio.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon MochaDB_Logo {
+            get {
+                object obj = ResourceManager.GetObject("MochaDB_Logo", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 2.0.0.
         /// </summary>
         internal static string Version {
