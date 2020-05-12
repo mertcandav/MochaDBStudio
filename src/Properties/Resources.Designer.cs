@@ -61,6 +61,16 @@ namespace MochaDBStudio.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Database {
+            get {
+                object obj = ResourceManager.GetObject("Database", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Stable.
         /// </summary>
         internal static string Distribution {

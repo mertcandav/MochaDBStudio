@@ -68,6 +68,14 @@ namespace MochaDBStudio {
         }
 
         #endregion
+
+        #region iconButton
+
+        private void iconButton_Click(object sender,EventArgs e) {
+            connectionMenu.Toggle();
+        }
+
+        #endregion
     }
 
     // Designer.
@@ -75,17 +83,19 @@ namespace MochaDBStudio {
         #region Components
 
         private spanel
-            titlePanel;
+            titlePanel,
+            gridPanel;
 
         private sbutton
             closeButton,
             fsButton,
             minimizeButton,
             connectionButton,
-            helpButton;
+            helpButton,
+            iconButton;
 
-        private PictureBox
-            iconPB;
+        private slidemenu
+            connectionMenu;
 
         #endregion
 
@@ -99,6 +109,7 @@ namespace MochaDBStudio {
             StartPosition = FormStartPosition.CenterScreen;
             FormBorderStyle = FormBorderStyle.None;
             Size = new Size(810,470);
+            Icon = Resources.MochaDB_Logo;
             Opacity = 0;
 
             #endregion
@@ -108,22 +119,25 @@ namespace MochaDBStudio {
             titlePanel = new spanel();
             titlePanel.Dock = DockStyle.Top;
             titlePanel.Height = 30;
-            titlePanel.BackColor = Color.FromArgb(60,60,60);
+            titlePanel.BackColor = Color.FromArgb(24,24,24);
             titlePanel.Moveable = true;
             titlePanel.Tag = this;
             Controls.Add(titlePanel);
 
             #endregion
 
-            #region iconPB
+            #region iconButton
 
-            iconPB = new PictureBox();
-            iconPB.Anchor = AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left;
-            iconPB.Location = Point.Empty;
-            iconPB.Size = new Size(30,titlePanel.Height);
-            iconPB.Image = Resources.MochaDB_Logo.ToBitmap();
-            iconPB.SizeMode = PictureBoxSizeMode.CenterImage;
-            titlePanel.Controls.Add(iconPB);
+            iconButton = new sbutton();
+            iconButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Left;
+            iconButton.Location = new Point(0,0);
+            iconButton.Size = new Size(30,titlePanel.Height);
+            iconButton.BackColor = titlePanel.BackColor;
+            iconButton.MouseEnterColor = Color.Gray;
+            iconButton.MouseDownColor = Color.DodgerBlue;
+            iconButton.Image = Resources.MochaDB_Logo.ToBitmap();
+            iconButton.Click +=iconButton_Click;
+            titlePanel.Controls.Add(iconButton);
 
             #endregion
 
@@ -183,14 +197,14 @@ namespace MochaDBStudio {
 
             connectionButton = new sbutton();
             connectionButton.Font = new Font("Microsoft Sans Serif",9);
-            connectionButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right | AnchorStyles.Top;
+            connectionButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Top;
             connectionButton.Text = "Connection";
             connectionButton.ForeColor = Color.White;
             connectionButton.BackColor = titlePanel.BackColor;
             connectionButton.MouseEnterColor = Color.Gray;
             connectionButton.MouseDownColor = Color.DodgerBlue;
             connectionButton.Size = new Size(70,titlePanel.Height);
-            connectionButton.Location = new Point(iconPB.Width + 5,0);
+            connectionButton.Location = new Point(iconButton.Width + 5,0);
             titlePanel.Controls.Add(connectionButton);
 
             #endregion
@@ -199,7 +213,7 @@ namespace MochaDBStudio {
 
             helpButton = new sbutton();
             helpButton.Font = new Font("Microsoft Sans Serif",9);
-            helpButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right | AnchorStyles.Top;
+            helpButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Top;
             helpButton.Text = "Help";
             helpButton.ForeColor = Color.White;
             helpButton.BackColor = titlePanel.BackColor;
@@ -208,6 +222,30 @@ namespace MochaDBStudio {
             helpButton.Size = new Size(70,titlePanel.Height);
             helpButton.Location = new Point(connectionButton.Location.X + connectionButton.Width,0);
             titlePanel.Controls.Add(helpButton);
+
+            #endregion
+
+            #region gridPanel
+
+            gridPanel = new spanel();
+            gridPanel.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+            gridPanel.Location = new Point(0,titlePanel.Height);
+            gridPanel.Size = new Size(Width,Height-gridPanel.Location.Y);
+            gridPanel.BackColor = Color.FromArgb(60,60,60);
+            Controls.Add(gridPanel);
+
+            #endregion
+
+            #region connectionMenu
+
+            connectionMenu = new slidemenu();
+            connectionMenu.Location = Point.Empty;
+            connectionMenu.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Top;
+            connectionMenu.Height = ClientSize.Height;
+            connectionMenu.Width = 200;
+            Controls.Add(connectionMenu);
+            connectionMenu.BringToFront();
+            connectionMenu.Close();
 
             #endregion
         }

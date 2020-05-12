@@ -31,12 +31,22 @@ namespace MochaDBStudio.gui {
         }
 
         protected override void OnPaint(PaintEventArgs e) {
+            if(string.IsNullOrWhiteSpace(Text)) {
+                if(Image != null) {
+                    e.Graphics.DrawImage(Image,ClientRectangle);
+                }
+                return;
+            }
+
             using(var centerFormat = new StringFormat() {
                 FormatFlags = StringFormatFlags.NoWrap,
                 Alignment = StringAlignment.Center,
                 LineAlignment = StringAlignment.Center
             })
             using(var foreBrush = new SolidBrush(ForeColor)) {
+                if(Image != null) {
+                    e.Graphics.DrawImage(Image,0,5,25,Height-5);
+                }
                 e.Graphics.DrawString(Text,Font,foreBrush,ClientRectangle,centerFormat);
             }
         }
@@ -72,7 +82,15 @@ namespace MochaDBStudio.gui {
 
         #region Properties
 
+        /// <summary>
+        /// ContextMenu.
+        /// </summary>
         public sContextMenu ContextMenu { get; set; }
+
+        /// <summary>
+        /// Image.
+        /// </summary>
+        public Bitmap Image { get; set; }
 
         private bool
             mouseEnter = false;

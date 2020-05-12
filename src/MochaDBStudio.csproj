@@ -92,6 +92,9 @@
     <Compile Include="gui\sContextMenuItem.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="gui\slidemenu.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="gui\spanel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -134,6 +137,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\MochaDB_Logo.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Database.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
