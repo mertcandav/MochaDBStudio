@@ -49,6 +49,19 @@ namespace MochaDBStudio.gui {
 
         #endregion
 
+        #region Events
+
+        /// <summary>
+        /// This happens any current item changed.
+        /// </summary>
+        public event EventHandler<EventArgs> CurrentItemChanged;
+        protected virtual void OnCurrentItemChanged(object sender, EventArgs e) {
+            // Invoke.
+            CurrentItemChanged?.Invoke(sender, e);
+        }
+
+        #endregion
+
         #region Animations
 
         /// <summary>
@@ -142,7 +155,6 @@ namespace MochaDBStudio.gui {
 
         private void item_Click(object sender,EventArgs e) {
             CurrentItem = sender as sbutton;
-            Invalidate();
             Close();
         }
 
@@ -150,10 +162,22 @@ namespace MochaDBStudio.gui {
 
         #region Properties
 
+        private sbutton currentItem = null;
         /// <summary>
         /// Current item.
         /// </summary>
-        public sbutton CurrentItem { get; set; }
+        public sbutton CurrentItem {
+            get {
+                return currentItem;
+            } set {
+                if(value == currentItem)
+                    return;
+
+                currentItem = value;
+                OnCurrentItemChanged(currentItem,null);
+                Invalidate();
+            }
+        }
 
         /// <summary>
         /// Open state.

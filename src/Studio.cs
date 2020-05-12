@@ -2,6 +2,8 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using MochaDB;
+using MochaDBStudio.dialogs;
 using MochaDBStudio.gui;
 using MochaDBStudio.Properties;
 
@@ -73,6 +75,18 @@ namespace MochaDBStudio {
 
         private void iconButton_Click(object sender,EventArgs e) {
             connectionMenu.Toggle();
+        }
+
+        #endregion
+
+        #region connectionCM
+
+        private void ConnectionCM_ItemClicked(object sender,ToolStripItemClickedEventArgs e) {
+            if(e.ClickedItem.Text == "Create") {
+                var dialog = new CreateDB_Dialog();
+                dialog.CNCList = connectionMenu;
+                dialog.ShowDialog();
+            }
         }
 
         #endregion
@@ -210,6 +224,7 @@ namespace MochaDBStudio {
                 connectionCM.BackColor,Color.Gray) {
                 Image = Resources.Connect
             });
+            connectionCM.ItemClicked+=ConnectionCM_ItemClicked;
 
             #endregion
 
