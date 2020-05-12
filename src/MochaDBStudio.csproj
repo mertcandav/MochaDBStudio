@@ -90,6 +90,9 @@
     </Compile>
     <Compile Include="engine\fs.cs" />
     <Compile Include="gui\Animator.cs" />
+    <Compile Include="gui\stabcontrol.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="gui\toggle.cs">
       <SubType>Component</SubType>
     </Compile>
