@@ -82,6 +82,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="gui\Animator.cs" />
     <Compile Include="gui\sbutton.cs">
       <SubType>Component</SubType>
     </Compile>

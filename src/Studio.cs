@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿using System;
+using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
 using MochaDBStudio.gui;
 using MochaDBStudio.Properties;
@@ -15,6 +17,28 @@ namespace MochaDBStudio {
         /// </summary>
         public Studio() {
             Init();
+        }
+
+        #endregion
+
+        #region Form Overrides
+
+        protected override void OnLoad(EventArgs e) {
+            base.OnLoad(e);
+
+            Focus();
+        }
+
+        protected override void OnShown(EventArgs e) {
+            Animator.FormFadeShow(this,25);
+
+            base.OnShown(e);
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e) {
+            Animator.FormFadeHide(this,25);
+
+            base.OnFormClosing(e);
         }
 
         #endregion
@@ -75,6 +99,7 @@ namespace MochaDBStudio {
             StartPosition = FormStartPosition.CenterScreen;
             FormBorderStyle = FormBorderStyle.None;
             Size = new Size(810,470);
+            Opacity = 0;
 
             #endregion
 
