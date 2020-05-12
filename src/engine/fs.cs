@@ -54,5 +54,11 @@ namespace MochaDBStudio.engine {
             File.Copy(path,copyPath);
         public static string Combine(string path1,string path2) =>
             Path.Combine(path1,path2);
+        public static string GetFileNameFromPath(string path) {
+            var finfo = GetFileInfo(path);
+            var name = finfo.Name;
+            name = name.Substring(0, name.Length-finfo.Extension.Length);
+            return name;
+        }
     }
 }

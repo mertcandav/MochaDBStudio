@@ -86,6 +86,10 @@ namespace MochaDBStudio {
                 var dialog = new CreateDB_Dialog();
                 dialog.CNCList = connectionMenu;
                 dialog.ShowDialog();
+            } else if(e.ClickedItem.Text == "Connect") {
+                var dialog = new ConnectDB_Dialog();
+                dialog.CNCList = connectionMenu;
+                dialog.ShowDialog();
             }
         }
 

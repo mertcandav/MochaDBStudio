@@ -82,11 +82,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="dialogs\ConnectDB_Dialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="dialogs\CreateDB_Dialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="engine\fs.cs" />
     <Compile Include="gui\Animator.cs" />
+    <Compile Include="gui\toggle.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="gui\sbutton.cs">
       <SubType>Component</SubType>
     </Compile>

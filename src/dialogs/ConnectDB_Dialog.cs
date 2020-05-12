@@ -8,15 +8,15 @@ using MochaDBStudio.Properties;
 
 namespace MochaDBStudio.dialogs {
     /// <summary>
-    /// Dialog for create database.
+    /// Dialog for connect to database.
     /// </summary>
-    public sealed partial class CreateDB_Dialog:Form {
+    public sealed partial class ConnectDB_Dialog:Form {
         #region Constructors
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        public CreateDB_Dialog() {
+        public ConnectDB_Dialog() {
             Init();
         }
 
@@ -70,14 +70,6 @@ namespace MochaDBStudio.dialogs {
 
         #endregion
 
-        #region nameTB
-
-        private void NameTB_TextChanged(object sender,EventArgs e) {
-            nameTB.BorderColor = Color.DodgerBlue;
-        }
-
-        #endregion
-
         #region pathTB
 
         private void PathTB_TextChanged(object sender,EventArgs e) {
@@ -86,34 +78,30 @@ namespace MochaDBStudio.dialogs {
 
         #endregion
 
-        #region createButton
+        #region connectButton
 
-        private void CreateButton_Click(object sender,EventArgs e) {
-            bool ok = true;
-            string name = nameTB.Text.TrimStart();
-            if(string.IsNullOrEmpty(name)) {
-                nameTB.BorderColor = Color.Red;
-                ok = false;
-            }
+        private void ConnectButton_Click(object sender,EventArgs e) {
             if(string.IsNullOrEmpty(pathTB.Text)) {
                 pathTB.BorderColor = Color.Red;
-                ok = false;
-            }
-
-            if(!ok)
-                return;
-
-            string path = fs.Combine(pathTB.Text,name);
-            if(fs.ExistsFile(path + ".mochadb")) {
-                MessageBox.Show("A database with this name already exists on this path.","MochaDB Studio",
-                    MessageBoxButtons.OK,MessageBoxIcon.Error);
                 return;
             }
 
-            MochaDatabase.CreateMochaDB(path,descriptionTB.Text,passwordTB.Text);
-            CNCList.AddItem(new sbutton() { Text = name });
-            CNCList.CurrentItem = CNCList.Controls[CNCList.Controls.Count-1] as sbutton;
-            Close();
+            try {
+                MochaDatabase db = new MochaDatabase($@"
+                    AutoConnect=True; Path={pathTB.Text};
+                    Password={passwordTB.Text};
+                    Logs={logToggle.Checked}");
+
+                CNCList.AddItem(new sbutton() { Text = fs.GetFileNameFromPath(pathTB.Text) });
+                CNCList.CurrentItem = CNCList.Controls[CNCList.Controls.Count-1] as sbutton;
+                Close();
+            } catch(Exception excep) {
+                if(excep.Message == "MochaDB database password does not match the password specified!")
+                    passwordTB.BorderColor = Color.Red;
+                else {
+                    MessageBox.Show(excep.Message,"MochaDB Studio",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                }
+            }
         }
 
         #endregion
@@ -121,10 +109,14 @@ namespace MochaDBStudio.dialogs {
         #region pathButton
 
         private void PathButton_Click(object sender,EventArgs e) {
-            using(FolderBrowserDialog fbd = new FolderBrowserDialog()) {
-                fbd.ShowNewFolderButton = true;
-                if(fbd.ShowDialog()==DialogResult.OK)
-                    pathTB.Text=fbd.SelectedPath;
+            using(OpenFileDialog opd = new OpenFileDialog()) {
+                opd.Title = "Select MochaDB database file.";
+                opd.Multiselect = false;
+                opd.Filter ="All MochaDB database files.|*.mochadb";
+
+                if(opd.ShowDialog()==DialogResult.OK) {
+                    pathTB.Text=opd.FileName;
+                }
             }
         }
 
@@ -141,19 +133,20 @@ namespace MochaDBStudio.dialogs {
     }
 
     // Designer.
-    public sealed partial class CreateDB_Dialog {
+    public sealed partial class ConnectDB_Dialog {
         #region Components
 
         private stextbox
-            nameTB,
             pathTB,
-            passwordTB,
-            descriptionTB;
+            passwordTB;
 
         private sbutton
             cancelButton,
-            createButton,
+            connectButton,
             pathButton;
+
+        private toggle
+            logToggle;
 
         #endregion
 
@@ -163,27 +156,13 @@ namespace MochaDBStudio.dialogs {
         public void Init() {
             #region Base
 
-            Text = "Create new MochaDB Database";
+            Text = "Connect to MochaDB Database";
             StartPosition = FormStartPosition.CenterParent;
             FormBorderStyle = FormBorderStyle.None;
             Icon = Resources.MochaDB_Logo;
             BackColor = Color.FromArgb(50,50,50);
             Opacity = 0;
             Size = new Size(400,400);
-
-            #endregion
-
-            #region nameTB
-
-            nameTB = new stextbox();
-            nameTB.Placeholder = "Database name";
-            nameTB.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            nameTB.BackColor = BackColor;
-            nameTB.ForeColor = Color.White;
-            nameTB.Location = new Point(20,60);
-            nameTB.Size = new Size(Width - (nameTB.Location.X * 2),20);
-            nameTB.TextChanged+=NameTB_TextChanged;
-            Controls.Add(nameTB);
 
             #endregion
 
@@ -195,7 +174,7 @@ namespace MochaDBStudio.dialogs {
             pathTB.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             pathTB.BackColor = BackColor;
             pathTB.ForeColor = Color.White;
-            pathTB.Location = new Point(20,nameTB.Location.Y + nameTB.Height + 30);
+            pathTB.Location = new Point(20,60);
             pathTB.Size = new Size(Width - (pathTB.Location.X * 2),20);
             pathTB.Readonly = true;
             Controls.Add(pathTB);
@@ -216,19 +195,6 @@ namespace MochaDBStudio.dialogs {
 
             #endregion
 
-            #region descriptionTB
-
-            descriptionTB = new stextbox();
-            descriptionTB.Placeholder = "Database description";
-            descriptionTB.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            descriptionTB.BackColor = BackColor;
-            descriptionTB.ForeColor = Color.White;
-            descriptionTB.Location = new Point(20,passwordTB.Location.Y + passwordTB.Height + 30);
-            descriptionTB.Size = new Size(Width - (descriptionTB.Location.X * 2),20);
-            Controls.Add(descriptionTB);
-
-            #endregion
-
             #region cancelButton
 
             cancelButton = new sbutton();
@@ -245,20 +211,20 @@ namespace MochaDBStudio.dialogs {
 
             #endregion
 
-            #region createButton
+            #region connectButton
 
-            createButton = new sbutton();
-            createButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            createButton.Text = "Create";
-            createButton.Size = new Size(60,30);
-            createButton.Click+=CreateButton_Click;
-            createButton.BackColor = Color.LightGreen;
-            createButton.MouseEnterColor = Color.LimeGreen;
-            createButton.MouseDownColor = Color.Green;
-            createButton.Location = new Point(
-                cancelButton.Location.X - createButton.Width - 10,
-                Height - createButton.Height - createButton.Location.Y - 10);
-            Controls.Add(createButton);
+            connectButton = new sbutton();
+            connectButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            connectButton.Text = "Connect";
+            connectButton.Size = new Size(60,30);
+            connectButton.Click+=ConnectButton_Click;
+            connectButton.BackColor = Color.LightGreen;
+            connectButton.MouseEnterColor = Color.LimeGreen;
+            connectButton.MouseDownColor = Color.Green;
+            connectButton.Location = new Point(
+                cancelButton.Location.X - connectButton.Width - 10,
+                Height - connectButton.Height - connectButton.Location.Y - 10);
+            Controls.Add(connectButton);
 
             #endregion
 
@@ -276,6 +242,19 @@ namespace MochaDBStudio.dialogs {
                 (pathTB.Location.X + pathTB.Width) - pathButton.Width,
                 (pathTB.Location.Y + pathTB.Height) + 10);
             Controls.Add(pathButton);
+
+            #endregion
+
+            #region logToggle
+
+            logToggle = new toggle();
+            logToggle.Text = "Keep log";
+            logToggle.ForeColor = Color.White;
+            logToggle.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            logToggle.BackColor = BackColor;
+            logToggle.Location = new Point(20, passwordTB.Location.Y + passwordTB.Height + 100);
+            logToggle.Size = new Size(130,20);
+            Controls.Add(logToggle);
 
             #endregion
         }

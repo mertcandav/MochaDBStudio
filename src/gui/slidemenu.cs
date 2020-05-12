@@ -203,6 +203,7 @@ namespace MochaDBStudio.gui {
 
             ForeColor = Color.White;
             BackColor = Color.FromArgb(50,50,50);
+            Font = new Font("Arial",10);
 
             #endregion
 

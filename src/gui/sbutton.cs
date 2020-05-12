@@ -45,7 +45,7 @@ namespace MochaDBStudio.gui {
             })
             using(var foreBrush = new SolidBrush(ForeColor)) {
                 if(Image != null) {
-                    e.Graphics.DrawImage(Image,0,5,25,Height-5);
+                    e.Graphics.DrawImage(Image,0,5,25,Height-10);
                 }
                 e.Graphics.DrawString(Text,Font,foreBrush,ClientRectangle,centerFormat);
             }
