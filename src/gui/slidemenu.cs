@@ -56,6 +56,8 @@ namespace MochaDBStudio.gui {
         /// </summary>
         public event EventHandler<EventArgs> CurrentItemChanged;
         protected virtual void OnCurrentItemChanged(object sender, EventArgs e) {
+            ((cncpanel)((sbutton)sender).Tag).BringToFront();
+
             // Invoke.
             CurrentItemChanged?.Invoke(sender, e);
         }
@@ -146,7 +148,9 @@ namespace MochaDBStudio.gui {
             item.MouseDownColor = Color.DodgerBlue;
             item.Image = Resources.Database;
             item.Click +=item_Click;
+            Grid.Controls.Add((cncpanel)item.Tag);
             Controls.Add(item);
+            CurrentItem = item;
         }
 
         #endregion
@@ -183,6 +187,11 @@ namespace MochaDBStudio.gui {
         /// Open state.
         /// </summary>
         public bool IsOpen { get; private set; }
+
+        /// <summary>
+        /// Target grid.
+        /// </summary>
+        public Panel Grid { get; set; }
 
         #endregion
     }

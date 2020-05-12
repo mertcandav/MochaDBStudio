@@ -53,7 +53,7 @@ namespace MochaDBStudio.gui {
                 using(Pen BorderPen = new Pen(BorderColor,2))
                     e.Graphics.DrawRectangle(BorderPen,1,1,ClientSize.Width-2,ClientSize.Height-2);
 
-            e.Graphics.DrawString(Placeholder,Font,Brushes.DimGray,new Rectangle(input.Location,input.Size),new StringFormat() {
+            e.Graphics.DrawString(Placeholder,Font,Brushes.Gray,new Rectangle(input.Location,input.Size),new StringFormat() {
                 LineAlignment = StringAlignment.Center
             });
         }

@@ -300,6 +300,7 @@ namespace MochaDBStudio {
             connectionMenu.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Top;
             connectionMenu.Height = ClientSize.Height;
             connectionMenu.Width = 200;
+            connectionMenu.Grid = gridPanel;
             Controls.Add(connectionMenu);
             connectionMenu.BringToFront();
             connectionMenu.Close();

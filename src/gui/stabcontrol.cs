@@ -12,7 +12,7 @@ namespace MochaDBStudio.gui {
         #region Fields
 
         private int
-            lineX = 2;
+            lineX = 10;
 
         #endregion
 
@@ -102,7 +102,7 @@ namespace MochaDBStudio.gui {
         /// <param name="index">Index of page.</param>
         public Rectangle GetRect(int index) {
             var rect = GetTabRect(index);
-            rect.X += rect.Width-60;
+            rect.X = (index * 70) + 10;
             rect.Width = 70;
             return rect;
         }

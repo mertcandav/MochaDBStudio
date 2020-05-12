@@ -111,8 +111,10 @@ namespace MochaDBStudio.dialogs {
             }
 
             MochaDatabase.CreateMochaDB(path,descriptionTB.Text,passwordTB.Text);
-            CNCList.AddItem(new sbutton() { Text = name });
-            CNCList.CurrentItem = CNCList.Controls[CNCList.Controls.Count-1] as sbutton;
+            MochaDatabase db = new MochaDatabase($"path={path}; password={passwordTB.Text};logs=false;AutoConnect=true");
+
+            var connectionPanel = new cncpanel(db);
+            CNCList.AddItem(new sbutton() { Text = name, Tag = connectionPanel });
             Close();
         }
 

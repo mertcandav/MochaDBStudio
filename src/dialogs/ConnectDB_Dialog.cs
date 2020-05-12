@@ -92,8 +92,8 @@ namespace MochaDBStudio.dialogs {
                     Password={passwordTB.Text};
                     Logs={logToggle.Checked}");
 
-                CNCList.AddItem(new sbutton() { Text = fs.GetFileNameFromPath(pathTB.Text) });
-                CNCList.CurrentItem = CNCList.Controls[CNCList.Controls.Count-1] as sbutton;
+                var connectionPanel = new cncpanel(db);
+                CNCList.AddItem(new sbutton() { Text = fs.GetFileNameFromPath(pathTB.Text),Tag = connectionPanel });
                 Close();
             } catch(Exception excep) {
                 if(excep.Message == "MochaDB database password does not match the password specified!")
