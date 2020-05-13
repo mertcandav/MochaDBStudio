@@ -82,6 +82,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="dialogs\About_Dialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="dialogs\ConnectDB_Dialog.cs">
       <SubType>Form</SubType>
     </Compile>

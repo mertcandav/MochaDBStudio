@@ -202,7 +202,7 @@ namespace MochaDBStudio.gui {
                     Input = "";
                     CaretIndex = 0;
                 } else if(e.KeyCode == Keys.Back) {
-                    if(!string.IsNullOrEmpty(Input)) {
+                    if(CaretIndex > 0) {
                         CaretIndex--;
                         Input = Input.Remove(CaretIndex,1);
                     }
