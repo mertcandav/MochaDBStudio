@@ -306,6 +306,7 @@ namespace MochaDBStudio {
             gridPanel.Location = new Point(0,titlePanel.Height);
             gridPanel.Size = new Size(Width,Height-gridPanel.Location.Y);
             gridPanel.BackColor = Color.FromArgb(60,60,60);
+            gridPanel.BackgroundImage = Resources.MochaDB_LogoGray;
             Controls.Add(gridPanel);
 
             #endregion

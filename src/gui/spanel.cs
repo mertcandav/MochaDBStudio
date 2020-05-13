@@ -23,7 +23,21 @@ namespace MochaDBStudio.gui {
         /// Constructor.
         /// </summary>
         public spanel() {
+            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.ResizeRedraw |
+                ControlStyles.OptimizedDoubleBuffer,true);
+        }
 
+        #endregion
+
+        #region Drawing
+
+        protected override void OnPaintBackground(PaintEventArgs e) {
+            using(var brush = new SolidBrush(BackColor))
+                e.Graphics.FillRectangle(brush,0,0,Width,Height);
+
+            if(BackgroundImage != null)
+                e.Graphics.DrawImage(BackgroundImage,
+                    (Width / 2) - 50,(Height/2)-50,100,100);
         }
 
         #endregion
