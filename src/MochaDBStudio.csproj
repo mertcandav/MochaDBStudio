@@ -105,6 +105,9 @@
     <Compile Include="gui\passwordeye.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="gui\rangebar.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="gui\sform.cs">
       <SubType>Form</SubType>
     </Compile>
