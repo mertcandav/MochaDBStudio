@@ -24,7 +24,7 @@ namespace MochaDBStudio.gui {
         public cncpanel(MochaDatabase database)
             : this() {
             Database = database;
-            refreshDatas();
+            refreshDashboard();
         }
 
         #endregion
@@ -70,7 +70,8 @@ namespace MochaDBStudio.gui {
         /// Refresh "Dashboard" tab.
         /// </summary>
         public void refreshDashboard() {
-
+            nameTB.Text = Database.Name;
+            pathTB.Text = Database.Provider.Path;
         }
 
         /// <summary>
@@ -112,6 +113,14 @@ namespace MochaDBStudio.gui {
         private passwordeye
             passwordTBeye;
 
+        private Label
+            nameLabel,
+            pathLabel;
+
+        private TextBox
+            nameTB,
+            pathTB;
+
         #endregion
 
         /// <summary>
@@ -135,6 +144,10 @@ namespace MochaDBStudio.gui {
 
             #endregion
 
+            // 
+            // Dashboard
+            // 
+
             #region dashboardPage
 
             dashboardPage = new TabPage();
@@ -144,6 +157,61 @@ namespace MochaDBStudio.gui {
 
             #endregion
 
+            #region nameLabel
+
+            nameLabel = new Label();
+            nameLabel.AutoSize = true;
+            nameLabel.Text = "Name";
+            nameLabel.Font = new Font("Arial",10);
+            nameLabel.Location = new Point(20,30);
+            dashboardPage.Controls.Add(nameLabel);
+
+            #endregion
+
+            #region nameTB
+
+            nameTB = new TextBox();
+            nameTB.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left;
+            nameTB.ReadOnly = true;
+            nameTB.BorderStyle = BorderStyle.FixedSingle;
+            nameTB.BackColor = BackColor;
+            nameTB.ForeColor = Color.White;
+            nameTB.Location = new Point(nameLabel.Location.X,
+                nameLabel.Location.Y+nameLabel.Height+5);
+            dashboardPage.Controls.Add(nameTB);
+
+            #endregion
+
+            #region pathLabel
+
+            pathLabel = new Label();
+            pathLabel.AutoSize = true;
+            pathLabel.Text = "Path";
+            pathLabel.Font = nameLabel.Font;
+            pathLabel.Location = new Point(nameLabel.Location.X,
+                nameTB.Location.Y+nameTB.Height+20);
+            dashboardPage.Controls.Add(pathLabel);
+
+            #endregion
+
+            #region pathTB
+
+            pathTB = new TextBox();
+            pathTB.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left;
+            pathTB.ReadOnly = true;
+            pathTB.BorderStyle = BorderStyle.FixedSingle;
+            pathTB.BackColor = BackColor;
+            pathTB.ForeColor = Color.White;
+            pathTB.Location = new Point(pathLabel.Location.X,
+                pathLabel.Location.Y+pathLabel.Height+5);
+            dashboardPage.Controls.Add(pathTB);
+
+            #endregion
+
+            // 
+            // Content
+            // 
+
             #region contentPage
 
             contentPage = new TabPage();
@@ -152,6 +220,10 @@ namespace MochaDBStudio.gui {
             tab.TabPages.Add(contentPage);
 
             #endregion
+
+            // 
+            // Settings
+            // 
 
             #region settingsPage
 
