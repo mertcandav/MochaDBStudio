@@ -59,6 +59,7 @@ namespace MochaDBStudio.gui {
 
         protected override void OnSelectedIndexChanged(EventArgs e) {
             base.OnSelectedIndexChanged(e);
+            Refresh();
             if(SelectedIndex != -1)
                 new Task(() => {
                     var rect = GetRect(SelectedIndex);

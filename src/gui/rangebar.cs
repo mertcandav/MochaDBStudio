@@ -15,6 +15,7 @@ namespace MochaDBStudio.gui {
         /// </summary>
         public rangebar() {
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer,true);
+            Size = new Size(115,30);
         }
 
         #endregion

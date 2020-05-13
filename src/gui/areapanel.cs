@@ -13,7 +13,6 @@ namespace MochaDBStudio.gui {
         /// </summary>
         /// <param name="title">Titile.</param>
         public areapanel(string title) {
-            Font = new Font("Arial",12);
             Title = title;
         }
 
@@ -27,8 +26,8 @@ namespace MochaDBStudio.gui {
             using(var centerFormat = new StringFormat() {
                 LineAlignment = StringAlignment.Center
             })
-            using(var forebrush = new SolidBrush(ForeColor))
-                e.Graphics.DrawString(Title,Font,forebrush,
+            using(var font = new Font("Arial",12,FontStyle.Bold))
+                e.Graphics.DrawString(Title,font,Brushes.LightGray,
                     new Rectangle(0,0,Width,30),centerFormat);
 
             e.Graphics.DrawLine(Pens.LightSlateGray,0,30,Width,30);

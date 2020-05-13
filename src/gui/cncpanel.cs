@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using MochaDB;
+using MochaDB.Querying;
 
 namespace MochaDBStudio.gui {
     /// <summary>
@@ -72,6 +75,66 @@ namespace MochaDBStudio.gui {
         public void refreshDashboard() {
             nameTB.Text = Database.Name;
             pathTB.Text = Database.Provider.Path;
+
+            // 
+            // Tests
+            // 
+            new Task(() => {
+                mhqlTestRB.State = 0;
+                mhqlTestRB.Text = "Testing...";
+                var sw = new Stopwatch();
+                long total = 0;
+                for(short counter = 1; counter <= 5; counter++) {
+                    sw.Start();
+                    Database.ExecuteScalar(
+@"
+@STACKS
+@SECTORS
+@TABLES
+SELECT ""[A-z]""
+RETURN
+");
+                    sw.Stop();
+                    total += sw.ElapsedMilliseconds;
+                }
+                total = total / 5;
+                mhqlTestRB.State =
+                    total <= 200 ?
+                    1 :
+                    total <= 1500 ?
+                        2 :
+                        total <= 3000 ?
+                            3 :
+                            total <= 5000 ?
+                            4 :
+                            5;
+                mhqlTestRB.Text = total + "ms";
+            }).Start();
+
+            new Task(() => {
+                directFetchTestRB.State = 0;
+                directFetchTestRB.Text = "Testing...";
+                var sw = new Stopwatch();
+                long total = 0;
+                for(short counter = 1; counter <= 5; counter++) {
+                    sw.Start();
+                    Database.GetTables();
+                    sw.Stop();
+                    total += sw.ElapsedMilliseconds;
+                }
+                total = total / 5;
+                directFetchTestRB.State =
+                    total <= 200 ?
+                    1 :
+                    total <= 1500 ?
+                        2 :
+                        total <= 3000 ?
+                            3 :
+                            total <= 5000 ?
+                            4 :
+                            5;
+                directFetchTestRB.Text = total + "ms";
+            }).Start();
         }
 
         /// <summary>
@@ -115,11 +178,20 @@ namespace MochaDBStudio.gui {
 
         private Label
             nameLabel,
-            pathLabel;
+            pathLabel,
+            mhqlTestLabel,
+            directFetchTestLabel;
 
         private TextBox
             nameTB,
             pathTB;
+
+        private areapanel
+            testsPanel;
+
+        private rangebar
+            mhqlTestRB,
+            directFetchTestRB;
 
         #endregion
 
@@ -205,6 +277,61 @@ namespace MochaDBStudio.gui {
             pathTB.Location = new Point(pathLabel.Location.X,
                 pathLabel.Location.Y+pathLabel.Height+5);
             dashboardPage.Controls.Add(pathTB);
+
+            #endregion
+
+            #region testsPanel
+
+            testsPanel = new areapanel("Tests");
+            testsPanel.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left;
+            testsPanel.BackColor = dashboardPage.BackColor;
+            testsPanel.Size = new Size(nameTB.Width,300);
+            testsPanel.Location = new Point(20,pathTB.Location.Y+pathTB.Height+30);
+            dashboardPage.Controls.Add(testsPanel);
+
+            #endregion
+
+            #region mhqlTestLabel
+
+            mhqlTestLabel = new Label();
+            mhqlTestLabel.AutoSize = true;
+            mhqlTestLabel.Text = "MHQL querying test (5 Test / AVG Time)";
+            mhqlTestLabel.Font = new Font("Arial",10);
+            mhqlTestLabel.Location = new Point(0,60);
+            testsPanel.Controls.Add(mhqlTestLabel);
+
+            #endregion
+
+            #region mhqlTestRB
+
+            mhqlTestRB = new rangebar();
+            mhqlTestRB.BackColor = BackColor;
+            mhqlTestRB.State = 0;
+            mhqlTestRB.Text = "Testing...";
+            mhqlTestRB.Location = new Point(mhqlTestLabel.Width + 100,mhqlTestLabel.Location.Y-15);
+            testsPanel.Controls.Add(mhqlTestRB);
+
+            #endregion
+
+            #region directFetchTestLabel
+
+            directFetchTestLabel = new Label();
+            directFetchTestLabel.AutoSize = true;
+            directFetchTestLabel.Text = "Direct fetch test (5 Test / AVG Time)";
+            directFetchTestLabel.Font = new Font("Arial",10);
+            directFetchTestLabel.Location = new Point(0,mhqlTestLabel.Location.Y+mhqlTestLabel.Height + 20);
+            testsPanel.Controls.Add(directFetchTestLabel);
+
+            #endregion
+
+            #region directFetchTestRB
+
+            directFetchTestRB = new rangebar();
+            directFetchTestRB.BackColor = BackColor;
+            directFetchTestRB.State = 0;
+            directFetchTestRB.Text = "Testing...";
+            directFetchTestRB.Location = new Point(mhqlTestRB.Location.X,directFetchTestLabel.Location.Y-15);
+            testsPanel.Controls.Add(directFetchTestRB);
 
             #endregion
 
