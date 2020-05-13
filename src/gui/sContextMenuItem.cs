@@ -39,7 +39,7 @@ namespace MochaDBStudio.gui {
 
         protected override void OnPaint(PaintEventArgs e) {
             using(var bgBrush = new SolidBrush(
-                MouseEnter ? MouseEnterColor : BackColor))
+                !Enabled ? Color.FromArgb(100,Color.Gray) : MouseEnter ? MouseEnterColor : BackColor))
                 e.Graphics.FillRectangle(bgBrush,0,0,Width,Height);
 
             using(var centerFormat = new StringFormat() {
@@ -59,7 +59,15 @@ namespace MochaDBStudio.gui {
 
         #endregion
 
-        #region MouseOverride
+        #region Drawing event override
+
+        protected override void OnDropDownShow(EventArgs e) {
+            MouseEnter = false;
+        }
+
+        #endregion
+
+        #region Mouse override
 
         protected override void OnMouseEnter(EventArgs e) {
             MouseEnter = true;

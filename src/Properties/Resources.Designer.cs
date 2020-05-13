@@ -122,6 +122,16 @@ namespace MochaDBStudio.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap HideEye {
+            get {
+                object obj = ResourceManager.GetObject("HideEye", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Information {
             get {
                 object obj = ResourceManager.GetObject("Information", resourceCulture);
@@ -136,6 +146,16 @@ namespace MochaDBStudio.Properties {
             get {
                 object obj = ResourceManager.GetObject("MochaDB_Logo", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ShowEye {
+            get {
+                object obj = ResourceManager.GetObject("ShowEye", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

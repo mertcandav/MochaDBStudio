@@ -90,7 +90,17 @@ namespace MochaDBStudio {
                 var dialog = new ConnectDB_Dialog();
                 dialog.CNCList = connectionMenu;
                 dialog.ShowDialog();
+            } else if(e.ClickedItem.Text == "Disconnect") {
+                connectionMenu.Disconnect();
             }
+        }
+
+        #endregion
+
+        #region connectionMenu
+
+        private void ConnectionMenu_CurrentItemChanged(object sender,EventArgs e) {
+            connectionCM.Items[2].Enabled = sender != null;
         }
 
         #endregion
@@ -228,6 +238,11 @@ namespace MochaDBStudio {
                 connectionCM.BackColor,Color.Gray) {
                 Image = Resources.Connect
             });
+            connectionCM.Items.Add(new sContextMenuItem("Disconnect",
+                connectionCM.BackColor,Color.Gray) {
+                Image = Resources.Disconnect,
+                Enabled = false
+            });
             connectionCM.ItemClicked+=ConnectionCM_ItemClicked;
 
             #endregion
@@ -245,6 +260,7 @@ namespace MochaDBStudio {
             connectionButton.Size = new Size(70,titlePanel.Height);
             connectionButton.Location = new Point(iconButton.Width + 5,0);
             connectionButton.ContextMenu = connectionCM;
+            connectionButton.DisableClick = true;
             titlePanel.Controls.Add(connectionButton);
 
             #endregion
@@ -278,6 +294,7 @@ namespace MochaDBStudio {
             helpButton.Size = new Size(70,titlePanel.Height);
             helpButton.Location = new Point(connectionButton.Location.X + connectionButton.Width,0);
             helpButton.ContextMenu = helpCM;
+            helpButton.DisableClick = true;
             titlePanel.Controls.Add(helpButton);
 
             #endregion
@@ -301,6 +318,7 @@ namespace MochaDBStudio {
             connectionMenu.Height = ClientSize.Height;
             connectionMenu.Width = 200;
             connectionMenu.Grid = gridPanel;
+            connectionMenu.CurrentItemChanged+=ConnectionMenu_CurrentItemChanged;
             Controls.Add(connectionMenu);
             connectionMenu.BringToFront();
             connectionMenu.Close();

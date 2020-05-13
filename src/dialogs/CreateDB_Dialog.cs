@@ -157,6 +157,9 @@ namespace MochaDBStudio.dialogs {
             createButton,
             pathButton;
 
+        private passwordeye
+            passwordTBeye;
+
         #endregion
 
         /// <summary>
@@ -212,9 +215,19 @@ namespace MochaDBStudio.dialogs {
             passwordTB.BackColor = BackColor;
             passwordTB.ForeColor = Color.White;
             passwordTB.Location = new Point(20,pathTB.Location.Y + pathTB.Height + 60);
-            passwordTB.Size = new Size(Width - (passwordTB.Location.X * 2),20);
+            passwordTB.Size = new Size(Width - (passwordTB.Location.X * 2)-40,20);
             passwordTB.PasswordChar = '●';
             Controls.Add(passwordTB);
+
+            #endregion
+
+            #region passwordTBeye
+
+            passwordTBeye = new passwordeye(passwordTB);
+            passwordTBeye.Size = new Size(30,passwordTB.Height);
+            passwordTBeye.Location = new Point(
+                passwordTB.Location.X+passwordTB.Width + 5,passwordTB.Location.Y);
+            Controls.Add(passwordTBeye);
 
             #endregion
 

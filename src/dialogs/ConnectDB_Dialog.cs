@@ -78,6 +78,14 @@ namespace MochaDBStudio.dialogs {
 
         #endregion
 
+        #region passwordTB
+
+        private void PasswordTB_TextChanged(object sender,EventArgs e) {
+            passwordTB.BorderColor = Color.DodgerBlue;
+        }
+
+        #endregion
+
         #region connectButton
 
         private void ConnectButton_Click(object sender,EventArgs e) {
@@ -95,12 +103,14 @@ namespace MochaDBStudio.dialogs {
                 var connectionPanel = new cncpanel(db);
                 CNCList.AddItem(new sbutton() { Text = fs.GetFileNameFromPath(pathTB.Text),Tag = connectionPanel });
                 Close();
-            } catch(Exception excep) {
-                if(excep.Message == "MochaDB database password does not match the password specified!")
+            } catch(MochaException excep) {
+                if(excep.Message == "MochaDB database password does not match the password specified!" |
+                   excep.Message == "The MochaDB database is password protected!")
                     passwordTB.BorderColor = Color.Red;
-                else {
+                else
                     MessageBox.Show(excep.Message,"MochaDB Studio",MessageBoxButtons.OK,MessageBoxIcon.Error);
-                }
+            } catch(Exception excep) {
+                MessageBox.Show(excep.Message,"MochaDB Studio",MessageBoxButtons.OK,MessageBoxIcon.Error);
             }
         }
 
@@ -148,6 +158,9 @@ namespace MochaDBStudio.dialogs {
         private toggle
             logToggle;
 
+        private passwordeye
+            passwordTBeye;
+
         #endregion
 
         /// <summary>
@@ -189,9 +202,20 @@ namespace MochaDBStudio.dialogs {
             passwordTB.BackColor = BackColor;
             passwordTB.ForeColor = Color.White;
             passwordTB.Location = new Point(20,pathTB.Location.Y + pathTB.Height + 60);
-            passwordTB.Size = new Size(Width - (passwordTB.Location.X * 2),20);
+            passwordTB.Size = new Size(Width - (passwordTB.Location.X * 2) - 40,20);
             passwordTB.PasswordChar = '●';
+            passwordTB.TextChanged+=PasswordTB_TextChanged;
             Controls.Add(passwordTB);
+
+            #endregion
+
+            #region passwordTBeye
+
+            passwordTBeye = new passwordeye(passwordTB);
+            passwordTBeye.Size = new Size(30,passwordTB.Height);
+            passwordTBeye.Location = new Point(
+                passwordTB.Location.X+passwordTB.Width + 5,passwordTB.Location.Y);
+            Controls.Add(passwordTBeye);
 
             #endregion
 
@@ -252,7 +276,7 @@ namespace MochaDBStudio.dialogs {
             logToggle.ForeColor = Color.White;
             logToggle.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             logToggle.BackColor = BackColor;
-            logToggle.Location = new Point(20, passwordTB.Location.Y + passwordTB.Height + 100);
+            logToggle.Location = new Point(20,passwordTB.Location.Y + passwordTB.Height + 100);
             logToggle.Size = new Size(130,20);
             Controls.Add(logToggle);
 

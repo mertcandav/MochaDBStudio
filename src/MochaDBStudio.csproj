@@ -90,7 +90,13 @@
     </Compile>
     <Compile Include="engine\fs.cs" />
     <Compile Include="gui\Animator.cs" />
+    <Compile Include="gui\areapanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="gui\cncpanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="gui\passwordeye.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="gui\stabcontrol.cs">
@@ -177,6 +183,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Information.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ShowEye.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\HideEye.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

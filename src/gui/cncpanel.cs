@@ -32,9 +32,27 @@ namespace MochaDBStudio.gui {
         #region tab
 
         private void Tab_SelectedIndexChanged(object sender,EventArgs e) {
-            if(tab.SelectedIndex == 0) /* Overview */ {
-                refreshOverview();
+            if(tab.SelectedIndex == 0) /* Dashboard */ {
+                refreshDashboard();
+            } else if(tab.SelectedIndex == 2) /* Settings */ {
+                refreshSettings();
             }
+        }
+
+        #endregion
+
+        #region passwordTB
+
+        private void PasswordTB_TextChanged(object sender,EventArgs e) {
+            Database.SetPassword(passwordTB.Text);
+        }
+
+        #endregion
+
+        #region descriptionTB
+
+        private void DescriptionTB_TextChanged(object sender,EventArgs e) {
+            Database.SetDescription(descriptionTB.Text);
         }
 
         #endregion
@@ -49,10 +67,18 @@ namespace MochaDBStudio.gui {
         }
 
         /// <summary>
-        /// Refresh "Overview" tab.
+        /// Refresh "Dashboard" tab.
         /// </summary>
-        public void refreshOverview() {
+        public void refreshDashboard() {
 
+        }
+
+        /// <summary>
+        /// Refresh "Settings" tab.
+        /// </summary>
+        public void refreshSettings() {
+            passwordTB.Text = Database.GetPassword();
+            descriptionTB.Text = Database.GetDescription();
         }
 
         #endregion
@@ -75,8 +101,16 @@ namespace MochaDBStudio.gui {
             tab;
 
         private TabPage
-            overviewPage,
+            settingsPage,
+            dashboardPage,
             contentPage;
+
+        private stextbox
+            passwordTB,
+            descriptionTB;
+
+        private passwordeye
+            passwordTBeye;
 
         #endregion
 
@@ -86,6 +120,7 @@ namespace MochaDBStudio.gui {
         public void Init() {
             #region Base
 
+            Dock = DockStyle.Fill;
             BackColor = Color.FromArgb(60,60,60);
             ForeColor = Color.White;
 
@@ -100,12 +135,12 @@ namespace MochaDBStudio.gui {
 
             #endregion
 
-            #region overviewPage
+            #region dashboardPage
 
-            overviewPage = new TabPage();
-            overviewPage.Text = "Overview";
-            overviewPage.BackColor = BackColor;
-            tab.Controls.Add(overviewPage);
+            dashboardPage = new TabPage();
+            dashboardPage.Text = "Dashboard";
+            dashboardPage.BackColor = BackColor;
+            tab.TabPages.Add(dashboardPage);
 
             #endregion
 
@@ -114,7 +149,55 @@ namespace MochaDBStudio.gui {
             contentPage = new TabPage();
             contentPage.Text = "Content";
             contentPage.BackColor = BackColor;
-            tab.Controls.Add(contentPage);
+            tab.TabPages.Add(contentPage);
+
+            #endregion
+
+            #region settingsPage
+
+            settingsPage = new TabPage();
+            settingsPage.Text = "Settings";
+            settingsPage.BackColor = BackColor;
+            tab.TabPages.Add(settingsPage);
+
+            #endregion
+
+            #region passwordTB
+
+            passwordTB = new stextbox();
+            passwordTB.Placeholder = "Database password";
+            passwordTB.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            passwordTB.BackColor = BackColor;
+            passwordTB.ForeColor = Color.White;
+            passwordTB.Location = new Point(40,30);
+            passwordTB.Size = new Size(Width - (passwordTB.Location.X * 2)-40,20);
+            passwordTB.PasswordChar = '●';
+            passwordTB.TextChanged +=PasswordTB_TextChanged;
+            settingsPage.Controls.Add(passwordTB);
+
+            #endregion
+
+            #region passwordTBeye
+
+            passwordTBeye = new passwordeye(passwordTB);
+            passwordTBeye.Size = new Size(30,passwordTB.Height);
+            passwordTBeye.Location = new Point(
+                passwordTB.Location.X+passwordTB.Width + 5,passwordTB.Location.Y);
+            settingsPage.Controls.Add(passwordTBeye);
+
+            #endregion
+
+            #region descriptionTB
+
+            descriptionTB = new stextbox();
+            descriptionTB.Placeholder = "Database description";
+            descriptionTB.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            descriptionTB.BackColor = BackColor;
+            descriptionTB.ForeColor = Color.White;
+            descriptionTB.Location = new Point(40,passwordTB.Location.Y + passwordTB.Height + 30);
+            descriptionTB.Size = new Size(passwordTB.Width,20);
+            descriptionTB.TextChanged +=DescriptionTB_TextChanged;
+            settingsPage.Controls.Add(descriptionTB);
 
             #endregion
         }

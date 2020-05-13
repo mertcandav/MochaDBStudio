@@ -56,7 +56,8 @@ namespace MochaDBStudio.gui {
         /// </summary>
         public event EventHandler<EventArgs> CurrentItemChanged;
         protected virtual void OnCurrentItemChanged(object sender, EventArgs e) {
-            ((cncpanel)((sbutton)sender).Tag).BringToFront();
+            if(CurrentItem != null)
+                ((cncpanel)((sbutton)sender).Tag).BringToFront();
 
             // Invoke.
             CurrentItemChanged?.Invoke(sender, e);
@@ -160,6 +161,36 @@ namespace MochaDBStudio.gui {
         private void item_Click(object sender,EventArgs e) {
             CurrentItem = sender as sbutton;
             Close();
+        }
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Disconnect from current item.
+        /// </summary>
+        public void Disconnect() {
+            var ccpanel = (CurrentItem.Tag as cncpanel);
+            ccpanel.Database.Disconnect();
+            ccpanel.Dispose();
+            var dex = Controls.IndexOf(CurrentItem);
+            Controls.RemoveAt(dex);
+            CurrentItem.Dispose();
+            CurrentItem =
+                Controls.Count == 1 ? null :
+                    dex > Controls.Count-1 ?
+                    Controls[dex-1] as sbutton : Controls[dex] as sbutton;
+        }
+
+        #endregion
+
+        #region Control override
+
+        protected override void OnControlRemoved(ControlEventArgs e) {
+            base.OnControlRemoved(e);
+            for(int dex = 1; dex < Controls.Count; dex++)
+                Controls[dex].Location = new Point(2,dex * 30);
         }
 
         #endregion

@@ -102,8 +102,7 @@ namespace MochaDBStudio.gui {
         /// <param name="index">Index of page.</param>
         public Rectangle GetRect(int index) {
             var rect = GetTabRect(index);
-            rect.X = (index * 70) + 10;
-            rect.Width = 70;
+            rect.X += 10;
             return rect;
         }
 
@@ -170,6 +169,7 @@ namespace MochaDBStudio.gui {
                 ControlStyles.UserPaint | ControlStyles.UserMouse,true);
             BackColor = Color.FromArgb(60,60,60);
             ForeColor = Color.White;
+            Font = new Font("Arial",9);
 
             #endregion
         }
