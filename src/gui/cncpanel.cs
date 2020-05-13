@@ -27,6 +27,12 @@ namespace MochaDBStudio.gui {
         public cncpanel(MochaDatabase database)
             : this() {
             Database = database;
+
+            var term = new terminal();
+            term.DB=database;
+            term.BannedCommandNamespaces = new[] { "cnc" };
+            terminalPage.Controls.Add(term);
+
             refreshDashboard();
         }
 
@@ -165,9 +171,10 @@ RETURN
             tab;
 
         private TabPage
-            settingsPage,
             dashboardPage,
-            contentPage;
+            contentPage,
+            terminalPage,
+            settingsPage;
 
         private stextbox
             passwordTB,
@@ -345,6 +352,19 @@ RETURN
             contentPage.Text = "Content";
             contentPage.BackColor = BackColor;
             tab.TabPages.Add(contentPage);
+
+            #endregion
+
+            // 
+            // Terminal
+            // 
+
+            #region terminalPage
+
+            terminalPage = new TabPage();
+            terminalPage.Text = "Terminal";
+            terminalPage.BackColor = BackColor;
+            tab.TabPages.Add(terminalPage);
 
             #endregion
 

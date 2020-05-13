@@ -11,8 +11,11 @@ namespace MochaDBStudio.gui {
     public sealed partial class stabcontrol:TabControl {
         #region Fields
 
-        private int
+        private volatile int
             lineX = 10;
+
+        private Task
+            oldTask;
 
         #endregion
 
@@ -60,24 +63,31 @@ namespace MochaDBStudio.gui {
         protected override void OnSelectedIndexChanged(EventArgs e) {
             base.OnSelectedIndexChanged(e);
             Refresh();
-            if(SelectedIndex != -1)
-                new Task(() => {
+            if(SelectedIndex != -1) {
+                if(oldTask != null)
+                    oldTask.Wait();
+
+                oldTask = new Task(() => {
                     var rect = GetRect(SelectedIndex);
-                    if(lineX == rect.X)
+                    if(rect.X == lineX)
                         return;
 
                     if(rect.X <= lineX) {
-                        for(; lineX >= rect.X; lineX--) {
+                        for(; lineX >= rect.X; lineX-=2) {
                             Invalidate();
                             Thread.Sleep(1);
                         }
                     } else {
-                        for(; lineX <= rect.X; lineX++) {
+                        for(; lineX <= rect.X; lineX+=2) {
                             Invalidate();
                             Thread.Sleep(1);
                         }
                     }
-                }).Start();
+                    lineX = rect.X;
+                    Invalidate();
+                });
+                oldTask.Start();
+            }
         }
 
         #endregion

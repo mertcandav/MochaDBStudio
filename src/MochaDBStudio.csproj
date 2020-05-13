@@ -114,6 +114,9 @@
     <Compile Include="gui\stabcontrol.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="gui\terminal.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="gui\toggle.cs">
       <SubType>Component</SubType>
     </Compile>
