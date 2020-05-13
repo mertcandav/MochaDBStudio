@@ -96,6 +96,9 @@
     <Compile Include="gui\areapanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="gui\circleprogress.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="gui\cncpanel.cs">
       <SubType>Component</SubType>
     </Compile>
