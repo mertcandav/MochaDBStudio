@@ -105,6 +105,9 @@
     <Compile Include="gui\cncpanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="gui\sgrid.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="gui\passwordeye.cs">
       <SubType>Component</SubType>
     </Compile>
