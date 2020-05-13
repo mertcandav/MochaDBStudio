@@ -11,7 +11,7 @@ namespace MochaDBStudio {
     /// <summary>
     /// Main window of application.
     /// </summary>
-    public sealed partial class Studio:Form {
+    public sealed partial class Studio:sform {
         #region Constructors
 
         /// <summary>

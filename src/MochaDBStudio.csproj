@@ -88,6 +88,9 @@
     <Compile Include="dialogs\CreateDB_Dialog.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="dialogs\errorbox.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="engine\fs.cs" />
     <Compile Include="gui\Animator.cs" />
     <Compile Include="gui\areapanel.cs">
@@ -98,6 +101,9 @@
     </Compile>
     <Compile Include="gui\passwordeye.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="gui\sform.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="gui\stabcontrol.cs">
       <SubType>Component</SubType>

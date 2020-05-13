@@ -10,7 +10,7 @@ namespace MochaDBStudio.dialogs {
     /// <summary>
     /// Dialog for connect to database.
     /// </summary>
-    public sealed partial class ConnectDB_Dialog:Form {
+    public sealed partial class ConnectDB_Dialog:sform {
         #region Constructors
 
         /// <summary>
@@ -18,28 +18,6 @@ namespace MochaDBStudio.dialogs {
         /// </summary>
         public ConnectDB_Dialog() {
             Init();
-        }
-
-        #endregion
-
-        #region Form Overrides
-
-        protected override void OnLoad(EventArgs e) {
-            base.OnLoad(e);
-
-            Focus();
-        }
-
-        protected override void OnShown(EventArgs e) {
-            Animator.FormFadeShow(this,25);
-
-            base.OnShown(e);
-        }
-
-        protected override void OnFormClosing(FormClosingEventArgs e) {
-            Animator.FormFadeHide(this,25);
-
-            base.OnFormClosing(e);
         }
 
         #endregion
@@ -108,9 +86,9 @@ namespace MochaDBStudio.dialogs {
                    excep.Message == "The MochaDB database is password protected!")
                     passwordTB.BorderColor = Color.Red;
                 else
-                    MessageBox.Show(excep.Message,"MochaDB Studio",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                    errorbox.Show("[MochaException]\n" + excep.Message);
             } catch(Exception excep) {
-                MessageBox.Show(excep.Message,"MochaDB Studio",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                errorbox.Show("[Exception]\n" + excep.Message + excep);
             }
         }
 
@@ -170,6 +148,7 @@ namespace MochaDBStudio.dialogs {
             #region Base
 
             Text = "Connect to MochaDB Database";
+            ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterParent;
             FormBorderStyle = FormBorderStyle.None;
             Icon = Resources.MochaDB_Logo;

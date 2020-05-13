@@ -10,7 +10,7 @@ namespace MochaDBStudio.dialogs {
     /// <summary>
     /// Dialog for create database.
     /// </summary>
-    public sealed partial class CreateDB_Dialog:Form {
+    public sealed partial class CreateDB_Dialog:sform {
         #region Constructors
 
         /// <summary>
@@ -18,28 +18,6 @@ namespace MochaDBStudio.dialogs {
         /// </summary>
         public CreateDB_Dialog() {
             Init();
-        }
-
-        #endregion
-
-        #region Form Overrides
-
-        protected override void OnLoad(EventArgs e) {
-            base.OnLoad(e);
-
-            Focus();
-        }
-
-        protected override void OnShown(EventArgs e) {
-            Animator.FormFadeShow(this,25);
-
-            base.OnShown(e);
-        }
-
-        protected override void OnFormClosing(FormClosingEventArgs e) {
-            Animator.FormFadeHide(this,25);
-
-            base.OnFormClosing(e);
         }
 
         #endregion
@@ -105,8 +83,9 @@ namespace MochaDBStudio.dialogs {
 
             string path = fs.Combine(pathTB.Text,name);
             if(fs.ExistsFile(path + ".mochadb")) {
-                MessageBox.Show("A database with this name already exists on this path.","MochaDB Studio",
-                    MessageBoxButtons.OK,MessageBoxIcon.Error);
+                errorbox.Show(
+$@"[MochaDB-Studio]
+A database with this name already exists on this path.");
                 return;
             }
 
@@ -169,6 +148,7 @@ namespace MochaDBStudio.dialogs {
             #region Base
 
             Text = "Create new MochaDB Database";
+            ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterParent;
             FormBorderStyle = FormBorderStyle.None;
             Icon = Resources.MochaDB_Logo;
