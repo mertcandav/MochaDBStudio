@@ -211,5 +211,23 @@
   <ItemGroup>
     <None Include="Resources\MochaDB_LogoGray.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Sector.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Stack.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\FolderClose.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\FolderOpen.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Key.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Table.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -4,7 +4,10 @@ using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MochaDB;
+using MochaDB.FileSystem;
+using MochaDB.Logging;
 using MochaDB.Querying;
+using MochaDBStudio.Properties;
 
 namespace MochaDBStudio.gui {
     /// <summary>
@@ -34,6 +37,7 @@ namespace MochaDBStudio.gui {
             terminalPage.Controls.Add(term);
 
             refreshDashboard();
+            refreshExplorer();
         }
 
         #endregion
@@ -43,7 +47,7 @@ namespace MochaDBStudio.gui {
         private void Tab_SelectedIndexChanged(object sender,EventArgs e) {
             if(tab.SelectedIndex == 0) /* Dashboard */ {
                 refreshDashboard();
-            } else if(tab.SelectedIndex == 2) /* Settings */ {
+            } else if(tab.SelectedIndex == 3) /* Settings */ {
                 refreshSettings();
             }
         }
@@ -62,6 +66,40 @@ namespace MochaDBStudio.gui {
 
         private void DescriptionTB_TextChanged(object sender,EventArgs e) {
             Database.SetDescription(descriptionTB.Text);
+        }
+
+        #endregion
+
+        #region explorerTree
+
+        private void ExplorerTree_AfterExpand(object sender,TreeViewEventArgs e) {
+            if(e.Node.ImageIndex == 0) {
+                e.Node.ImageIndex = 1;
+                e.Node.SelectedImageIndex = 1;
+            }
+        }
+
+        private void ExplorerTree_AfterCollapse(object sender,TreeViewEventArgs e) {
+            if(e.Node.ImageIndex == 1) {
+                e.Node.ImageIndex = 0;
+                e.Node.SelectedImageIndex = 0;
+            }
+        }
+
+        private void ExplorerTree_AfterLabelEdit(object sender,NodeLabelEditEventArgs e) {
+            
+        }
+
+        private void ExplorerTree_BeforeLabelEdit(object sender,NodeLabelEditEventArgs e) {
+            
+        }
+
+        private void ExplorerTree_KeyDown(object sender,KeyEventArgs e) {
+            
+        }
+
+        private void ExplorerTree_NodeMouseDoubleClick(object sender,TreeNodeMouseClickEventArgs e) {
+            
         }
 
         #endregion
@@ -144,6 +182,13 @@ RETURN
         }
 
         /// <summary>
+        /// Refresh "Explorer" tab.
+        /// </summary>
+        public void refreshExplorer() {
+
+        }
+
+        /// <summary>
         /// Refresh "Settings" tab.
         /// </summary>
         public void refreshSettings() {
@@ -172,7 +217,7 @@ RETURN
 
         private TabPage
             dashboardPage,
-            contentPage,
+            explorerPage,
             terminalPage,
             settingsPage;
 
@@ -199,6 +244,17 @@ RETURN
         private rangebar
             mhqlTestRB,
             directFetchTestRB;
+
+        private TreeView
+            explorerTree;
+
+        private ImageList
+            explorerTreeIL;
+
+        private TreeNode
+            tablesNode,
+            stacksNode,
+            sectorsNode;
 
         #endregion
 
@@ -343,15 +399,85 @@ RETURN
             #endregion
 
             // 
-            // Content
+            // Explorer
             // 
 
-            #region contentPage
+            #region explorerPage
 
-            contentPage = new TabPage();
-            contentPage.Text = "Content";
-            contentPage.BackColor = BackColor;
-            tab.TabPages.Add(contentPage);
+            explorerPage = new TabPage();
+            explorerPage.Text = "Explorer";
+            explorerPage.BackColor = BackColor;
+            tab.TabPages.Add(explorerPage);
+
+            #endregion
+
+            #region explorerTreeIL
+
+            explorerTreeIL = new ImageList();
+            explorerTreeIL.ColorDepth=ColorDepth.Depth32Bit;
+            explorerTreeIL.Images.Add("FolderClose",Resources.FolderClose);
+            explorerTreeIL.Images.Add("FolderOpen",Resources.FolderOpen);
+            explorerTreeIL.Images.Add("Table",Resources.Table);
+            explorerTreeIL.Images.Add("Stack",Resources.Stack);
+            explorerTreeIL.Images.Add("Sector",Resources.Sector);
+
+            #endregion
+
+            #region explorerTree
+
+            explorerTree = new TreeView();
+            explorerTree.ForeColor = Color.White;
+            explorerTree.BackColor = BackColor;
+            explorerTree.Dock = DockStyle.Fill;
+            explorerTree.BorderStyle = BorderStyle.None;
+            explorerTree.ImageList = explorerTreeIL;
+            explorerTree.LabelEdit=true;
+            explorerTree.PathSeparator="/";
+            explorerPage.Controls.Add(explorerTree);
+            explorerTree.AfterExpand +=ExplorerTree_AfterExpand;
+            explorerTree.AfterCollapse+=ExplorerTree_AfterCollapse;
+            explorerTree.NodeMouseDoubleClick+=ExplorerTree_NodeMouseDoubleClick;
+            explorerTree.KeyDown+=ExplorerTree_KeyDown;
+            explorerTree.BeforeLabelEdit+=ExplorerTree_BeforeLabelEdit;
+            explorerTree.AfterLabelEdit+=ExplorerTree_AfterLabelEdit;
+
+            #endregion
+
+            #region tableNode
+
+            tablesNode = new TreeNode();
+            tablesNode.Text="Tables";
+            tablesNode.Tag="Tables";
+            tablesNode.ImageIndex = 0;
+            tablesNode.SelectedImageIndex = 0;
+            tablesNode.Nodes.Add("test");
+            tablesNode.Nodes.Add("test");
+
+            explorerTree.Nodes.Add(tablesNode);
+
+            #endregion
+
+            #region stacksNode
+
+            stacksNode = new TreeNode();
+            stacksNode.Text="Stacks";
+            stacksNode.Tag="Stacks";
+            stacksNode.ImageIndex = 0;
+            stacksNode.SelectedImageIndex = 0;
+
+            explorerTree.Nodes.Add(stacksNode);
+
+            #endregion
+
+            #region sectorsNode
+
+            sectorsNode = new TreeNode();
+            sectorsNode.Text="Sectors";
+            sectorsNode.Tag="Sectors";
+            stacksNode.ImageIndex = 0;
+            stacksNode.SelectedImageIndex = 0;
+
+            explorerTree.Nodes.Add(sectorsNode);
 
             #endregion
 
