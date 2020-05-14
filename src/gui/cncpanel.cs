@@ -185,7 +185,90 @@ RETURN
         /// Refresh "Explorer" tab.
         /// </summary>
         public void refreshExplorer() {
+            TreeNode GetMochaStackItemNODE(MochaStackItem item) {
+                TreeNode node = new TreeNode(item.Name);
+                node.Tag="StackItem";
 
+                if(item.Items.Count>0)
+                    for(int index = 0; index < item.Items.Count; index++) {
+                        node.Nodes.Add(GetMochaStackItemNODE(item.Items[index]));
+                    }
+
+                return node;
+            }
+
+            explorerTree.Nodes[0].Nodes.Clear();
+            explorerTree.Nodes[1].Nodes.Clear();
+            explorerTree.Nodes[2].Nodes.Clear();
+
+            TreeNode
+                columnsNode,
+                cacheNode,
+                columnNode;
+
+            // 
+            // Tables
+            // 
+
+            MochaCollectionResult<MochaColumn> columns;
+            var tables = Database.GetTables();
+            for(int index = 0; index < tables.Count; index++) {
+                columnsNode = new TreeNode();
+                columnsNode.Text ="Columns";
+                columnsNode.Tag="Columns";
+                columnsNode.ImageIndex =0;
+                columnsNode.SelectedImageIndex=tablesNode.ImageIndex;
+
+                cacheNode = new TreeNode();
+                cacheNode.Text =tables[index].Name;
+                cacheNode.Tag="Table";
+                cacheNode.ImageIndex =2;
+                cacheNode.SelectedImageIndex=cacheNode.ImageIndex;
+                cacheNode.Nodes.Add(columnsNode);
+
+                columns = Database.GetColumns(cacheNode.Text);
+                for(int columnIndex = 0; columnIndex < columns.Count; columnIndex++) {
+                    columnNode = new TreeNode();
+                    columnNode.Text =columns[columnIndex].Name;
+                    columnNode.Tag="Column";
+                    columnsNode.Nodes.Add(columnNode);
+                }
+
+                explorerTree.Nodes[0].Nodes.Add(cacheNode);
+            }
+
+            // 
+            // Stacks
+            // 
+
+            var stacks = Database.GetStacks();
+            for(int index = 0; index < stacks.Count; index++) {
+                cacheNode = new TreeNode();
+                cacheNode.Text =stacks[index].Name;
+                cacheNode.Tag="Stack";
+                cacheNode.ImageIndex=3;
+                cacheNode.SelectedImageIndex=cacheNode.ImageIndex;
+
+                if(stacks[index].Items.Count >0)
+                    for(int itemIndex = 0; itemIndex < stacks[index].Items.Count; itemIndex++)
+                        cacheNode.Nodes.Add(GetMochaStackItemNODE(stacks[index].Items[itemIndex]));
+
+                explorerTree.Nodes[1].Nodes.Add(cacheNode);
+            }
+
+            // 
+            // Sectors
+            // 
+
+            var sectors = Database.GetSectors();
+            for(int index = 0; index < sectors.Count; index++) {
+                cacheNode = new TreeNode();
+                cacheNode.Text =sectors[index].Name;
+                cacheNode.Tag="Sector";
+                cacheNode.ImageIndex=4;
+                cacheNode.SelectedImageIndex=cacheNode.ImageIndex;
+                explorerTree.Nodes[2].Nodes.Add(cacheNode);
+            }
         }
 
         /// <summary>
