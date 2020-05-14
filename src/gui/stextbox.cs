@@ -40,6 +40,9 @@ namespace MochaDBStudio.gui {
 
         #region Events
 
+        /// <summary>
+        /// This happends after text changed.
+        /// </summary>
         public new event EventHandler<EventArgs> TextChanged;
 
         #endregion
@@ -53,9 +56,7 @@ namespace MochaDBStudio.gui {
                 using(Pen BorderPen = new Pen(BorderColor,2))
                     e.Graphics.DrawRectangle(BorderPen,1,1,ClientSize.Width-2,ClientSize.Height-2);
 
-            e.Graphics.DrawString(Placeholder,Font,Brushes.Gray,new Rectangle(input.Location,input.Size),new StringFormat() {
-                LineAlignment = StringAlignment.Center
-            });
+            e.Graphics.DrawString(Placeholder,Font,Brushes.Gray,new Rectangle(input.Location,input.Size));
         }
 
         #endregion
@@ -84,8 +85,6 @@ namespace MochaDBStudio.gui {
             input.Focus();
         }
 
-
-
         #endregion
 
         #region Methods
@@ -95,6 +94,7 @@ namespace MochaDBStudio.gui {
         /// </summary>
         public void AdapdateSize() {
             Height = input.Height + 10;
+            Width = input.Width + 10;
             input.Location = new Point(5,5);
         }
 
@@ -120,6 +120,16 @@ namespace MochaDBStudio.gui {
         /// Placeholder.
         /// </summary>
         public string Placeholder { get; set; }
+
+        /// <summary>
+        /// Multiline.
+        /// </summary>
+        public bool Multiline { get => input.Multiline; set => input.Multiline = value; }
+
+        /// <summary>
+        /// INput box size.
+        /// </summary>
+        public Size InputSize { get => input.Size; set => input.Size = value; }
 
         /// <summary>
         /// Color or border. Set transparent for disable.

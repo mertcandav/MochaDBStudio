@@ -94,6 +94,9 @@
     <Compile Include="dialogs\errorbox.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="dialogs\TableEdit_Dialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="engine\fs.cs" />
     <Compile Include="gui\Animator.cs" />
     <Compile Include="gui\areapanel.cs">

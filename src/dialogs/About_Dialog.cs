@@ -66,11 +66,7 @@ namespace MochaDBStudio.dialogs {
 
             Text = "About MochaDB Studio";
             ShowInTaskbar = false;
-            StartPosition = FormStartPosition.CenterParent;
-            FormBorderStyle = FormBorderStyle.None;
-            Icon = Resources.MochaDB_Logo;
             BackColor = Color.FromArgb(50,50,50);
-            Opacity = 0;
             Size = new Size(400,400);
 
             #endregion

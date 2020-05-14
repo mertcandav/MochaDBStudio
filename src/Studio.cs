@@ -175,12 +175,8 @@ namespace MochaDBStudio {
             #region Base
 
             Text = "MochaDB Studio";
-            StartPosition = FormStartPosition.CenterScreen;
-            FormBorderStyle = FormBorderStyle.None;
             Size = new Size(810,470);
             MinimumSize = Size;
-            Icon = Resources.MochaDB_Logo;
-            Opacity = 0;
 
             #endregion
 

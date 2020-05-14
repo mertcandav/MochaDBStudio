@@ -7,6 +7,7 @@ using MochaDB;
 using MochaDB.FileSystem;
 using MochaDB.Logging;
 using MochaDB.Querying;
+using MochaDBStudio.dialogs;
 using MochaDBStudio.Properties;
 
 namespace MochaDBStudio.gui {
@@ -14,6 +15,14 @@ namespace MochaDBStudio.gui {
     /// Connection Panel.
     /// </summary>
     public sealed partial class cncpanel:Panel {
+        #region Fields
+
+        private Task
+            mhqlTestTask,
+            directFetchTestTask;
+
+        #endregion
+
         #region Constructors
 
         /// <summary>
@@ -86,20 +95,74 @@ namespace MochaDBStudio.gui {
             }
         }
 
-        private void ExplorerTree_AfterLabelEdit(object sender,NodeLabelEditEventArgs e) {
-            
+        private void ExplorerTree_BeforeLabelEdit(object sender,NodeLabelEditEventArgs e) {
+            string tag = e.Node.Tag as string;
+            e.CancelEdit =
+                tag=="Tables" ? true :
+                tag=="Columns" ? true :
+                tag=="Sectors" ? true :
+                tag=="Stacks" ? true : false;
         }
 
-        private void ExplorerTree_BeforeLabelEdit(object sender,NodeLabelEditEventArgs e) {
-            
+        private void ExplorerTree_AfterLabelEdit(object sender,NodeLabelEditEventArgs e) {
+            if(string.IsNullOrWhiteSpace(e.Label)) {
+                e.CancelEdit = true;
+                return;
+            }
+
+            try {
+                if(explorerTree.SelectedNode.Tag=="Table") {
+                    Database.RenameTable(e.Node.Text,e.Label.Trim());
+                } else if(explorerTree.SelectedNode.Tag=="Column") {
+                    Database.RenameColumn(e.Node.Parent.Parent.Text,e.Node.Text,e.Label.Trim());
+                } else if(explorerTree.SelectedNode.Tag=="Sector") {
+                    Database.RenameSector(e.Node.Text,e.Label.Trim());
+                } else if(explorerTree.SelectedNode.Tag=="Stack") {
+                    Database.RenameStack(e.Node.Text,e.Label.Trim());
+                } else if(explorerTree.SelectedNode.Tag=="StackItem") {
+                    Database.RenameStackItem(GetStackItemStackName(explorerTree.SelectedNode),e.Label.Trim(),
+                        GetStackItemPath(explorerTree.SelectedNode));
+                }
+            } catch(Exception excep) {
+                e.CancelEdit=true;
+                errorbox.Show(excep.Message);
+            }
         }
 
         private void ExplorerTree_KeyDown(object sender,KeyEventArgs e) {
-            
+            if(e.KeyCode == Keys.Delete) {
+                if(explorerTree.SelectedNode.Tag!="Table" &
+                   explorerTree.SelectedNode.Tag!="Column" &
+                   explorerTree.SelectedNode.Tag!="Stack" &
+                   explorerTree.SelectedNode.Tag!="Sector" &
+                   explorerTree.SelectedNode.Tag!="StackItem")
+                    return;
+
+                if(explorerTree.SelectedNode.Tag=="Table")
+                    Database.RemoveTable(explorerTree.SelectedNode.Text);
+                else if(explorerTree.SelectedNode.Tag=="Column")
+                    Database.RemoveColumn(explorerTree.SelectedNode.Parent.Parent.Text,explorerTree.SelectedNode.Text);
+                else if(explorerTree.SelectedNode.Tag=="Sector")
+                    Database.RemoveSector(explorerTree.SelectedNode.Text);
+                else if(explorerTree.SelectedNode.Tag=="Stack")
+                    Database.RemoveStack(explorerTree.SelectedNode.Text);
+                else if(explorerTree.SelectedNode.Tag=="StackItem")
+                    Database.RemoveStackItem(GetStackItemStackName(explorerTree.SelectedNode),
+                        GetStackItemPath(explorerTree.SelectedNode));
+                explorerTree.SelectedNode.Remove();
+            } else if(e.KeyCode==Keys.F2) {
+                if(explorerTree.SelectedNode!=null)
+                    explorerTree.SelectedNode.BeginEdit();
+            } else if(e.KeyCode==Keys.Escape) {
+                explorerTree.SelectedNode.EndEdit(true);
+            }
         }
 
         private void ExplorerTree_NodeMouseDoubleClick(object sender,TreeNodeMouseClickEventArgs e) {
-            
+            if(e.Node.Tag == "Table") {
+                var dialog = new TableEdit_Dialog(Database,e.Node.Text);
+                dialog.ShowDialog();
+            }
         }
 
         #endregion
@@ -123,7 +186,10 @@ namespace MochaDBStudio.gui {
             // 
             // Tests
             // 
-            new Task(() => {
+            if(mhqlTestTask != null)
+                mhqlTestTask.Wait();
+
+            mhqlTestTask = new Task(() => {
                 mhqlTestRB.State = 0;
                 mhqlTestRB.Text = "Testing...";
                 var sw = new Stopwatch();
@@ -153,9 +219,14 @@ RETURN
                             4 :
                             5;
                 mhqlTestRB.Text = total + "ms";
-            }).Start();
+            });
+            mhqlTestTask.Start();
 
-            new Task(() => {
+
+            if(directFetchTestTask != null)
+                directFetchTestTask.Wait();
+
+            directFetchTestTask = new Task(() => {
                 directFetchTestRB.State = 0;
                 directFetchTestRB.Text = "Testing...";
                 var sw = new Stopwatch();
@@ -178,7 +249,8 @@ RETURN
                             4 :
                             5;
                 directFetchTestRB.Text = total + "ms";
-            }).Start();
+            });
+            directFetchTestTask.Start();
         }
 
         /// <summary>
@@ -277,6 +349,24 @@ RETURN
         public void refreshSettings() {
             passwordTB.Text = Database.GetPassword();
             descriptionTB.Text = Database.GetDescription();
+        }
+
+        /// <summary>
+        /// Return stack item path.
+        /// </summary>
+        /// <param name="node">StackItem node.</param>
+        public string GetStackItemPath(TreeNode node) {
+            string cachepath = node.FullPath.Remove(0,node.FullPath.IndexOf("Stacks/")+7);
+            return cachepath.Remove(0,cachepath.IndexOf("/")+1);
+        }
+
+        /// <summary>
+        /// Return stack name of stack item.
+        /// </summary>
+        /// <param name="node">StackItem node.</param>
+        public string GetStackItemStackName(TreeNode node) {
+            string cachepath = node.FullPath.Remove(0,node.FullPath.IndexOf("Stacks/")+7);
+            return cachepath.Substring(0,cachepath.IndexOf("/"));
         }
 
         #endregion
@@ -594,6 +684,7 @@ RETURN
 
             passwordTB = new stextbox();
             passwordTB.Placeholder = "Database password";
+            passwordTB.BorderColor = Color.LightGray;
             passwordTB.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             passwordTB.BackColor = BackColor;
             passwordTB.ForeColor = Color.White;
@@ -619,11 +710,14 @@ RETURN
 
             descriptionTB = new stextbox();
             descriptionTB.Placeholder = "Database description";
+            descriptionTB.BorderColor = Color.LightGray;
+            descriptionTB.Multiline = true;
             descriptionTB.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             descriptionTB.BackColor = BackColor;
             descriptionTB.ForeColor = Color.White;
             descriptionTB.Location = new Point(40,passwordTB.Location.Y + passwordTB.Height + 30);
             descriptionTB.Size = new Size(passwordTB.Width,20);
+            descriptionTB.InputSize = new Size(descriptionTB.Width,200);
             descriptionTB.TextChanged +=DescriptionTB_TextChanged;
             settingsPage.Controls.Add(descriptionTB);
 

@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Windows.Forms;
+using MochaDBStudio.Properties;
 
 namespace MochaDBStudio.gui {
     /// <summary>
     /// Form for MochaDB Studio.
     /// </summary>
-    public class sform:Form {
+    public partial class sform:Form {
         #region Constructors
 
         /// <summary>
         /// Constructor.
         /// </summary>
         public sform() {
-
+            Init();
         }
 
         #endregion
@@ -38,5 +39,22 @@ namespace MochaDBStudio.gui {
         }
 
         #endregion
+    }
+
+    // Designer.
+    public partial class sform {
+        /// <summary>
+        /// Initialize component.
+        /// </summary>
+        private void Init() {
+            #region Base
+
+            StartPosition = FormStartPosition.CenterScreen;
+            FormBorderStyle = FormBorderStyle.None;
+            Icon = Resources.MochaDB_Logo;
+            Opacity = 0;
+
+            #endregion
+        }
     }
 }
