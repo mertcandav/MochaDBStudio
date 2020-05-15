@@ -24,7 +24,7 @@ namespace MochaDBStudio.dialogs {
             Database = db;
             TableName = tableName;
             Init();
-            refreshView();
+            refresContent();
         }
 
         #endregion
@@ -48,10 +48,10 @@ namespace MochaDBStudio.dialogs {
         #region tab
 
         private void Tab_SelectedIndexChanged(object sender,EventArgs e) {
-            if(tab.SelectedTab == viewPage) {
-                refreshView();
+            if(tab.SelectedTab == contentPage) {
+                refresContent();
             } else if(tab.SelectedTab == settingsPage) {
-                descriptionTB.Text = Database.GetTableDescription(TableName);
+                refreshSettings();
             }
         }
 
@@ -97,7 +97,7 @@ namespace MochaDBStudio.dialogs {
                     e.RowIndex,tableGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
             } catch(Exception excep) {
                 tableGrid.Updating = false;
-                refreshView();
+                refresContent();
                 errorbox.Show(excep.ToString());
             }
 #if DEBUG
@@ -162,9 +162,9 @@ namespace MochaDBStudio.dialogs {
         #region Methods
 
         /// <summary>
-        /// Refresh View page.
+        /// Refresh Content page.
         /// </summary>
-        public void refreshView() {
+        public void refresContent() {
             if(tableGrid.Updating)
                 return;
 
@@ -179,6 +179,13 @@ namespace MochaDBStudio.dialogs {
                 tableGrid.Rows.Add(table.Rows[rowIndex].Datas.ToArray());
             }
             tableGrid.Updating = false;
+        }
+
+        /// <summary>
+        /// Refresh Settings page.
+        /// </summary>
+        public void refreshSettings() {
+            descriptionTB.Text = Database.GetTableDescription(TableName);
         }
 
         #endregion
@@ -209,8 +216,7 @@ namespace MochaDBStudio.dialogs {
             tab;
 
         private TabPage
-            viewPage,
-            columnsPage,
+            contentPage,
             settingsPage;
 
         private spanel
@@ -295,15 +301,15 @@ namespace MochaDBStudio.dialogs {
             #endregion
 
             // 
-            // View
+            // Content
             // 
 
-            #region viewPage
+            #region contentPage
 
-            viewPage = new TabPage();
-            viewPage.Text = "View";
-            viewPage.BackColor = BackColor;
-            tab.TabPages.Add(viewPage);
+            contentPage = new TabPage();
+            contentPage.Text = "Content";
+            contentPage.BackColor = BackColor;
+            tab.TabPages.Add(contentPage);
 
             #endregion
 
@@ -320,20 +326,7 @@ namespace MochaDBStudio.dialogs {
             tableGrid.RowsRemoved+=TableGrid_RowsRemoved;
             tableGrid.CellBeginEdit+=TableGrid_CellBeginEdit;
             tableGrid.CellEndEdit+=TableGrid_CellEndEdit;
-            viewPage.Controls.Add(tableGrid);
-
-            #endregion
-
-            // 
-            // Columns
-            // 
-
-            #region columnsPage
-
-            columnsPage = new TabPage();
-            columnsPage.Text = "Columns";
-            columnsPage.BackColor = BackColor;
-            tab.TabPages.Add(columnsPage);
+            contentPage.Controls.Add(tableGrid);
 
             #endregion
 
@@ -353,7 +346,7 @@ namespace MochaDBStudio.dialogs {
             #region descriptionTB
 
             descriptionTB = new stextbox();
-            descriptionTB.Placeholder = "Database description";
+            descriptionTB.Placeholder = "Table description";
             descriptionTB.BorderColor = Color.LightGray;
             descriptionTB.Multiline = true;
             descriptionTB.BackColor = BackColor;

@@ -177,6 +177,9 @@ namespace MochaDBStudio.gui {
             if(e.Node.Tag == "Table") {
                 var dialog = new TableEdit_Dialog(Database,e.Node.Text);
                 dialog.ShowDialog();
+            } else if(e.Node.Tag == "Column") {
+                var dialog = new ColumnEdit_Dialog(Database,e.Node.Parent.Parent.Text,e.Node.Text);
+                dialog.ShowDialog();
             }
         }
 
@@ -303,13 +306,13 @@ RETURN
                 columnsNode = new TreeNode();
                 columnsNode.Text ="Columns";
                 columnsNode.Tag="Columns";
-                columnsNode.ImageIndex =0;
+                columnsNode.ImageIndex = 0;
                 columnsNode.SelectedImageIndex=tablesNode.ImageIndex;
 
                 cacheNode = new TreeNode();
                 cacheNode.Text =tables[index].Name;
                 cacheNode.Tag="Table";
-                cacheNode.ImageIndex =2;
+                cacheNode.ImageIndex = 2;
                 cacheNode.SelectedImageIndex=cacheNode.ImageIndex;
                 cacheNode.Nodes.Add(columnsNode);
 
@@ -317,6 +320,8 @@ RETURN
                 for(int columnIndex = 0; columnIndex < columns.Count; columnIndex++) {
                     columnNode = new TreeNode();
                     columnNode.Text =columns[columnIndex].Name;
+                    columnNode.ImageIndex = 4;
+                    columnNode.SelectedImageIndex=columnNode.ImageIndex;
                     columnNode.Tag="Column";
                     columnsNode.Nodes.Add(columnNode);
                 }
@@ -608,6 +613,7 @@ RETURN
             explorerTreeIL.Images.Add("Table",Resources.Table);
             explorerTreeIL.Images.Add("Stack",Resources.Stack);
             explorerTreeIL.Images.Add("Sector",Resources.Sector);
+            explorerTreeIL.Images.Add("Key",Resources.Key);
 
             #endregion
 

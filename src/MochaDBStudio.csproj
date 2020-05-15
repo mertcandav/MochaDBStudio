@@ -85,6 +85,9 @@
     <Compile Include="dialogs\About_Dialog.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="dialogs\ColumnEdit_Dialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="dialogs\ConnectDB_Dialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -106,6 +109,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="gui\cncpanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="gui\scombobox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="gui\sgrid.cs">
