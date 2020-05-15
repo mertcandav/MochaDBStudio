@@ -54,9 +54,9 @@ namespace MochaDBStudio.gui {
         #region tab
 
         private void Tab_SelectedIndexChanged(object sender,EventArgs e) {
-            if(tab.SelectedIndex == 0) /* Dashboard */ {
+            if(tab.SelectedTab == dashboardPage) /* Dashboard */ {
                 refreshDashboard();
-            } else if(tab.SelectedIndex == 3) /* Settings */ {
+            } else if(tab.SelectedTab == settingsPage) /* Settings */ {
                 refreshSettings();
             }
         }
@@ -101,7 +101,8 @@ namespace MochaDBStudio.gui {
                 tag=="Tables" ? true :
                 tag=="Columns" ? true :
                 tag=="Sectors" ? true :
-                tag=="Stacks" ? true : false;
+                tag=="Stacks" ? true :
+                tag=="Attributes" ? true: false;
         }
 
         private void ExplorerTree_AfterLabelEdit(object sender,NodeLabelEditEventArgs e) {
@@ -135,7 +136,8 @@ namespace MochaDBStudio.gui {
                    explorerTree.SelectedNode.Tag!="Column" &
                    explorerTree.SelectedNode.Tag!="Stack" &
                    explorerTree.SelectedNode.Tag!="Sector" &
-                   explorerTree.SelectedNode.Tag!="StackItem")
+                   explorerTree.SelectedNode.Tag!="StackItem")/* &
+                   explorerTree.SelectedNode.Tag.ToString().EndsWith("Attribute") == false)*/
                     return;
 
                 if(explorerTree.SelectedNode.Tag=="Table")
@@ -149,6 +151,19 @@ namespace MochaDBStudio.gui {
                 else if(explorerTree.SelectedNode.Tag=="StackItem")
                     Database.RemoveStackItem(GetStackItemStackName(explorerTree.SelectedNode),
                         GetStackItemPath(explorerTree.SelectedNode));
+                /*else if(explorerTree.SelectedNode.Tag=="TableAttribute")
+                    Database.RemoveTableAttribute(explorerTree.SelectedNode.Parent.Parent.Text,
+                        explorerTree.SelectedNode.Text);
+                else if(explorerTree.SelectedNode.Tag=="SectorAttribute")
+                    Database.RemoveSectorAttribute(explorerTree.SelectedNode.Parent.Parent.Text,
+                        explorerTree.SelectedNode.Text);
+                else if(explorerTree.SelectedNode.Tag=="StackAttribute")
+                    Database.RemoveStackAttribute(explorerTree.SelectedNode.Parent.Parent.Text,
+                        explorerTree.SelectedNode.Text);
+                else if(explorerTree.SelectedNode.Tag=="StackItemAttribute")
+                    Database.RemoveStackItemAttribute(GetStackItemStackName(explorerTree.SelectedNode),
+                        GetStackItemPath(explorerTree.SelectedNode.Parent.Parent),explorerTree.SelectedNode.Text);*/
+
                 explorerTree.SelectedNode.Remove();
             } else if(e.KeyCode==Keys.F2) {
                 if(explorerTree.SelectedNode!=null)

@@ -17,6 +17,15 @@ namespace MochaDBStudio.gui {
         }
 
         #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Update state.
+        /// </summary>
+        public bool Updating { get; set; }
+
+        #endregion
     }
 
     //Designer.
@@ -31,6 +40,7 @@ namespace MochaDBStudio.gui {
             AllowUserToResizeRows = false;
             AllowUserToAddRows=false;
             AllowUserToDeleteRows=false;
+            ReadOnly = true;
             SelectionMode = DataGridViewSelectionMode.CellSelect;
             BackgroundColor = Color.FromArgb(60,60,60);
             BackColor = BackgroundColor;

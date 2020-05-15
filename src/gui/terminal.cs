@@ -550,11 +550,20 @@ namespace MochaDBStudio.gui {
             if(DB.Query.MochaQ.IsRunQuery()) {
                 try {
                     DB.Query.Run(arg);
-                } catch(Exception excep) { TerminalErrorEcho(excep.Message); }
+                } catch(MochaException excep) {
+                    TerminalErrorEcho(excep.Message);
+                } catch(Exception excep) {
+                    TerminalErrorEcho(excep.Message);
+                }
+
             } else if(DB.Query.MochaQ.IsGetRunQuery()) {
                 try {
                     TerminalEcho(DB.Query.GetRun(arg).ToString());
-                } catch(Exception excep) { TerminalErrorEcho(excep.Message); }
+                } catch(MochaException excep) {
+                    TerminalErrorEcho(excep.Message);
+                } catch(Exception excep) {
+                    TerminalErrorEcho(excep.Message);
+                }
             } else
                 TerminalErrorEcho("Invalid query or this query is not supported from Terminal!");
         }
