@@ -10,7 +10,7 @@ using MochaDBStudio.gui;
 
 namespace MochaDBStudio.dialogs {
     /// <summary>
-    /// Table edit form for MochaDB Studio.
+    /// Table edit dialog for MochaDB Studio.
     /// </summary>
     public sealed partial class TableEdit_Dialog:sform {
         #region Constructors
@@ -51,7 +51,7 @@ namespace MochaDBStudio.dialogs {
             if(tab.SelectedTab == contentPage) {
                 refresContent();
             } else if(tab.SelectedTab == settingsPage) {
-                refreshSettings();
+                //refreshSettings();
             }
         }
 
@@ -60,7 +60,12 @@ namespace MochaDBStudio.dialogs {
         #region tableGrid
 
         private void TableGrid_CellBeginEdit(object sender,DataGridViewCellCancelEventArgs e) {
-            if(tableGrid.Updating)
+            if(tableGrid.Updating) {
+                e.Cancel = true;
+                return;
+            }
+            tableGrid.Updating = true;
+            /*if(tableGrid.Updating)
                 return;
 
             tableGrid.Updating = true;
@@ -80,13 +85,13 @@ namespace MochaDBStudio.dialogs {
             stopwatch.Stop();
             Console.WriteLine("Table_CellBeginEdit: " + stopwatch.ElapsedMilliseconds);
 #endif
-            tableGrid.Updating = false;
+            tableGrid.Updating = false;*/
         }
 
         private void TableGrid_CellEndEdit(object sender,DataGridViewCellEventArgs e) {
-            if(tableGrid.Updating)
+            /*if(tableGrid.Updating)
                 return;
-            tableGrid.Updating = true;
+            tableGrid.Updating = true;*/
 
 #if DEBUG
             var stopwatch = new Stopwatch();
@@ -169,7 +174,7 @@ namespace MochaDBStudio.dialogs {
                 return;
 
             tableGrid.Updating = true;
-            tableGrid.Columns.Clear();
+            try { tableGrid.Columns.Clear(); } catch { return; }
             var table = Database.ExecuteScalar($@"
                     USE {TableName}
                     RETURN") as MochaTableResult;
@@ -347,6 +352,7 @@ namespace MochaDBStudio.dialogs {
 
             descriptionTB = new stextbox();
             descriptionTB.Placeholder = "Table description";
+            descriptionTB.Text = Database.GetTableDescription(TableName);
             descriptionTB.BorderColor = Color.LightGray;
             descriptionTB.Multiline = true;
             descriptionTB.BackColor = BackColor;

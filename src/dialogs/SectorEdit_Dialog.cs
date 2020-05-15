@@ -1,28 +1,24 @@
 ﻿using System;
 using System.Drawing;
-using System.Linq;
-using System.Linq.Dynamic;
 using System.Windows.Forms;
 using MochaDB;
 using MochaDBStudio.gui;
 
 namespace MochaDBStudio.dialogs {
     /// <summary>
-    /// Column edit dialog for MochaDB Studio.
+    /// Sector edit dialog for MochaDB Studio.
     /// </summary>
-    public sealed partial class ColumnEdit_Dialog:sform {
+    public sealed partial class SectorEdit_Dialog:sform {
         #region Constructors
 
         /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="db">Database.</param>
-        /// <param name="tableName">Name of table.</param>
-        /// <param name="columnName">Name of column.</param>
-        public ColumnEdit_Dialog(MochaDatabase db,string tableName,string columnName) {
+        /// <param name="sectorName">Name of sector.</param>
+        public SectorEdit_Dialog(MochaDatabase db,string sectorName) {
             Database = db;
-            TableName = tableName;
-            ColumnName = columnName;
+            SectorName = sectorName;
             Init();
         }
 
@@ -39,9 +35,15 @@ namespace MochaDBStudio.dialogs {
         #region tab
 
         private void Tab_SelectedIndexChanged(object sender,EventArgs e) {
-            if(tab.SelectedTab == settingsPage) {
-                //refreshSettings();
-            }
+            
+        }
+
+        #endregion
+
+        #region valueTB
+
+        private void ValueTB_TextChanged(object sender,EventArgs e) {
+            Database.SetSectorData(SectorName,valueTB.Text);
         }
 
         #endregion
@@ -49,35 +51,7 @@ namespace MochaDBStudio.dialogs {
         #region descriptionTB
 
         private void DescriptionTB_TextChanged(object sender,EventArgs e) {
-            Database.SetColumnDescription(TableName,ColumnName,descriptionTB.Text);
-        }
-
-        #endregion
-
-        #region dataTypeCBox
-
-        private void DataTypeCBox_SelectedIndexChanged(object sender,EventArgs e) {
-            Database.SetColumnDataType(TableName,ColumnName,
-                (MochaDataType)Enum.Parse(typeof(MochaDataType),
-                dataTypeCBox.Items[dataTypeCBox.SelectedIndex].ToString()));
-        }
-
-        #endregion
-
-        #region Methods
-
-        /// <summary>
-        /// Refresh Struct page.
-        /// </summary>
-        public void refreshStruct() {
-
-        }
-
-        /// <summary>
-        /// Refresh Settings page.
-        /// </summary>
-        public void refreshSettings() {
-            descriptionTB.Text = Database.GetColumnDescription(TableName,ColumnName);
+            Database.SetSectorDescription(SectorName,descriptionTB.Text);
         }
 
         #endregion
@@ -90,31 +64,25 @@ namespace MochaDBStudio.dialogs {
         public MochaDatabase Database { get; private set; }
 
         /// <summary>
-        /// Name of table.
+        /// Name of targetted sector.
         /// </summary>
-        public string TableName { get; set; }
-
-        /// <summary>
-        /// Name of targetted column.
-        /// </summary>
-        public string ColumnName { get; set; }
+        public string SectorName { get; set; }
 
         #endregion
     }
 
     // Designer.
-    public sealed partial class ColumnEdit_Dialog {
+    public sealed partial class SectorEdit_Dialog {
         #region Components
 
         private Label
-            titleLabel,
-            dataTypeLabel;
+            titleLabel;
 
         private stabcontrol
             tab;
 
         private TabPage
-            structPage,
+            contentPage,
             settingsPage;
 
         private spanel
@@ -124,10 +92,8 @@ namespace MochaDBStudio.dialogs {
             closeButton;
 
         private stextbox
+            valueTB,
             descriptionTB;
-
-        private scombobox
-            dataTypeCBox;
 
         #endregion
 
@@ -137,10 +103,9 @@ namespace MochaDBStudio.dialogs {
         public void Init() {
             #region Base
 
-            Text = "Editing column";
+            Text = "Editing sector";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterParent;
-            ForeColor = Color.White;
             BackColor = Color.FromArgb(50,50,50);
             Size = new Size(790,400);
 
@@ -200,47 +165,32 @@ namespace MochaDBStudio.dialogs {
             #endregion
 
             // 
-            // Struct
+            // Content
             // 
 
-            #region structPage
+            #region contentPage
 
-            structPage = new TabPage();
-            structPage.Text = "Struct";
-            structPage.BackColor = BackColor;
-            tab.TabPages.Add(structPage);
-
-            #endregion
-
-            #region dataTypeLabel
-
-            dataTypeLabel = new Label();
-            dataTypeLabel.AutoSize = true;
-            dataTypeLabel.Text = "Data type";
-            dataTypeLabel.Font = new Font("Arial",10);
-            dataTypeLabel.Location = new Point(20,30);
-            structPage.Controls.Add(dataTypeLabel);
+            contentPage = new TabPage();
+            contentPage.Text = "Content";
+            contentPage.BackColor = BackColor;
+            tab.TabPages.Add(contentPage);
 
             #endregion
 
-            #region dataTypeCBox
+            #region valueTB
 
-            dataTypeCBox = new scombobox();
-            dataTypeCBox.ForeColor = ForeColor;
-            dataTypeCBox.BackColor = BackColor;
-            dataTypeCBox.BorderColor = Color.LightGray;
-            dataTypeCBox.Location = new Point(dataTypeLabel.Location.X+dataTypeLabel.Width+50,
-                dataTypeLabel.Location.Y);
-            dataTypeCBox.Font = dataTypeLabel.Font;
-            dataTypeCBox.Size = new Size(200,30);
-
-            var types = Enum.GetNames(typeof(MochaDataType)).ToList();
-            types.Sort();
-            dataTypeCBox.Items.AddRange(types.ToArray());
-            dataTypeCBox.SelectedIndex = 
-                 dataTypeCBox.Items.IndexOf(Database.GetColumnDataType(TableName,ColumnName).ToString());
-            dataTypeCBox.SelectedIndexChanged+=DataTypeCBox_SelectedIndexChanged;
-            structPage.Controls.Add(dataTypeCBox);
+            valueTB = new stextbox();
+            valueTB.Placeholder = "Sector value";
+            valueTB.Text = Database.GetSectorData(SectorName);
+            valueTB.BorderColor = Color.LightGray;
+            valueTB.Multiline = true;
+            valueTB.BackColor = BackColor;
+            valueTB.ForeColor = Color.White;
+            valueTB.Location = new Point(40,30);
+            valueTB.Size = new Size(Width - (valueTB.Location.X * 2)-40,20);
+            valueTB.InputSize = new Size(valueTB.Width,200);
+            valueTB.TextChanged+=ValueTB_TextChanged;
+            contentPage.Controls.Add(valueTB);
 
             #endregion
 
@@ -260,8 +210,8 @@ namespace MochaDBStudio.dialogs {
             #region descriptionTB
 
             descriptionTB = new stextbox();
-            descriptionTB.Placeholder = "Column description";
-            descriptionTB.Text = Database.GetColumnDescription(TableName,ColumnName);
+            descriptionTB.Placeholder = "Sector description";
+            descriptionTB.Text = Database.GetSectorDescription(SectorName);
             descriptionTB.BorderColor = Color.LightGray;
             descriptionTB.Multiline = true;
             descriptionTB.BackColor = BackColor;
