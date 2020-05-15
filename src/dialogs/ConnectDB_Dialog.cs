@@ -74,7 +74,7 @@ namespace MochaDBStudio.dialogs {
 
             MochaDatabase db = null;
             try {
-               db = new MochaDatabase($@"
+                db = new MochaDatabase($@"
                     AutoConnect=True; Path={pathTB.Text};
                     Password={passwordTB.Text};
                     Logs={logToggle.Checked}");

@@ -57,7 +57,7 @@ namespace MochaDBStudio.engine {
         public static string GetFileNameFromPath(string path) {
             var finfo = GetFileInfo(path);
             var name = finfo.Name;
-            name = name.Substring(0, name.Length-finfo.Extension.Length);
+            name = name.Substring(0,name.Length-finfo.Extension.Length);
             return name;
         }
     }

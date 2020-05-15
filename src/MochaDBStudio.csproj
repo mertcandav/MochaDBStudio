@@ -120,6 +120,44 @@
     <Compile Include="gui\cncpanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="gui\editor\Char.cs" />
+    <Compile Include="gui\editor\editor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="gui\editor\CommandManager.cs" />
+    <Compile Include="gui\editor\Commands.cs" />
+    <Compile Include="gui\editor\Hotkeys.cs" />
+    <Compile Include="gui\editor\LimitedStack.cs" />
+    <Compile Include="gui\editor\Line.cs" />
+    <Compile Include="gui\editor\LinesAccessor.cs" />
+    <Compile Include="gui\editor\Place.cs" />
+    <Compile Include="gui\editor\Range.cs" />
+    <Compile Include="gui\editor\Style.cs" />
+    <Compile Include="gui\editor\SyntaxHighlighter.cs" />
+    <Compile Include="gui\editor\TextSource.cs" />
+    <Compile Include="gui\codesense\Colors.cs" />
+    <Compile Include="gui\codesense\EventArgs.cs" />
+    <Compile Include="gui\codesense\IcodesenseListView.cs" />
+    <Compile Include="gui\codesense\codesense.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="gui\codesense\codesenseHost.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="gui\codesense\codesenseListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="gui\codesense\Item.cs" />
+    <Compile Include="gui\codesense\Items.cs" />
+    <Compile Include="gui\codesense\ITextBoxWrapper.cs" />
+    <Compile Include="gui\codesense\Range.cs" />
+    <Compile Include="gui\codesense\TextBoxWrapper.cs" />
+    <Compile Include="gui\resultPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="gui\stooltip.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="gui\scombobox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -172,6 +210,12 @@
     <Compile Include="Studio.cs">
       <SubType>Form</SubType>
     </Compile>
+    <EmbeddedResource Include="gui\editor\editor.resx">
+      <DependentUpon>editor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="gui\codesense\codesense.resx">
+      <DependentUpon>codesense.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
@@ -246,6 +290,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Table.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Cube.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Brackets.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

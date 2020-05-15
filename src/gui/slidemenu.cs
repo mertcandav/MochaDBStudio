@@ -55,12 +55,12 @@ namespace MochaDBStudio.gui {
         /// This happens any current item changed.
         /// </summary>
         public event EventHandler<EventArgs> CurrentItemChanged;
-        protected virtual void OnCurrentItemChanged(object sender, EventArgs e) {
+        protected virtual void OnCurrentItemChanged(object sender,EventArgs e) {
             if(CurrentItem != null)
                 ((cncpanel)((sbutton)sender).Tag).BringToFront();
 
             // Invoke.
-            CurrentItemChanged?.Invoke(sender, e);
+            CurrentItemChanged?.Invoke(sender,e);
         }
 
         #endregion
@@ -132,7 +132,7 @@ namespace MochaDBStudio.gui {
         }
 
         #endregion
-        
+
         #region Items
 
         /// <summary>
@@ -204,7 +204,8 @@ namespace MochaDBStudio.gui {
         public sbutton CurrentItem {
             get {
                 return currentItem;
-            } set {
+            }
+            set {
                 if(value == currentItem)
                     return;
 

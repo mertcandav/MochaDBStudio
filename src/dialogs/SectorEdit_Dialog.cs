@@ -35,7 +35,7 @@ namespace MochaDBStudio.dialogs {
         #region tab
 
         private void Tab_SelectedIndexChanged(object sender,EventArgs e) {
-            
+
         }
 
         #endregion

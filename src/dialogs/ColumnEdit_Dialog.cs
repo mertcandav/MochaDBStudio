@@ -237,7 +237,7 @@ namespace MochaDBStudio.dialogs {
             var types = Enum.GetNames(typeof(MochaDataType)).ToList();
             types.Sort();
             dataTypeCBox.Items.AddRange(types.ToArray());
-            dataTypeCBox.SelectedIndex = 
+            dataTypeCBox.SelectedIndex =
                  dataTypeCBox.Items.IndexOf(Database.GetColumnDataType(TableName,ColumnName).ToString());
             dataTypeCBox.SelectedIndexChanged+=DataTypeCBox_SelectedIndexChanged;
             structPage.Controls.Add(dataTypeCBox);

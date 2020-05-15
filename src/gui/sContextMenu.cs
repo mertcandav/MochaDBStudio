@@ -13,7 +13,7 @@ namespace MochaDBStudio.gui {
         /// Constructor.
         /// </summary>
         public sContextMenu() {
-            ImageScalingSize = new Size(17, 17);
+            ImageScalingSize = new Size(17,17);
             ShowCheckMargin = true;
         }
 

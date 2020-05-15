@@ -7,7 +7,10 @@ using MochaDB;
 using MochaDB.FileSystem;
 using MochaDB.Logging;
 using MochaDB.Querying;
+using MochaDB.Streams;
 using MochaDBStudio.dialogs;
+using MochaDBStudio.gui.codesense;
+using MochaDBStudio.gui.editor;
 using MochaDBStudio.Properties;
 
 namespace MochaDBStudio.gui {
@@ -107,7 +110,7 @@ namespace MochaDBStudio.gui {
                 tag=="Columns" ? true :
                 tag=="Sectors" ? true :
                 tag=="Stacks" ? true :
-                tag=="Attributes" ? true: false;
+                tag=="Attributes" ? true : false;
         }
 
         private void ExplorerTree_AfterLabelEdit(object sender,NodeLabelEditEventArgs e) {
@@ -192,11 +195,25 @@ namespace MochaDBStudio.gui {
                 var dialog = new StackEdit_Dialog(Database,e.Node.Text);
                 dialog.ShowDialog();
             } else if(e.Node.Tag == "StackItem") {
-                var parts = e.Node.FullPath.Split(new[] { '/' }, 3);
+                var parts = e.Node.FullPath.Split(new[] { '/' },3);
                 var dialog = new StackItemEdit_Dialog(Database,
                     parts[1],e.Node.FullPath.Substring(e.Node.FullPath.IndexOf('/',e.Node.FullPath.IndexOf('/')+1)+1));
                 dialog.ShowDialog();
             }
+        }
+
+        #endregion
+
+        #region mhqlEditor
+
+        private void MhqlEditor_KeyDown(object sender,KeyEventArgs e) {
+            if(e.KeyCode != Keys.F5)
+                return;
+
+            MochaReader<object> results;
+            try { results = Database.ExecuteReader(mhqlEditor.Text); }
+            catch(Exception excep) { errorbox.Show(excep.ToString()); return; }
+            mhqlRPanel.ShowResults(results);
         }
 
         #endregion
@@ -299,15 +316,37 @@ RETURN
         /// Refresh "Explorer" tab.
         /// </summary>
         public void refreshExplorer() {
-            TreeNode GetMochaStackItemNODE(MochaStackItem item) {
-                TreeNode node = new TreeNode(item.Name);
+            TreeNode GetMochaStackItemNODE(MochaStackItem item,string stackName, string path) {
+                TreeNode
+                    node = new TreeNode(item.Name),
+                    attrNode,
+                    attrsNode;
+
                 node.Tag="StackItem";
                 node.ImageIndex = 4;
                 node.SelectedImageIndex=node.ImageIndex;
 
+                attrsNode = new TreeNode();
+                attrsNode.Text ="Attributes";
+                attrsNode.Tag="Attributes";
+                attrsNode.ImageIndex = 0;
+                attrsNode.SelectedImageIndex=tablesNode.ImageIndex;
+                node.Nodes.Add(attrsNode);
+
+                var attrs = Database.GetStackItemAttributes(stackName,path);
+                for(int attrDex = 0; attrDex < attrs.Count; attrDex++) {
+                    attrNode = new TreeNode();
+                    attrNode.Text = attrs[attrDex].Name;
+                    attrNode.ImageIndex = 5;
+                    attrNode.SelectedImageIndex=attrNode.ImageIndex;
+                    attrNode.Tag="Attribute";
+                    attrsNode.Nodes.Add(attrNode);
+                }
+
                 if(item.Items.Count>0)
                     for(int index = 0; index < item.Items.Count; index++) {
-                        node.Nodes.Add(GetMochaStackItemNODE(item.Items[index]));
+                        var curitem = item.Items[index];
+                        node.Nodes.Add(GetMochaStackItemNODE(curitem,stackName,$"{path}/{curitem.Name}"));
                     }
 
                 return node;
@@ -319,14 +358,17 @@ RETURN
 
             TreeNode
                 columnsNode,
+                attributesNode,
                 cacheNode,
-                columnNode;
+                columnNode,
+                attributeNode;
 
             // 
             // Tables
             // 
 
             MochaCollectionResult<MochaColumn> columns;
+            MochaCollectionResult<IMochaAttribute> attributes;
             var tables = Database.GetTables();
             for(int index = 0; index < tables.Count; index++) {
                 columnsNode = new TreeNode();
@@ -335,12 +377,29 @@ RETURN
                 columnsNode.ImageIndex = 0;
                 columnsNode.SelectedImageIndex=tablesNode.ImageIndex;
 
+                attributesNode = new TreeNode();
+                attributesNode.Text ="Attributes";
+                attributesNode.Tag="Attributes";
+                attributesNode.ImageIndex = 0;
+                attributesNode.SelectedImageIndex=tablesNode.ImageIndex;
+
                 cacheNode = new TreeNode();
                 cacheNode.Text =tables[index].Name;
                 cacheNode.Tag="Table";
                 cacheNode.ImageIndex = 2;
                 cacheNode.SelectedImageIndex=cacheNode.ImageIndex;
+                cacheNode.Nodes.Add(attributesNode);
                 cacheNode.Nodes.Add(columnsNode);
+
+                attributes = Database.GetTableAttributes(cacheNode.Text);
+                for(int attrDex = 0; attrDex < attributes.Count; attrDex++) {
+                    attributeNode = new TreeNode();
+                    attributeNode.Text = attributes[attrDex].Name;
+                    attributeNode.ImageIndex = 5;
+                    attributeNode.SelectedImageIndex=attributeNode.ImageIndex;
+                    attributeNode.Tag="Attribute";
+                    attributesNode.Nodes.Add(attributeNode);
+                }
 
                 columns = Database.GetColumns(cacheNode.Text);
                 for(int columnIndex = 0; columnIndex < columns.Count; columnIndex++) {
@@ -367,9 +426,29 @@ RETURN
                 cacheNode.ImageIndex=3;
                 cacheNode.SelectedImageIndex=cacheNode.ImageIndex;
 
+                attributesNode = new TreeNode();
+                attributesNode.Text ="Attributes";
+                attributesNode.Tag="Attributes";
+                attributesNode.ImageIndex = 0;
+                attributesNode.SelectedImageIndex=tablesNode.ImageIndex;
+                cacheNode.Nodes.Add(attributesNode);
+
+                attributes = Database.GetStackAttributes(cacheNode.Text);
+                for(int attrDex = 0; attrDex < attributes.Count; attrDex++) {
+                    attributeNode = new TreeNode();
+                    attributeNode.Text = attributes[attrDex].Name;
+                    attributeNode.ImageIndex = 5;
+                    attributeNode.SelectedImageIndex=attributeNode.ImageIndex;
+                    attributeNode.Tag="Attribute";
+                    attributesNode.Nodes.Add(attributeNode);
+                }
+
+                var stack = stacks[index];
                 if(stacks[index].Items.Count >0)
-                    for(int itemIndex = 0; itemIndex < stacks[index].Items.Count; itemIndex++)
-                        cacheNode.Nodes.Add(GetMochaStackItemNODE(stacks[index].Items[itemIndex]));
+                    for(int itemIndex = 0; itemIndex < stacks[index].Items.Count; itemIndex++) {
+                        var curitem = stack.Items[itemIndex];
+                        cacheNode.Nodes.Add(GetMochaStackItemNODE(curitem,stack.Name,curitem.Name));
+                    }
 
                 explorerTree.Nodes[1].Nodes.Add(cacheNode);
             }
@@ -385,6 +464,24 @@ RETURN
                 cacheNode.Tag="Sector";
                 cacheNode.ImageIndex=4;
                 cacheNode.SelectedImageIndex=cacheNode.ImageIndex;
+
+                attributesNode = new TreeNode();
+                attributesNode.Text ="Attributes";
+                attributesNode.Tag="Attributes";
+                attributesNode.ImageIndex = 0;
+                attributesNode.SelectedImageIndex=tablesNode.ImageIndex;
+                cacheNode.Nodes.Add(attributesNode);
+
+                attributes = Database.GetSectorAttributes(cacheNode.Text);
+                for(int attrDex = 0; attrDex < attributes.Count; attrDex++) {
+                    attributeNode = new TreeNode();
+                    attributeNode.Text = attributes[attrDex].Name;
+                    attributeNode.ImageIndex = 5;
+                    attributeNode.SelectedImageIndex=attributeNode.ImageIndex;
+                    attributeNode.Tag="Attribute";
+                    attributesNode.Nodes.Add(attributeNode);
+                }
+
                 explorerTree.Nodes[2].Nodes.Add(cacheNode);
             }
 
@@ -440,6 +537,7 @@ RETURN
             dashboardPage,
             explorerPage,
             terminalPage,
+            mhqlPage,
             settingsPage;
 
         private stextbox
@@ -470,7 +568,8 @@ RETURN
             explorerTree;
 
         private ImageList
-            explorerTreeIL;
+            explorerTreeIL,
+            mhqlIL;
 
         private TreeNode
             tablesNode,
@@ -479,6 +578,18 @@ RETURN
 
         private terminal
             term;
+
+        private editor.editor
+            mhqlEditor;
+
+        private codesense.codesense
+            mhqlCodeSense;
+
+        private resultPanel
+            mhqlRPanel;
+
+        private SplitContainer
+            mhqlContainer;
 
         #endregion
 
@@ -724,6 +835,123 @@ RETURN
             term = new terminal();
             term.BannedCommandNamespaces = new[] { "cnc" };
             terminalPage.Controls.Add(term);
+
+            #endregion
+
+            // 
+            // MHQL
+            // 
+
+            #region mhqlPage
+
+            mhqlPage = new TabPage();
+            mhqlPage.Text = "MHQL";
+            mhqlPage.BackColor = BackColor;
+            tab.TabPages.Add(mhqlPage);
+
+            #endregion
+
+            #region mhqlContainer
+
+            mhqlContainer = new SplitContainer();
+            mhqlContainer.Dock = DockStyle.Fill;
+            mhqlContainer.BackColor = BackColor;
+            mhqlContainer.Orientation = Orientation.Horizontal;
+            mhqlContainer.BorderStyle = BorderStyle.FixedSingle;
+            mhqlPage.Controls.Add(mhqlContainer);
+
+            #endregion
+
+            #region mhqlEditor
+
+            mhqlEditor = new editor.editor();
+            mhqlEditor.Dock = DockStyle.Fill;
+            mhqlEditor.Language = Language.Mhql;
+            mhqlEditor.BackColor = BackColor;
+            mhqlEditor.ForeColor = ForeColor;
+            mhqlEditor.LineNumberColor = Color.Khaki;
+            mhqlEditor.CurrentLineColor = Color.Black;
+            mhqlEditor.ServiceLinesColor = Color.Transparent;
+            mhqlEditor.CaretColor = Color.White;
+            mhqlEditor.WordWrap = false;
+            mhqlEditor.KeyDown+=MhqlEditor_KeyDown;
+            mhqlContainer.Panel1.Controls.Add(mhqlEditor);
+
+            #endregion
+
+            #region mhqlIL
+
+            mhqlIL = new ImageList();
+            mhqlIL.ColorDepth=ColorDepth.Depth32Bit;
+            mhqlIL.Images.Add("Keyword",Resources.Key);
+            mhqlIL.Images.Add("Function",Resources.Cube);
+            mhqlIL.Images.Add("Snippet",Resources.Brackets);
+
+            #endregion
+
+            #region mhqlCodeSense
+
+            mhqlCodeSense = new codesense.codesense();
+            mhqlCodeSense.ImageList = mhqlIL;
+            mhqlCodeSense.AllowsTabKey = true;
+            mhqlCodeSense.Colors.BackColor = Color.FromArgb(50,50,50);
+            mhqlCodeSense.Colors.SelectedBackColor = Color.Black;
+            mhqlCodeSense.Colors.SelectedBackColor2 = Color.Black;
+            mhqlCodeSense.Colors.HighlightingColor = Color.DodgerBlue;
+            mhqlCodeSense.Colors.ForeColor = Color.White;
+            mhqlCodeSense.Colors.SelectedForeColor = Color.Khaki;
+            mhqlCodeSense.AppearInterval = 100;
+            mhqlCodeSense.Font = new Font("Consolas",12,FontStyle.Regular,GraphicsUnit.Pixel);
+            mhqlCodeSense.AddItem(
+                new Item("SELECT",0,"SELECT","SELECT - Keyword",
+                "Select structures with regex."));
+            mhqlCodeSense.AddItem(
+                new Item("USE",0,"USE","USE - Keyword",
+                "Use the x struct(s)."));
+            mhqlCodeSense.AddItem(new Item("MUST",0,"MUST","MUST - Keyword",
+                "Define a conditions."));
+            mhqlCodeSense.AddItem(new Item("REMOVE",0,"REMOVE","REMOVE - Keyword",
+                "Remove selected with SELECT keyword."));
+            mhqlCodeSense.AddItem(new Item("RETURN",0,"RETURN","RETURN - Keyword",
+                "Return result(s)."));
+            mhqlCodeSense.AddItem(new Item("ASC",0,"ASC","ASC - Keyword",
+                "Ascending define for ORDERBY keyword."));
+            mhqlCodeSense.AddItem(new Item("DESC",0,"DESC","DESC - Keyword",
+                "Descending define for ORDERBY keyword."));
+            mhqlCodeSense.AddItem(new Item("ORDERBY",0,"ORDERBY","ORDERBY - Keyword",
+                "Sort items."));
+            mhqlCodeSense.AddItem(new Item("AND",0,"AND","AND - Keyword",
+                "Define other conditions for MUST keywords."));
+            mhqlCodeSense.AddItem(new Item("GROUPBY",0,"GROUPBY","GROUPBY - Keyword",
+                "Group by values."));
+            mhqlCodeSense.AddItem(new Item("FROM",0,"FROM","FROM - Keyword",
+                "Define table for USE keyword."));
+            mhqlCodeSense.AddItem(new Item("AS",0,"AS","AS - Keyword",
+                "Rename item."));
+            mhqlCodeSense.AddItem(new Item("EQUAL",1,"EQUAL","EQUAL - Function",
+                "Returns a specified numerical equal to condition."));
+            mhqlCodeSense.AddItem(new Item("ENDW",1,"ENDW","ENDW - Function",
+                "Does it end with...? Returns the condition."));
+            mhqlCodeSense.AddItem(new Item("STARTW",1,"STARTW","STARTW - Function",
+                "Does it start with ...? Returns the condition."));
+            mhqlCodeSense.AddItem(new Item("BETWEEN",1,"BETWEEN","BETWEEN - Function",
+                "Returns a specified numerical range condition."));
+            mhqlCodeSense.AddItem(new Item("LOWER",1,"LOWER","LOWER - Function",
+                "Returns a specified numerical bigger and equal condition."));
+            mhqlCodeSense.AddItem(new Item("BIGGER",1,"BIGGER","BIGGER - Function",
+                "Returns a specified numerical lower and equal condition."));
+            mhqlCodeSense.AddItem(new Item("USE *\nRETURN",2,"BODY","BODY - Function",
+                "USE body snippet."));
+
+            mhqlCodeSense.SortItems();
+            mhqlCodeSense.SetCodeSense(mhqlEditor,mhqlCodeSense);
+
+            #endregion
+
+            #region mhqlRPanel
+
+            mhqlRPanel = new resultPanel(Database);
+            mhqlContainer.Panel2.Controls.Add(mhqlRPanel);
 
             #endregion
 

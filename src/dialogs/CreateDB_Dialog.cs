@@ -93,7 +93,7 @@ A database with this name already exists on this path.");
             MochaDatabase db = new MochaDatabase($"path={path}; password={passwordTB.Text};logs=false;AutoConnect=true");
 
             var connectionPanel = new cncpanel(db);
-            CNCList.AddItem(new sbutton() { Text = name, Tag = connectionPanel });
+            CNCList.AddItem(new sbutton() { Text = name,Tag = connectionPanel });
             Close();
         }
 

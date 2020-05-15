@@ -42,7 +42,16 @@ namespace MochaDBStudio.gui {
 
         #endregion
 
-        #region mouseOverride
+        #region Mouse Override
+
+        protected override void OnMouseDoubleClick(MouseEventArgs e) {
+            base.OnMouseDoubleClick(e);
+
+            ((Form)Tag).WindowState =
+                ((Form)Tag).WindowState == FormWindowState.Maximized ?
+                FormWindowState.Normal :
+                FormWindowState.Maximized;
+        }
 
         protected override void OnMouseDown(MouseEventArgs e) {
             mx = e.X;
@@ -59,7 +68,8 @@ namespace MochaDBStudio.gui {
                 return;
             if(my < 0 | mx < 0)
                 return;
-            ((Form)Tag).SetDesktopLocation(Cursor.Position.X - mx,Cursor.Position.Y - my);
+            var form = (Form)Tag;
+            form.SetDesktopLocation(Cursor.Position.X - mx,Cursor.Position.Y - my);
         }
 
         #endregion

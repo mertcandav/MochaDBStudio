@@ -63,6 +63,16 @@ namespace MochaDBStudio.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Brackets {
+            get {
+                object obj = ResourceManager.GetObject("Brackets", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Connect {
             get {
                 object obj = ResourceManager.GetObject("Connect", resourceCulture);
@@ -76,6 +86,16 @@ namespace MochaDBStudio.Properties {
         internal static System.Drawing.Bitmap Create {
             get {
                 object obj = ResourceManager.GetObject("Create", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Cube {
+            get {
+                object obj = ResourceManager.GetObject("Cube", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

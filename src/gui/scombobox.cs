@@ -3,7 +3,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Windows.Forms;
 
-namespace MochaDBStudio.gui{
+namespace MochaDBStudio.gui {
     /// <summary>
     /// ComboBox for MochaDB Studio.
     /// </summary>
