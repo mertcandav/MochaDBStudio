@@ -89,20 +89,6 @@ namespace MochaDBStudio.gui {
 
         #region explorerTree
 
-        private void ExplorerTree_AfterExpand(object sender,TreeViewEventArgs e) {
-            if(e.Node.ImageIndex == 0) {
-                e.Node.ImageIndex = 1;
-                e.Node.SelectedImageIndex = 1;
-            }
-        }
-
-        private void ExplorerTree_AfterCollapse(object sender,TreeViewEventArgs e) {
-            if(e.Node.ImageIndex == 1) {
-                e.Node.ImageIndex = 0;
-                e.Node.SelectedImageIndex = 0;
-            }
-        }
-
         private void ExplorerTree_BeforeLabelEdit(object sender,NodeLabelEditEventArgs e) {
             string tag = e.Node.Tag as string;
             e.CancelEdit =
@@ -316,7 +302,7 @@ RETURN
         /// Refresh "Explorer" tab.
         /// </summary>
         public void refreshExplorer() {
-            TreeNode GetMochaStackItemNODE(MochaStackItem item,string stackName, string path) {
+            TreeNode GetMochaStackItemNODE(MochaStackItem item) {
                 TreeNode
                     node = new TreeNode(item.Name),
                     attrNode,
@@ -330,13 +316,12 @@ RETURN
                 attrsNode.Text ="Attributes";
                 attrsNode.Tag="Attributes";
                 attrsNode.ImageIndex = 0;
-                attrsNode.SelectedImageIndex=tablesNode.ImageIndex;
+                attrsNode.SelectedImageIndex=attrsNode.ImageIndex;
                 node.Nodes.Add(attrsNode);
 
-                var attrs = Database.GetStackItemAttributes(stackName,path);
-                for(int attrDex = 0; attrDex < attrs.Count; attrDex++) {
+                for(int attrDex = 0; attrDex < item.Attributes.Count; attrDex++) {
                     attrNode = new TreeNode();
-                    attrNode.Text = attrs[attrDex].Name;
+                    attrNode.Text = item.Attributes[attrDex].Name;
                     attrNode.ImageIndex = 5;
                     attrNode.SelectedImageIndex=attrNode.ImageIndex;
                     attrNode.Tag="Attribute";
@@ -346,7 +331,7 @@ RETURN
                 if(item.Items.Count>0)
                     for(int index = 0; index < item.Items.Count; index++) {
                         var curitem = item.Items[index];
-                        node.Nodes.Add(GetMochaStackItemNODE(curitem,stackName,$"{path}/{curitem.Name}"));
+                        node.Nodes.Add(GetMochaStackItemNODE(curitem));
                     }
 
                 return node;
@@ -375,13 +360,13 @@ RETURN
                 columnsNode.Text ="Columns";
                 columnsNode.Tag="Columns";
                 columnsNode.ImageIndex = 0;
-                columnsNode.SelectedImageIndex=tablesNode.ImageIndex;
+                columnsNode.SelectedImageIndex=columnsNode.ImageIndex;
 
                 attributesNode = new TreeNode();
                 attributesNode.Text ="Attributes";
                 attributesNode.Tag="Attributes";
                 attributesNode.ImageIndex = 0;
-                attributesNode.SelectedImageIndex=tablesNode.ImageIndex;
+                attributesNode.SelectedImageIndex=attributesNode.ImageIndex;
 
                 cacheNode = new TreeNode();
                 cacheNode.Text =tables[index].Name;
@@ -430,7 +415,7 @@ RETURN
                 attributesNode.Text ="Attributes";
                 attributesNode.Tag="Attributes";
                 attributesNode.ImageIndex = 0;
-                attributesNode.SelectedImageIndex=tablesNode.ImageIndex;
+                attributesNode.SelectedImageIndex=attributesNode.ImageIndex;
                 cacheNode.Nodes.Add(attributesNode);
 
                 attributes = Database.GetStackAttributes(cacheNode.Text);
@@ -447,7 +432,7 @@ RETURN
                 if(stacks[index].Items.Count >0)
                     for(int itemIndex = 0; itemIndex < stacks[index].Items.Count; itemIndex++) {
                         var curitem = stack.Items[itemIndex];
-                        cacheNode.Nodes.Add(GetMochaStackItemNODE(curitem,stack.Name,curitem.Name));
+                        cacheNode.Nodes.Add(GetMochaStackItemNODE(curitem));
                     }
 
                 explorerTree.Nodes[1].Nodes.Add(cacheNode);
@@ -469,7 +454,7 @@ RETURN
                 attributesNode.Text ="Attributes";
                 attributesNode.Tag="Attributes";
                 attributesNode.ImageIndex = 0;
-                attributesNode.SelectedImageIndex=tablesNode.ImageIndex;
+                attributesNode.SelectedImageIndex=attributesNode.ImageIndex;
                 cacheNode.Nodes.Add(attributesNode);
 
                 attributes = Database.GetSectorAttributes(cacheNode.Text);
@@ -564,17 +549,11 @@ RETURN
             mhqlTestRB,
             directFetchTestRB;
 
-        private TreeView
+        private dbtree
             explorerTree;
 
         private ImageList
-            explorerTreeIL,
             mhqlIL;
-
-        private TreeNode
-            tablesNode,
-            stacksNode,
-            sectorsNode;
 
         private terminal
             term;
@@ -746,74 +725,17 @@ RETURN
 
             #endregion
 
-            #region explorerTreeIL
-
-            explorerTreeIL = new ImageList();
-            explorerTreeIL.ColorDepth=ColorDepth.Depth32Bit;
-            explorerTreeIL.Images.Add("FolderClose",Resources.FolderClose);
-            explorerTreeIL.Images.Add("FolderOpen",Resources.FolderOpen);
-            explorerTreeIL.Images.Add("Table",Resources.Table);
-            explorerTreeIL.Images.Add("Stack",Resources.Stack);
-            explorerTreeIL.Images.Add("Sector",Resources.Sector);
-            explorerTreeIL.Images.Add("Key",Resources.Key);
-
-            #endregion
-
             #region explorerTree
 
-            explorerTree = new TreeView();
+            explorerTree = new dbtree();
             explorerTree.ForeColor = Color.White;
             explorerTree.BackColor = BackColor;
-            explorerTree.Dock = DockStyle.Fill;
-            explorerTree.BorderStyle = BorderStyle.None;
-            explorerTree.ImageList = explorerTreeIL;
             explorerTree.LabelEdit=true;
-            explorerTree.PathSeparator="/";
             explorerPage.Controls.Add(explorerTree);
-            explorerTree.AfterExpand +=ExplorerTree_AfterExpand;
-            explorerTree.AfterCollapse+=ExplorerTree_AfterCollapse;
             explorerTree.NodeMouseDoubleClick+=ExplorerTree_NodeMouseDoubleClick;
             explorerTree.KeyDown+=ExplorerTree_KeyDown;
             explorerTree.BeforeLabelEdit+=ExplorerTree_BeforeLabelEdit;
             explorerTree.AfterLabelEdit+=ExplorerTree_AfterLabelEdit;
-
-            #endregion
-
-            #region tableNode
-
-            tablesNode = new TreeNode();
-            tablesNode.Text="Tables";
-            tablesNode.Tag="Tables";
-            tablesNode.ImageIndex = 0;
-            tablesNode.SelectedImageIndex = 0;
-            tablesNode.Nodes.Add("test");
-            tablesNode.Nodes.Add("test");
-
-            explorerTree.Nodes.Add(tablesNode);
-
-            #endregion
-
-            #region stacksNode
-
-            stacksNode = new TreeNode();
-            stacksNode.Text="Stacks";
-            stacksNode.Tag="Stacks";
-            stacksNode.ImageIndex = 0;
-            stacksNode.SelectedImageIndex = 0;
-
-            explorerTree.Nodes.Add(stacksNode);
-
-            #endregion
-
-            #region sectorsNode
-
-            sectorsNode = new TreeNode();
-            sectorsNode.Text="Sectors";
-            sectorsNode.Tag="Sectors";
-            stacksNode.ImageIndex = 0;
-            stacksNode.SelectedImageIndex = 0;
-
-            explorerTree.Nodes.Add(sectorsNode);
 
             #endregion
 

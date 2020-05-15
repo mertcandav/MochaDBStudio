@@ -99,6 +99,7 @@ namespace MochaDBStudio.dialogs {
             msgTB.Multiline = true;
             msgTB.ForeColor = Color.White;
             msgTB.BackColor = BackColor;
+            msgTB.ScrollBars = ScrollBars.Vertical;
             msgTB.BorderStyle = BorderStyle.FixedSingle;
             msgTB.Location = new Point(20,80);
             msgTB.Size = new Size(Width-40,100);

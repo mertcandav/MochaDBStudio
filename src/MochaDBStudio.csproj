@@ -120,6 +120,9 @@
     <Compile Include="gui\cncpanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="gui\dbtree.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="gui\editor\Char.cs" />
     <Compile Include="gui\editor\editor.cs">
       <SubType>UserControl</SubType>
