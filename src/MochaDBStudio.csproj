@@ -103,6 +103,9 @@
     <Compile Include="dialogs\StackEdit_Dialog.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="dialogs\StackItemEdit_Dialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="dialogs\TableEdit_Dialog.cs">
       <SubType>Form</SubType>
     </Compile>

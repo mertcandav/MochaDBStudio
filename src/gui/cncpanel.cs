@@ -59,6 +59,8 @@ namespace MochaDBStudio.gui {
             } else if(tab.SelectedTab == explorerPage) {
                 if(reshExplorer)
                     refreshExplorer();
+            } else if(tab.SelectedTab == terminalPage) {
+                term.Select();
             } else if(tab.SelectedTab == settingsPage) {
                 refreshSettings();
             }
@@ -189,6 +191,11 @@ namespace MochaDBStudio.gui {
             } else if(e.Node.Tag == "Stack") {
                 var dialog = new StackEdit_Dialog(Database,e.Node.Text);
                 dialog.ShowDialog();
+            } else if(e.Node.Tag == "StackItem") {
+                var parts = e.Node.FullPath.Split(new[] { '/' }, 3);
+                var dialog = new StackItemEdit_Dialog(Database,
+                    parts[1],e.Node.FullPath.Substring(e.Node.FullPath.IndexOf('/',e.Node.FullPath.IndexOf('/')+1)+1));
+                dialog.ShowDialog();
             }
         }
 
@@ -295,6 +302,8 @@ RETURN
             TreeNode GetMochaStackItemNODE(MochaStackItem item) {
                 TreeNode node = new TreeNode(item.Name);
                 node.Tag="StackItem";
+                node.ImageIndex = 4;
+                node.SelectedImageIndex=node.ImageIndex;
 
                 if(item.Items.Count>0)
                     for(int index = 0; index < item.Items.Count; index++) {

@@ -72,8 +72,9 @@ namespace MochaDBStudio.dialogs {
                 return;
             }
 
+            MochaDatabase db = null;
             try {
-                MochaDatabase db = new MochaDatabase($@"
+               db = new MochaDatabase($@"
                     AutoConnect=True; Path={pathTB.Text};
                     Password={passwordTB.Text};
                     Logs={logToggle.Checked}");
@@ -82,12 +83,14 @@ namespace MochaDBStudio.dialogs {
                 CNCList.AddItem(new sbutton() { Text = fs.GetFileNameFromPath(pathTB.Text),Tag = connectionPanel });
                 Close();
             } catch(MochaException excep) {
+                db.Dispose();
                 if(excep.Message == "MochaDB database password does not match the password specified!" |
                    excep.Message == "The MochaDB database is password protected!")
                     passwordTB.BorderColor = Color.Red;
                 else
                     errorbox.Show("[MochaException]\n" + excep.Message);
             } catch(Exception excep) {
+                db.Dispose();
                 errorbox.Show("[Exception]\n" + excep.Message + excep);
             }
         }
