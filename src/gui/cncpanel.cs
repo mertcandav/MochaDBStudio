@@ -186,6 +186,9 @@ namespace MochaDBStudio.gui {
             } else if(e.Node.Tag == "Sector") {
                 var dialog = new SectorEdit_Dialog(Database,e.Node.Text);
                 dialog.ShowDialog();
+            } else if(e.Node.Tag == "Stack") {
+                var dialog = new StackEdit_Dialog(Database,e.Node.Text);
+                dialog.ShowDialog();
             }
         }
 
