@@ -21,6 +21,9 @@ namespace MochaDBStudio.gui {
             mhqlTestTask,
             directFetchTestTask;
 
+        private bool
+            reshExplorer = false;
+
         #endregion
 
         #region Constructors
@@ -39,12 +42,9 @@ namespace MochaDBStudio.gui {
         public cncpanel(MochaDatabase database)
             : this() {
             Database = database;
+            Database.Changed+=Database_Changed;
 
-            var term = new terminal();
-            term.DB=database;
-            term.BannedCommandNamespaces = new[] { "cnc" };
-            terminalPage.Controls.Add(term);
-
+            term.Database = Database;
             refreshDashboard();
             refreshExplorer();
         }
@@ -54,9 +54,12 @@ namespace MochaDBStudio.gui {
         #region tab
 
         private void Tab_SelectedIndexChanged(object sender,EventArgs e) {
-            if(tab.SelectedTab == dashboardPage) /* Dashboard */ {
+            if(tab.SelectedTab == dashboardPage) {
                 refreshDashboard();
-            } else if(tab.SelectedTab == settingsPage) /* Settings */ {
+            } else if(tab.SelectedTab == explorerPage) {
+                if(reshExplorer)
+                    refreshExplorer();
+            } else if(tab.SelectedTab == settingsPage) {
                 refreshSettings();
             }
         }
@@ -181,6 +184,14 @@ namespace MochaDBStudio.gui {
                 var dialog = new ColumnEdit_Dialog(Database,e.Node.Parent.Parent.Text,e.Node.Text);
                 dialog.ShowDialog();
             }
+        }
+
+        #endregion
+
+        #region Database
+
+        private void Database_Changed(object sender,EventArgs e) {
+            reshExplorer = true;
         }
 
         #endregion
@@ -361,6 +372,8 @@ RETURN
                 cacheNode.SelectedImageIndex=cacheNode.ImageIndex;
                 explorerTree.Nodes[2].Nodes.Add(cacheNode);
             }
+
+            reshExplorer = false;
         }
 
         /// <summary>
@@ -448,6 +461,9 @@ RETURN
             tablesNode,
             stacksNode,
             sectorsNode;
+
+        private terminal
+            term;
 
         #endregion
 
@@ -685,6 +701,14 @@ RETURN
             terminalPage.Text = "Terminal";
             terminalPage.BackColor = BackColor;
             tab.TabPages.Add(terminalPage);
+
+            #endregion
+
+            #region term
+
+            term = new terminal();
+            term.BannedCommandNamespaces = new[] { "cnc" };
+            terminalPage.Controls.Add(term);
 
             #endregion
 

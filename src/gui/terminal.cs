@@ -528,37 +528,37 @@ namespace MochaDBStudio.gui {
                 if(cmmd.Length == 2)
                     password = cmmd[1];
                 try {
-                    DB = new MochaDatabase(cmmd[0],password);
+                    Database = new MochaDatabase(cmmd[0],password);
                 } catch(Exception Excep) {
                     TerminalErrorEcho(Excep.Message);
                 }
             } else if(arg == "cnc -d") {
-                DB = null;
+                Database = null;
             } else {
                 AddInput(new TerminalInput(CurrentTitle.Base,"Command is not found!",Color.Red,BaseFont,InputFont),false);
             }
         }
 
         public void mochaq(string arg) {
-            if(DB == null) {
+            if(Database == null) {
                 AddInput(new TerminalInput(TerminalTitle.Base,"Command is not found!",TerminalTitle.BaseForeColor,
                     Color.Red,BaseFont,InputFont),false);
                 return;
             }
 
-            DB.Query.MochaQ = arg;
-            if(DB.Query.MochaQ.IsRunQuery()) {
+            Database.Query.MochaQ = arg;
+            if(Database.Query.MochaQ.IsRunQuery()) {
                 try {
-                    DB.Query.Run(arg);
+                    Database.Query.Run(arg);
                 } catch(MochaException excep) {
                     TerminalErrorEcho(excep.Message);
                 } catch(Exception excep) {
                     TerminalErrorEcho(excep.Message);
                 }
 
-            } else if(DB.Query.MochaQ.IsGetRunQuery()) {
+            } else if(Database.Query.MochaQ.IsGetRunQuery()) {
                 try {
-                    TerminalEcho(DB.Query.GetRun(arg).ToString());
+                    TerminalEcho(Database.Query.GetRun(arg).ToString());
                 } catch(MochaException excep) {
                     TerminalErrorEcho(excep.Message);
                 } catch(Exception excep) {
@@ -614,7 +614,7 @@ namespace MochaDBStudio.gui {
                     release(tInput);
                 } else if(tInput.StartsWith("cnc")) {
                     cnc(tInput);
-                } else if(DB != null) {
+                } else if(Database != null) {
                     mochaq(tInput);
                 } else {
                     AddInput(new TerminalInput(CurrentTitle.Base,"Command is not found!",Color.Red,BaseFont,InputFont),false);
@@ -669,7 +669,7 @@ namespace MochaDBStudio.gui {
         /// <summary>
         /// Targetted database.
         /// </summary>
-        public MochaDatabase DB { get; internal set; }
+        public MochaDatabase Database { get; internal set; }
 
         /// <summary>
         /// Count of input.
@@ -694,8 +694,8 @@ namespace MochaDBStudio.gui {
         /// Current title.
         /// </summary>
         public TerminalInput CurrentTitle =>
-            DB == null ? new TerminalInput(Base,"",Color.GreenYellow,BaseFont,InputFont) :
-            new TerminalInput("[" + DB.Name + "]","",Color.GreenYellow,BaseFont,InputFont);
+            Database == null ? new TerminalInput(Base,"",Color.GreenYellow,BaseFont,InputFont) :
+            new TerminalInput("[" + Database.Name + "]","",Color.GreenYellow,BaseFont,InputFont);
 
         /// <summary>
         /// Base title of Terminal.
