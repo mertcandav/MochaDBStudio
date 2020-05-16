@@ -22,10 +22,12 @@ namespace MochaDBStudio.gui {
 
         private Task
             mhqlTestTask,
-            directFetchTestTask;
+            directFetchTestTask,
+            mhqlRefreshTask;
 
         private bool
-            reshExplorer = false;
+            reshExplorer = false,
+            reshMHQL = true;
 
         #endregion
 
@@ -57,6 +59,17 @@ namespace MochaDBStudio.gui {
         #region tab
 
         private void Tab_SelectedIndexChanged(object sender,EventArgs e) {
+            var form = (Studio)Parent.Parent;
+            if(form.titlePanel.Controls.ContainsKey("mhqlButton")) {
+                var mhqlButton =
+                    form.titlePanel.Controls[form.titlePanel.Controls.IndexOfKey("mhqlButton")]
+                    as sbutton;
+                mhqlButton.ContextMenu.Dispose();
+                mhqlButton.Dispose();
+                form.helpButton.Location = new Point(
+                    form.connectionButton.Location.X+form.connectionButton.Width,0);
+            }
+
             if(tab.SelectedTab == dashboardPage) {
                 refreshDashboard();
             } else if(tab.SelectedTab == explorerPage) {
@@ -64,6 +77,46 @@ namespace MochaDBStudio.gui {
                     refreshExplorer();
             } else if(tab.SelectedTab == terminalPage) {
                 term.Select();
+            } else if(tab.SelectedTab == mhqlPage) {
+                #region mhqlCM
+
+                var mhqlCM = new sContextMenu();
+                mhqlCM.ForeColor = Color.White;
+                mhqlCM.BackColor = Color.FromArgb(24,24,24);
+                mhqlCM.Items.Add(new sContextMenuItem("Run",
+                    mhqlCM.BackColor,Color.Gray) {
+                    Image = Resources.Play
+                });
+                mhqlCM.ItemClicked += (object mhqlCM_Sender,ToolStripItemClickedEventArgs mhqlCM_e) => {
+                    if(mhqlCM_e.ClickedItem.Text == "Run")
+                        ExecuteMHQL();
+                };
+
+                #endregion
+
+                #region mhqlButton
+
+                var mhqlButton = new sbutton();
+                mhqlButton.Name = "mhqlButton";
+                mhqlButton.Font = new Font("Microsoft Sans Serif",9);
+                mhqlButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Top;
+                mhqlButton.Text = "MHQL";
+                mhqlButton.ForeColor = Color.White;
+                mhqlButton.BackColor = mhqlCM.BackColor;
+                mhqlButton.MouseEnterColor = Color.Gray;
+                mhqlButton.MouseDownColor = Color.DodgerBlue;
+                mhqlButton.Location = new Point(form.connectionButton.Location.X+form.connectionButton.Width,0);
+                mhqlButton.Size = new Size(70,30);
+                mhqlButton.ContextMenu = mhqlCM;
+                mhqlButton.DisableClick = true;
+
+                #endregion
+
+                form.helpButton.Location = new Point(mhqlButton.Location.X+mhqlButton.Width,0);
+                form.titlePanel.Controls.Add(mhqlButton);
+
+                if(reshMHQL)
+                    refreshMHQL();
             } else if(tab.SelectedTab == settingsPage) {
                 refreshSettings();
             }
@@ -196,10 +249,7 @@ namespace MochaDBStudio.gui {
             if(e.KeyCode != Keys.F5)
                 return;
 
-            MochaReader<object> results;
-            try { results = Database.ExecuteReader(mhqlEditor.Text); }
-            catch(Exception excep) { errorbox.Show(excep.ToString()); return; }
-            mhqlRPanel.ShowResults(results);
+            ExecuteMHQL();
         }
 
         #endregion
@@ -208,6 +258,7 @@ namespace MochaDBStudio.gui {
 
         private void Database_Changed(object sender,EventArgs e) {
             reshExplorer = true;
+            reshMHQL = true;
         }
 
         #endregion
@@ -218,11 +269,14 @@ namespace MochaDBStudio.gui {
         /// Refresh all datas.
         /// </summary>
         public void refreshDatas() {
-
+            refreshDashboard();
+            refreshExplorer();
+            refreshSettings();
+            refreshMHQL();
         }
 
         /// <summary>
-        /// Refresh "Dashboard" tab.
+        /// Refresh Dashboard tab.
         /// </summary>
         public void refreshDashboard() {
             nameTB.Text = Database.Name;
@@ -231,8 +285,10 @@ namespace MochaDBStudio.gui {
             // 
             // Tests
             // 
-            if(mhqlTestTask != null)
+            if(mhqlTestTask != null) {
                 mhqlTestTask.Wait();
+                mhqlTestTask.Dispose();
+            }
 
             mhqlTestTask = new Task(() => {
                 mhqlTestRB.State = 0;
@@ -268,8 +324,10 @@ RETURN
             mhqlTestTask.Start();
 
 
-            if(directFetchTestTask != null)
+            if(directFetchTestTask != null) {
                 directFetchTestTask.Wait();
+                directFetchTestTask.Dispose();
+            }
 
             directFetchTestTask = new Task(() => {
                 directFetchTestRB.State = 0;
@@ -299,7 +357,7 @@ RETURN
         }
 
         /// <summary>
-        /// Refresh "Explorer" tab.
+        /// Refresh Explorer tab.
         /// </summary>
         public void refreshExplorer() {
             TreeNode GetMochaStackItemNODE(MochaStackItem item) {
@@ -474,7 +532,98 @@ RETURN
         }
 
         /// <summary>
-        /// Refresh "Settings" tab.
+        /// Refresh 
+        /// </summary>
+        public void refreshMHQL() {
+            if(mhqlRefreshTask != null) {
+                mhqlRefreshTask.Wait();
+                mhqlRefreshTask.Dispose();
+            }
+
+            mhqlRefreshTask = new Task(() => {
+                mhqlCodeSense.Items = new string[0];
+
+                mhqlCodeSense.AddItem(
+                    new Item("SELECT",0,"SELECT","SELECT - Keyword",
+                    "Select structures with regex."));
+                mhqlCodeSense.AddItem(
+                    new Item("USE",0,"USE","USE - Keyword",
+                    "Use the x struct(s)."));
+                mhqlCodeSense.AddItem(new Item("MUST",0,"MUST","MUST - Keyword",
+                    "Define a conditions."));
+                mhqlCodeSense.AddItem(new Item("REMOVE",0,"REMOVE","REMOVE - Keyword",
+                    "Remove selected with SELECT keyword."));
+                mhqlCodeSense.AddItem(new Item("RETURN",0,"RETURN","RETURN - Keyword",
+                    "Return result(s)."));
+                mhqlCodeSense.AddItem(new Item("ASC",0,"ASC","ASC - Keyword",
+                    "Ascending define for ORDERBY keyword."));
+                mhqlCodeSense.AddItem(new Item("DESC",0,"DESC","DESC - Keyword",
+                    "Descending define for ORDERBY keyword."));
+                mhqlCodeSense.AddItem(new Item("ORDERBY",0,"ORDERBY","ORDERBY - Keyword",
+                    "Sort items."));
+                mhqlCodeSense.AddItem(new Item("AND",0,"AND","AND - Keyword",
+                    "Define other conditions for MUST keywords."));
+                mhqlCodeSense.AddItem(new Item("GROUPBY",0,"GROUPBY","GROUPBY - Keyword",
+                    "Group by values."));
+                mhqlCodeSense.AddItem(new Item("FROM",0,"FROM","FROM - Keyword",
+                    "Define table for USE keyword."));
+                mhqlCodeSense.AddItem(new Item("AS",0,"AS","AS - Keyword",
+                    "Rename item."));
+                mhqlCodeSense.AddItem(new Item("EQUAL",1,"EQUAL","EQUAL - Function",
+                    "Returns a specified numerical equal to condition."));
+                mhqlCodeSense.AddItem(new Item("ENDW",1,"ENDW","ENDW - Function",
+                    "Does it end with...? Returns the condition."));
+                mhqlCodeSense.AddItem(new Item("STARTW",1,"STARTW","STARTW - Function",
+                    "Does it start with ...? Returns the condition."));
+                mhqlCodeSense.AddItem(new Item("BETWEEN",1,"BETWEEN","BETWEEN - Function",
+                    "Returns a specified numerical range condition."));
+                mhqlCodeSense.AddItem(new Item("LOWER",1,"LOWER","LOWER - Function",
+                    "Returns a specified numerical bigger and equal condition."));
+                mhqlCodeSense.AddItem(new Item("BIGGER",1,"BIGGER","BIGGER - Function",
+                    "Returns a specified numerical lower and equal condition."));
+                mhqlCodeSense.AddItem(new Item("USE *\nRETURN",2,"BODY","BODY - Function",
+                    "USE body snippet."));
+
+                var tables = Database.GetTables();
+                for(int index = 0; index < tables.Count; index++) {
+                    var table = tables[index];
+                    mhqlCodeSense.AddItem(
+                        new Item(table.Name,3,table.Name,
+                        $"{table.Name} - Table","Table"));
+
+                    for(int cindex = 0; cindex < table.Columns.Count; cindex++) {
+                        var column = table.Columns[cindex];
+                        mhqlCodeSense.AddItem(
+                            new Item($"{table.Name}.{column.Name}",5,$"{table.Name}.{column.Name}",
+                            $"{column.Name} - Column",$"Column of {table.Name} table."));
+                    }
+                }
+
+                var stacks = Database.GetStacks();
+                for(int index = 0; index < stacks.Count; index++) {
+                    var stack = stacks[index];
+                    mhqlCodeSense.AddItem(
+                        new Item(stack.Name,4,stack.Name,
+                        $"{stack.Name} - Stack","Stack"));
+                }
+
+                var sectors = Database.GetSectors();
+                for(int index = 0; index < sectors.Count; index++) {
+                    var sector = sectors[index];
+                    mhqlCodeSense.AddItem(
+                        new Item(sector.Name,5,sector.Name,
+                        $"{sector.Name} - Sector","Sector"));
+                }
+
+                mhqlCodeSense.SortItems();
+                mhqlCodeSense.SetCodeSense(mhqlEditor,mhqlCodeSense);
+                reshMHQL = false;
+            });
+            mhqlRefreshTask.Start();
+        }
+
+        /// <summary>
+        /// Refresh Settings tab.
         /// </summary>
         public void refreshSettings() {
             passwordTB.Text = Database.GetPassword();
@@ -497,6 +646,16 @@ RETURN
         public string GetStackItemStackName(TreeNode node) {
             string cachepath = node.FullPath.Remove(0,node.FullPath.IndexOf("Stacks/")+7);
             return cachepath.Substring(0,cachepath.IndexOf("/"));
+        }
+
+        /// <summary>
+        /// Execute current MHQL code.
+        /// </summary>
+        public void ExecuteMHQL() {
+            MochaReader<object> results;
+            try { results = Database.ExecuteReader(mhqlEditor.Text); }
+            catch(Exception excep) { errorbox.Show(excep.ToString()); return; }
+            mhqlRPanel.ShowResults(results);
         }
 
         #endregion
@@ -808,6 +967,9 @@ RETURN
             mhqlIL.Images.Add("Keyword",Resources.Key);
             mhqlIL.Images.Add("Function",Resources.Cube);
             mhqlIL.Images.Add("Snippet",Resources.Brackets);
+            mhqlIL.Images.Add("Table",Resources.Table);
+            mhqlIL.Images.Add("Stack",Resources.Stack);
+            mhqlIL.Images.Add("Sector",Resources.Sector);
 
             #endregion
 
@@ -824,49 +986,6 @@ RETURN
             mhqlCodeSense.Colors.SelectedForeColor = Color.Khaki;
             mhqlCodeSense.AppearInterval = 100;
             mhqlCodeSense.Font = new Font("Consolas",12,FontStyle.Regular,GraphicsUnit.Pixel);
-            mhqlCodeSense.AddItem(
-                new Item("SELECT",0,"SELECT","SELECT - Keyword",
-                "Select structures with regex."));
-            mhqlCodeSense.AddItem(
-                new Item("USE",0,"USE","USE - Keyword",
-                "Use the x struct(s)."));
-            mhqlCodeSense.AddItem(new Item("MUST",0,"MUST","MUST - Keyword",
-                "Define a conditions."));
-            mhqlCodeSense.AddItem(new Item("REMOVE",0,"REMOVE","REMOVE - Keyword",
-                "Remove selected with SELECT keyword."));
-            mhqlCodeSense.AddItem(new Item("RETURN",0,"RETURN","RETURN - Keyword",
-                "Return result(s)."));
-            mhqlCodeSense.AddItem(new Item("ASC",0,"ASC","ASC - Keyword",
-                "Ascending define for ORDERBY keyword."));
-            mhqlCodeSense.AddItem(new Item("DESC",0,"DESC","DESC - Keyword",
-                "Descending define for ORDERBY keyword."));
-            mhqlCodeSense.AddItem(new Item("ORDERBY",0,"ORDERBY","ORDERBY - Keyword",
-                "Sort items."));
-            mhqlCodeSense.AddItem(new Item("AND",0,"AND","AND - Keyword",
-                "Define other conditions for MUST keywords."));
-            mhqlCodeSense.AddItem(new Item("GROUPBY",0,"GROUPBY","GROUPBY - Keyword",
-                "Group by values."));
-            mhqlCodeSense.AddItem(new Item("FROM",0,"FROM","FROM - Keyword",
-                "Define table for USE keyword."));
-            mhqlCodeSense.AddItem(new Item("AS",0,"AS","AS - Keyword",
-                "Rename item."));
-            mhqlCodeSense.AddItem(new Item("EQUAL",1,"EQUAL","EQUAL - Function",
-                "Returns a specified numerical equal to condition."));
-            mhqlCodeSense.AddItem(new Item("ENDW",1,"ENDW","ENDW - Function",
-                "Does it end with...? Returns the condition."));
-            mhqlCodeSense.AddItem(new Item("STARTW",1,"STARTW","STARTW - Function",
-                "Does it start with ...? Returns the condition."));
-            mhqlCodeSense.AddItem(new Item("BETWEEN",1,"BETWEEN","BETWEEN - Function",
-                "Returns a specified numerical range condition."));
-            mhqlCodeSense.AddItem(new Item("LOWER",1,"LOWER","LOWER - Function",
-                "Returns a specified numerical bigger and equal condition."));
-            mhqlCodeSense.AddItem(new Item("BIGGER",1,"BIGGER","BIGGER - Function",
-                "Returns a specified numerical lower and equal condition."));
-            mhqlCodeSense.AddItem(new Item("USE *\nRETURN",2,"BODY","BODY - Function",
-                "USE body snippet."));
-
-            mhqlCodeSense.SortItems();
-            mhqlCodeSense.SetCodeSense(mhqlEditor,mhqlCodeSense);
 
             #endregion
 

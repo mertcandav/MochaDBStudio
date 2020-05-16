@@ -64,8 +64,10 @@ namespace MochaDBStudio.gui {
             base.OnSelectedIndexChanged(e);
             Refresh();
             if(SelectedIndex != -1) {
-                if(oldTask != null)
+                if(oldTask != null) {
                     oldTask.Wait();
+                    oldTask.Dispose();
+                }
 
                 oldTask = new Task(() => {
                     var rect = GetRect(SelectedIndex);

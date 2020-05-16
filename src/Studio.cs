@@ -147,11 +147,11 @@ namespace MochaDBStudio {
     public partial class Studio {
         #region Components
 
-        private spanel
+        public spanel
             titlePanel,
             gridPanel;
 
-        private sbutton
+        public sbutton
             closeButton,
             fsButton,
             minimizeButton,

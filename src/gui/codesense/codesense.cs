@@ -8,9 +8,8 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace MochaDBStudio.gui.codesense {
-    [ProvideProperty("IntelliSense",typeof(Control))]
-    public class codesense:Component, IExtenderProvider {
-        private static readonly Dictionary<Control,codesense> MezuaiOtoMenuByControls =
+    public class codesense:Component, IExtenderProvider, IDisposable {
+        private static readonly Dictionary<Control,codesense> CodeSenseByControls =
             new Dictionary<Control,codesense>();
         private static readonly Dictionary<Control,ITextBoxWrapper> WrapperByControls =
             new Dictionary<Control,ITextBoxWrapper>();
@@ -18,7 +17,7 @@ namespace MochaDBStudio.gui.codesense {
         private ITextBoxWrapper targetControlWrapper;
         private readonly Timer timer = new Timer();
 
-        private IEnumerable<Item> sourceItems = new List<Item>();
+        private List<Item> sourceItems = new List<Item>();
         [Browsable(false)]
         public IList<Item> VisibleItems { get { return Host.ListView.VisibleItems; } private set { Host.ListView.VisibleItems = value; } }
         private Size maximumSize;
@@ -26,7 +25,6 @@ namespace MochaDBStudio.gui.codesense {
         /// <summary>
         /// Duration (ms) of tooltip showing
         /// </summary>
-        [Description("Menünün gösterilmesi için gereken süre (Ms)")]
         [DefaultValue(3000)]
         public int ToolTipDuration {
             get { return Host.ListView.ToolTipDuration; }
@@ -59,7 +57,7 @@ namespace MochaDBStudio.gui.codesense {
         public void SortItems() {
             var list = Host.Menu.sourceItems.ToList();
             list.Sort((X,Y) => X.MenuText.CompareTo(Y.MenuText));
-            Host.Menu.sourceItems = list.ToArray();
+            Host.Menu.sourceItems = list;
         }
 
         void ListView_ItemSelected(object sender,EventArgs e) {
@@ -127,7 +125,6 @@ namespace MochaDBStudio.gui.codesense {
         /// Maximum size of popup menu
         /// </summary>
         [DefaultValue(typeof(Size),"180, 200")]
-        [Description("Menünün Maksimum uzunluğu")]
         public Size MaximumSize {
             get { return maximumSize; }
             set {
@@ -308,15 +305,15 @@ namespace MochaDBStudio.gui.codesense {
                 else
                     control.HandleCreated += (o,e) => menu.SubscribeForm(wrapper);
                 //
-                MezuaiOtoMenuByControls[control] = this;
+                CodeSenseByControls[control] = this;
                 //
                 wrapper.LostFocus += menu.control_LostFocus;
                 wrapper.Scroll += menu.control_Scroll;
                 wrapper.KeyDown += menu.control_KeyDown;
                 wrapper.MouseDown += menu.control_MouseDown;
             } else {
-                MezuaiOtoMenuByControls.TryGetValue(control,out menu);
-                MezuaiOtoMenuByControls.Remove(control);
+                CodeSenseByControls.TryGetValue(control,out menu);
+                CodeSenseByControls.Remove(control);
                 ITextBoxWrapper wrapper = null;
                 WrapperByControls.TryGetValue(control,out wrapper);
                 WrapperByControls.Remove(control);
@@ -475,9 +472,9 @@ namespace MochaDBStudio.gui.codesense {
             if(!Host.Focused) Close();
         }
 
-        public codesense GetIntelliSense(Control control) {
-            if(MezuaiOtoMenuByControls.ContainsKey(control))
-                return MezuaiOtoMenuByControls[control];
+        public codesense GetCodeSense(Control control) {
+            if(CodeSenseByControls.ContainsKey(control))
+                return CodeSenseByControls[control];
             else
                 return null;
         }
@@ -629,7 +626,7 @@ namespace MochaDBStudio.gui.codesense {
             SetAutocompleteItems(list);
         }
 
-        public void SetAutocompleteItems(IEnumerable<Item> items) {
+        public void SetAutocompleteItems(List<Item> items) {
             sourceItems = items;
         }
 
@@ -644,7 +641,7 @@ namespace MochaDBStudio.gui.codesense {
             if(sourceItems is IList)
                 (sourceItems as IList).Add(item);
             else
-                throw new Exception("Bu itemi eklenemiyor, Bu türden bir item için destek bulunamadı.");
+                throw new Exception();
         }
 
         /// <summary>

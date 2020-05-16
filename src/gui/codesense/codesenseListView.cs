@@ -15,7 +15,6 @@ namespace MochaDBStudio.gui.codesense {
         public int HighlightedItemIndex { get; set; }
         private int oldItemCount;
         private int selectedItemIndex = -1;
-        private bool PerformanceMode;
         private IList<Item> visibleItems;
 
         #endregion
@@ -53,7 +52,7 @@ namespace MochaDBStudio.gui.codesense {
             Colors = new Colors();
         }
 
-        protected override void Dispose(bool disposing) {
+        public new void Dispose(bool disposing) {
             if(disposing) {
                 toolTip.Dispose();
             }
@@ -155,13 +154,8 @@ namespace MochaDBStudio.gui.codesense {
         }
 
         protected override void OnPaint(PaintEventArgs e) {
-            if(!PerformanceMode) {
-                e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
-                e.Graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
-            } else {
-                e.Graphics.SmoothingMode = SmoothingMode.None;
-                e.Graphics.TextRenderingHint = TextRenderingHint.SingleBitPerPixel;
-            }
+            e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
+            e.Graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
             bool rtl = RightToLeft == RightToLeft.Yes;
             AdjustScroll();
