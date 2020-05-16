@@ -86,6 +86,10 @@ namespace MochaDBStudio.dialogs {
         private void TableGrid_CellEndEdit(object sender,DataGridViewCellEventArgs e) {
             if(tableGrid.Updating)
                 return;
+
+            if(e.RowIndex >= tableGrid.RowCount-1)
+                return;
+
             tableGrid.Updating = true;
 
 #if DEBUG
@@ -93,8 +97,10 @@ namespace MochaDBStudio.dialogs {
             stopwatch.Start();
 #endif
             try {
+                var value = tableGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
+                value = value == null ? string.Empty : value.ToString();
                 Database.UpdateData(TableName,tableGrid.Columns[e.ColumnIndex].HeaderText,
-                    e.RowIndex,tableGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString());
+                    e.RowIndex,value);
             } catch(Exception excep) {
                 tableGrid.Updating = false;
                 refresContent();
