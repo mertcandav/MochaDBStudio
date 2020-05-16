@@ -60,11 +60,6 @@ namespace MochaDBStudio.dialogs {
         #region tableGrid
 
         private void TableGrid_CellBeginEdit(object sender,DataGridViewCellCancelEventArgs e) {
-            if(tableGrid.Updating) {
-                e.Cancel = true;
-                return;
-            }
-            tableGrid.Updating = true;
             /*if(tableGrid.Updating)
                 return;
 
@@ -89,9 +84,9 @@ namespace MochaDBStudio.dialogs {
         }
 
         private void TableGrid_CellEndEdit(object sender,DataGridViewCellEventArgs e) {
-            /*if(tableGrid.Updating)
+            if(tableGrid.Updating)
                 return;
-            tableGrid.Updating = true;*/
+            tableGrid.Updating = true;
 
 #if DEBUG
             var stopwatch = new Stopwatch();
@@ -140,7 +135,6 @@ namespace MochaDBStudio.dialogs {
                     tableGrid.Rows[e.RowIndex - 1].Cells[index].Value));
             }
             Database.AddRow(TableName,new MochaRow(datas));
-            Console.WriteLine("Added row");
             tableGrid.Updating = false;
         }
 
