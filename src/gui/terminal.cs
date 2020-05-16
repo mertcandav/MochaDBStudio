@@ -178,7 +178,7 @@ namespace MochaDBStudio.gui {
 
         #endregion
 
-        #region Mouse
+        #region Mouse Override
 
         protected override void OnMouseClick(MouseEventArgs e) {
             Focus();
@@ -193,7 +193,7 @@ namespace MochaDBStudio.gui {
 
         #endregion
 
-        #region Keyboard
+        #region Keyboard Override
 
         protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e) {
             if(UseUserInput && !ProcessKey(e.KeyCode)) {
@@ -237,6 +237,14 @@ namespace MochaDBStudio.gui {
                 }
             }
 
+            if(e.Control && e.KeyCode == Keys.C) {
+                Clipboard.SetText(Input);
+            } else if(e.Control && e.KeyCode == Keys.V) {
+                var val = Clipboard.GetText();
+                Input = Input.Insert(CaretIndex,val);
+                CaretIndex += val.Length;
+            }
+
             base.OnPreviewKeyDown(e);
         }
 
@@ -247,7 +255,7 @@ namespace MochaDBStudio.gui {
         protected override bool ProcessKeyMessage(ref Message m) {
             if(UseUserInput && m.Msg == WM_CHAR) {
                 int CharValue = m.WParam.ToInt32();
-
+                
                 if(!IsBannedChar(CharValue)) {
                     Input = Input.Insert(CaretIndex,((char)CharValue).ToString());
                     CaretIndex++;
@@ -439,8 +447,10 @@ namespace MochaDBStudio.gui {
         /// </summary>
         /// <param name="charValue">ASCII value of char.</param>
         public bool IsBannedChar(int charValue) {
-            /*if(((char)charValue) == '')
-                return true;*/
+            if(((char)charValue) == '')
+                return true;
+            if(((char)charValue) == '')
+                return true;
             if(charValue == 1)
                 return true;
             else if(charValue == 19)
