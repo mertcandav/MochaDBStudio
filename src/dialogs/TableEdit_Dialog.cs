@@ -60,6 +60,7 @@ namespace MochaDBStudio.dialogs {
         #region tableGrid
 
         private void TableGrid_CellBeginEdit(object sender,DataGridViewCellCancelEventArgs e) {
+            tableGrid.Tag = tableGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
             /*if(tableGrid.Updating)
                 return;
 
@@ -103,7 +104,7 @@ namespace MochaDBStudio.dialogs {
                     e.RowIndex,value);
             } catch(Exception excep) {
                 tableGrid.Updating = false;
-                refresContent();
+                tableGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = tableGrid.Tag;
                 errorbox.Show(excep.ToString());
             }
 #if DEBUG
@@ -121,25 +122,20 @@ namespace MochaDBStudio.dialogs {
             MochaData[] datas = new MochaData[tableGrid.ColumnCount];
 
             for(int index = 0; index < tableGrid.ColumnCount; index++) {
-
                 MochaDataType dataType = Database.GetColumnDataType(TableName,tableGrid.Columns[index].HeaderText);
-
-                if(dataType == MochaDataType.Unique)
-                    datas[index] = new MochaData(dataType,"");
-
                 if(dataType == MochaDataType.AutoInt) {
                     int autoIntValue =
                         Database.GetColumnAutoIntState(TableName,tableGrid.Columns[index].HeaderText);
 
                     tableGrid.Rows[e.RowIndex - 1].Cells[index].Value = autoIntValue + 1;
-                    datas[index] = new MochaData(dataType,0);
+                    datas[index] = null;
 
                     continue;
                 }
 
-                datas[index] = new MochaData(dataType,MochaData.TryGetData(dataType,
-                    tableGrid.Rows[e.RowIndex - 1].Cells[index].Value));
+                datas[index] = new MochaData(dataType,MochaData.TryGetData(dataType,""));
             }
+
             Database.AddRow(TableName,new MochaRow(datas));
             tableGrid.Updating = false;
         }
