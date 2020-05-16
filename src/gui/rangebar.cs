@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -14,8 +15,7 @@ namespace MochaDBStudio.gui {
         /// Constructor.
         /// </summary>
         public rangebar() {
-            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer,true);
-            Size = new Size(115,30);
+            Init();
         }
 
         #endregion
@@ -58,6 +58,15 @@ namespace MochaDBStudio.gui {
 
         #endregion
 
+        #region Override
+
+        protected override void OnTextChanged(EventArgs e) {
+            base.OnTextChanged(e);
+            Invalidate();
+        }
+
+        #endregion
+
         #region Properties
 
         private int state = 0;
@@ -81,5 +90,21 @@ namespace MochaDBStudio.gui {
         }
 
         #endregion
+    }
+
+    // Designer.
+    public sealed partial class rangebar {
+        /// <summary>
+        /// Initialize component.
+        /// </summary>
+        public void Init() {
+            #region Base
+
+            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer |
+                ControlStyles.ResizeRedraw,true);
+            Size = new Size(115,30);
+
+            #endregion
+        }
     }
 }

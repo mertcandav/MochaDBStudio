@@ -26,7 +26,7 @@ namespace MochaDBStudio.gui {
 
         protected override void OnPaintBackground(PaintEventArgs e) {
             using(var bgBrush = new SolidBrush(
-                MouseDown ? MouseDownColor : MouseEnter ? MouseEnterColor : BackColor))
+                !Enabled ? Color.Gray : MouseDown ? MouseDownColor : MouseEnter ? MouseEnterColor : BackColor))
                 e.Graphics.FillRectangle(bgBrush,ClientRectangle);
         }
 

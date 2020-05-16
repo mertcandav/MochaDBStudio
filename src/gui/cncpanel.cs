@@ -21,8 +21,6 @@ namespace MochaDBStudio.gui {
         #region Fields
 
         private Task
-            mhqlTestTask,
-            directFetchTestTask,
             mhqlRefreshTask;
 
         private bool
@@ -70,9 +68,9 @@ namespace MochaDBStudio.gui {
                     form.connectionButton.Location.X+form.connectionButton.Width,0);
             }
 
-            if(tab.SelectedTab == dashboardPage) {
+            /*if(tab.SelectedTab == dashboardPage) {
                 refreshDashboard();
-            } else if(tab.SelectedTab == explorerPage) {
+            } else */if(tab.SelectedTab == explorerPage) {
                 if(reshExplorer)
                     refreshExplorer();
             } else if(tab.SelectedTab == terminalPage) {
@@ -254,6 +252,116 @@ namespace MochaDBStudio.gui {
 
         #endregion
 
+        #region mhqlTestButton
+
+        private void MhqlTestButton_Click(object sender,EventArgs e) {
+            new Task(() => {
+                mhqlTestButton.Enabled = false;
+                mhqlTestRB.Text = "Testing...";
+                mhqlTestRB.State = 0;
+                var sw = new Stopwatch();
+                long total = 0;
+                for(short counter = 1; counter <= 5; counter++) {
+                    sw.Start();
+                    Database.ExecuteScalar(
+@"
+SELECT ""[A-z]""
+RETURN
+");
+                    sw.Stop();
+                    total += sw.ElapsedMilliseconds;
+                }
+                total = total / 5;
+                mhqlTestRB.Text = total + "ms";
+                mhqlTestRB.State =
+                    total <= 200 ?
+                    1 :
+                    total <= 1500 ?
+                        2 :
+                        total <= 3000 ?
+                            3 :
+                            total <= 5000 ?
+                            4 :
+                            5;
+                mhqlTestButton.Enabled = true;
+            }).Start();
+        }
+
+        #endregion
+
+        #region mhqlHardTestButton
+
+        private void MhqlHardTestButton_Click(object sender,EventArgs e) {
+            new Task(() => {
+                mhqlHardTestButton.Enabled = false;
+                mhqlHardTestRB.Text = "Testing...";
+                mhqlHardTestRB.State = 0;
+                var sw = new Stopwatch();
+                long total = 0;
+                for(short counter = 1; counter <= 5; counter++) {
+                    sw.Start();
+                    Database.ExecuteScalar(
+@"
+@TABLES
+@STACKS
+@SECTORS
+SELECT ""[A-z]""
+RETURN
+");
+                    sw.Stop();
+                    total += sw.ElapsedMilliseconds;
+                }
+                total = total / 5;
+                mhqlHardTestRB.Text = total + "ms";
+                mhqlHardTestRB.State =
+                    total <= 200 ?
+                    1 :
+                    total <= 1500 ?
+                        2 :
+                        total <= 3000 ?
+                            3 :
+                            total <= 5000 ?
+                            4 :
+                            5;
+                mhqlHardTestButton.Enabled = true;
+            }).Start();
+        }
+
+        #endregion
+
+        #region directFetchTestButton
+
+        private void DirectFetchTestButton_Click(object sender,EventArgs e) {
+            new Task(() => {
+                directFetchTestButton.Enabled = false;
+                directFetchTestRB.Text = "Testing...";
+                directFetchTestRB.State = 0;
+                var sw = new Stopwatch();
+                long total = 0;
+                for(short counter = 1; counter <= 5; counter++) {
+                    sw.Start();
+                    Database.GetTables();
+                    sw.Stop();
+                    total += sw.ElapsedMilliseconds;
+                }
+                total = total / 5;
+                directFetchTestRB.Text = total + "ms";
+                directFetchTestRB.State =
+                    total <= 200 ?
+                    1 :
+                    total <= 1500 ?
+                        2 :
+                        total <= 3000 ?
+                            3 :
+                            total <= 5000 ?
+                            4 :
+                            5;
+                directFetchTestButton.Enabled = true;
+            }).Start();
+        }
+
+        #endregion
+
         #region Database
 
         private void Database_Changed(object sender,EventArgs e) {
@@ -281,79 +389,6 @@ namespace MochaDBStudio.gui {
         public void refreshDashboard() {
             nameTB.Text = Database.Name;
             pathTB.Text = Database.Provider.Path;
-
-            // 
-            // Tests
-            // 
-            if(mhqlTestTask != null) {
-                mhqlTestTask.Wait();
-                mhqlTestTask.Dispose();
-            }
-
-            mhqlTestTask = new Task(() => {
-                mhqlTestRB.State = 0;
-                mhqlTestRB.Text = "Testing...";
-                var sw = new Stopwatch();
-                long total = 0;
-                for(short counter = 1; counter <= 5; counter++) {
-                    sw.Start();
-                    Database.ExecuteScalar(
-@"
-@STACKS
-@SECTORS
-@TABLES
-SELECT ""[A-z]""
-RETURN
-");
-                    sw.Stop();
-                    total += sw.ElapsedMilliseconds;
-                }
-                total = total / 5;
-                mhqlTestRB.State =
-                    total <= 200 ?
-                    1 :
-                    total <= 1500 ?
-                        2 :
-                        total <= 3000 ?
-                            3 :
-                            total <= 5000 ?
-                            4 :
-                            5;
-                mhqlTestRB.Text = total + "ms";
-            });
-            mhqlTestTask.Start();
-
-
-            if(directFetchTestTask != null) {
-                directFetchTestTask.Wait();
-                directFetchTestTask.Dispose();
-            }
-
-            directFetchTestTask = new Task(() => {
-                directFetchTestRB.State = 0;
-                directFetchTestRB.Text = "Testing...";
-                var sw = new Stopwatch();
-                long total = 0;
-                for(short counter = 1; counter <= 5; counter++) {
-                    sw.Start();
-                    Database.GetTables();
-                    sw.Stop();
-                    total += sw.ElapsedMilliseconds;
-                }
-                total = total / 5;
-                directFetchTestRB.State =
-                    total <= 200 ?
-                    1 :
-                    total <= 1500 ?
-                        2 :
-                        total <= 3000 ?
-                            3 :
-                            total <= 5000 ?
-                            4 :
-                            5;
-                directFetchTestRB.Text = total + "ms";
-            });
-            directFetchTestTask.Start();
         }
 
         /// <summary>
@@ -674,6 +709,11 @@ RETURN
     public sealed partial class cncpanel {
         #region Components
 
+        private sbutton
+            mhqlTestButton,
+            mhqlHardTestButton,
+            directFetchTestButton;
+
         private stabcontrol
             tab;
 
@@ -695,6 +735,7 @@ RETURN
             nameLabel,
             pathLabel,
             mhqlTestLabel,
+            mhqlHardTestLabel,
             directFetchTestLabel;
 
         private TextBox
@@ -706,6 +747,7 @@ RETURN
 
         private rangebar
             mhqlTestRB,
+            mhqlHardTestRB,
             directFetchTestRB;
 
         private dbtree
@@ -843,9 +885,63 @@ RETURN
             mhqlTestRB = new rangebar();
             mhqlTestRB.BackColor = BackColor;
             mhqlTestRB.State = 0;
-            mhqlTestRB.Text = "Testing...";
+            mhqlTestRB.Text = "Not tested";
             mhqlTestRB.Location = new Point(mhqlTestLabel.Width + 100,mhqlTestLabel.Location.Y-15);
             testsPanel.Controls.Add(mhqlTestRB);
+
+            #endregion
+
+            #region mhqlTestButton
+
+            mhqlTestButton = new sbutton();
+            mhqlTestButton.Text = "Make test";
+            mhqlTestButton.Size = new Size(60,25);
+            mhqlTestButton.BackColor = Color.Gray;
+            mhqlTestButton.MouseEnterColor = Color.DimGray;
+            mhqlTestButton.MouseDownColor = Color.DodgerBlue;
+            mhqlTestButton.Click+=MhqlTestButton_Click;
+            mhqlTestButton.Location = new Point(
+                (mhqlTestRB.Location.X + mhqlTestRB.Width) + 30,
+                mhqlTestRB.Location.Y + 10);
+            testsPanel.Controls.Add(mhqlTestButton);
+
+            #endregion
+
+            #region mhqlHardTestLabel
+
+            mhqlHardTestLabel = new Label();
+            mhqlHardTestLabel.AutoSize = true;
+            mhqlHardTestLabel.Text = "MHQL hard querying test (5 Test / AVG Time)";
+            mhqlHardTestLabel.Font = new Font("Arial",10);
+            mhqlHardTestLabel.Location = new Point(0,mhqlTestLabel.Location.Y+mhqlTestLabel.Height + 20);
+            testsPanel.Controls.Add(mhqlHardTestLabel);
+
+            #endregion
+
+            #region mhqlHardTestRB
+
+            mhqlHardTestRB = new rangebar();
+            mhqlHardTestRB.BackColor = BackColor;
+            mhqlHardTestRB.State = 0;
+            mhqlHardTestRB.Text = "Not Tested";
+            mhqlHardTestRB.Location = new Point(mhqlTestRB.Location.X,mhqlHardTestLabel.Location.Y-15);
+            testsPanel.Controls.Add(mhqlHardTestRB);
+
+            #endregion
+
+            #region mhqlHardTestButton
+
+            mhqlHardTestButton = new sbutton();
+            mhqlHardTestButton.Text = "Make test";
+            mhqlHardTestButton.Size = new Size(60,25);
+            mhqlHardTestButton.BackColor = Color.Gray;
+            mhqlHardTestButton.MouseEnterColor = Color.DimGray;
+            mhqlHardTestButton.MouseDownColor = Color.DodgerBlue;
+            mhqlHardTestButton.Click+=MhqlHardTestButton_Click;
+            mhqlHardTestButton.Location = new Point(
+                (mhqlHardTestRB.Location.X + mhqlHardTestRB.Width) + 30,
+                mhqlHardTestRB.Location.Y + 10);
+            testsPanel.Controls.Add(mhqlHardTestButton);
 
             #endregion
 
@@ -855,7 +951,7 @@ RETURN
             directFetchTestLabel.AutoSize = true;
             directFetchTestLabel.Text = "Direct fetch test (5 Test / AVG Time)";
             directFetchTestLabel.Font = new Font("Arial",10);
-            directFetchTestLabel.Location = new Point(0,mhqlTestLabel.Location.Y+mhqlTestLabel.Height + 20);
+            directFetchTestLabel.Location = new Point(0,mhqlHardTestLabel.Location.Y+mhqlHardTestLabel.Height + 20);
             testsPanel.Controls.Add(directFetchTestLabel);
 
             #endregion
@@ -865,9 +961,25 @@ RETURN
             directFetchTestRB = new rangebar();
             directFetchTestRB.BackColor = BackColor;
             directFetchTestRB.State = 0;
-            directFetchTestRB.Text = "Testing...";
-            directFetchTestRB.Location = new Point(mhqlTestRB.Location.X,directFetchTestLabel.Location.Y-15);
+            directFetchTestRB.Text = "Not tested";
+            directFetchTestRB.Location = new Point(mhqlHardTestRB.Location.X,directFetchTestLabel.Location.Y-15);
             testsPanel.Controls.Add(directFetchTestRB);
+
+            #endregion
+
+            #region directFetchTestButton
+
+            directFetchTestButton = new sbutton();
+            directFetchTestButton.Text = "Make test";
+            directFetchTestButton.Size = new Size(60,25);
+            directFetchTestButton.BackColor = Color.Gray;
+            directFetchTestButton.MouseEnterColor = Color.DimGray;
+            directFetchTestButton.MouseDownColor = Color.DodgerBlue;
+            directFetchTestButton.Click+=DirectFetchTestButton_Click;
+            directFetchTestButton.Location = new Point(
+                (directFetchTestRB.Location.X + directFetchTestRB.Width) + 30,
+                directFetchTestRB.Location.Y + 10);
+            testsPanel.Controls.Add(directFetchTestButton);
 
             #endregion
 

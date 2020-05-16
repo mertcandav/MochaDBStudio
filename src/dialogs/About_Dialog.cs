@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
+using MochaDB;
 using MochaDBStudio.gui;
 using MochaDBStudio.Properties;
 
@@ -66,6 +67,7 @@ namespace MochaDBStudio.dialogs {
 
             Text = "About MochaDB Studio";
             ShowInTaskbar = false;
+            StartPosition = FormStartPosition.CenterParent;
             BackColor = Color.FromArgb(50,50,50);
             Size = new Size(400,400);
 
@@ -99,6 +101,8 @@ namespace MochaDBStudio.dialogs {
             textLabel.Text =
 $@"Version [ { Resources.Version } ]
 Distibution [ { Resources.Distribution } ]
+
+MochaDB Engine [ {MochaDatabase.Version} ]
 
 Copyrights 2020 © Mertcan Davulcu";
             Controls.Add(textLabel);
