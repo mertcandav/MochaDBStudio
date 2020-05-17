@@ -38,7 +38,7 @@ namespace MochaDBStudio.gui.editor {
         /// </summary>
         public virtual void MochaScript() {
             currentTb.VisibleRange.ClearStyle(parameterStyle,stringStyle,numberStyle,funcStyle,keywordStyle,commentStyle);
-            currentTb.VisibleRange.SetStyle(numberStyle,"^[0-9]*$");
+            currentTb.VisibleRange.SetStyle(numberStyle,"[0-9]");
             currentTb.VisibleRange.SetStyle(commentStyle,@"//.*");
             currentTb.VisibleRange.SetStyle(stringStyle,@""".*""");
             currentTb.VisibleRange.SetStyle(keywordStyle,@":");
@@ -59,13 +59,14 @@ String|Char|Long|Integer|Short|ULong|UInteger|UShort|Decimal|Double|Float|Boolea
         public virtual void Mhql() {
             currentTb.VisibleRange.ClearStyle(tagStyle,stringStyle,numberStyle,funcStyle,keywordStyle,commentStyle);
             currentTb.VisibleRange.SetStyle(tagStyle,@"\@\w.*?(( )|\n|$)");
-            currentTb.VisibleRange.SetStyle(numberStyle,"^[0-9]*$");
+            currentTb.VisibleRange.SetStyle(numberStyle,"[0-9]*");
             currentTb.VisibleRange.SetStyle(keywordStyle,
 @"\b(USE|RETURN|ORDERBY|ASC|DESC|MUST|AND|GROUPBY|FROM|AS|SELECT|REMOVE)\b",
 RegexOptions.IgnoreCase|RegexOptions.CultureInvariant);
             currentTb.VisibleRange.SetStyle(parameterStyle,
-                @"\b(BIGGER|LOWER|BIGGER|BETWEEN|EQUAL|STARTW|ENDW)\b",RegexOptions.Multiline);
-            currentTb.VisibleRange.SetStyle(funcStyle,@"\(.*\)",RegexOptions.Multiline);
+                @"\b(BIGGER|LOWER|BIGGER|BETWEEN|EQUAL|STARTW|ENDW)\b",
+                RegexOptions.Multiline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+            currentTb.VisibleRange.SetStyle(funcStyle,@"\(|\)",RegexOptions.Multiline);
             currentTb.VisibleRange.SetStyle(commentStyle,@"/\*.*\*/",RegexOptions.Singleline);
             currentTb.VisibleRange.SetStyle(stringStyle,@""".*""");
         }
