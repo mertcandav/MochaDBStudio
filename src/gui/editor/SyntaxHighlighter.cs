@@ -64,7 +64,7 @@ String|Char|Long|Integer|Short|ULong|UInteger|UShort|Decimal|Double|Float|Boolea
 @"\b(USE|RETURN|ORDERBY|ASC|DESC|MUST|AND|GROUPBY|FROM|AS|SELECT|REMOVE)\b",
 RegexOptions.IgnoreCase|RegexOptions.CultureInvariant);
             currentTb.VisibleRange.SetStyle(parameterStyle,
-                @"\b(BIGGER|LOWER|BIGGER|BETWEEN|EQUAL|STARTW|ENDW)\b",
+                @"\b(BIGGER|LOWER|BIGGER|BETWEEN|EQUAL|NOTEQUAL|STARTW|ENDW)\b",
                 RegexOptions.Multiline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
             currentTb.VisibleRange.SetStyle(funcStyle,@"\(|\)",RegexOptions.Multiline);
             currentTb.VisibleRange.SetStyle(commentStyle,@"/\*.*\*/",RegexOptions.Singleline);
