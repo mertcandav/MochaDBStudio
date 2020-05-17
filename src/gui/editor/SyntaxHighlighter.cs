@@ -61,7 +61,7 @@ String|Char|Long|Integer|Short|ULong|UInteger|UShort|Decimal|Double|Float|Boolea
             currentTb.VisibleRange.SetStyle(tagStyle,@"\@\w.*?(( )|\n|$)");
             currentTb.VisibleRange.SetStyle(numberStyle,"[0-9]*");
             currentTb.VisibleRange.SetStyle(keywordStyle,
-@"\b(USE|RETURN|ORDERBY|ASC|DESC|MUST|AND|GROUPBY|FROM|AS|SELECT|REMOVE)\b",
+@"\b(USE|RETURN|ORDERBY|ASC|DESC|MUST|AND|END|GROUPBY|FROM|AS|SELECT|REMOVE)\b",
 RegexOptions.IgnoreCase|RegexOptions.CultureInvariant);
             currentTb.VisibleRange.SetStyle(parameterStyle,
                 @"\b(BIGGER|LOWER|BIGGER|BETWEEN|EQUAL|NOTEQUAL|STARTW|ENDW)\b",

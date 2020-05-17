@@ -584,8 +584,13 @@ RETURN
                 mhqlCodeSense.AddItem(
                     new Item("USE",0,"USE","USE - Keyword",
                     "Use the x struct(s)."));
+                mhqlCodeSense.AddItem(
+                    new Item("USE *\nRETURN",2,"USE","USE - Keyword",
+                    "Use the x struct(s)."));
                 mhqlCodeSense.AddItem(new Item("MUST",0,"MUST","MUST - Keyword",
                     "Define a conditions."));
+                mhqlCodeSense.AddItem(new Item("MUST 0() END",2,"MUST","MUST - Keyword",
+                    "Define a conditions snippet."));
                 mhqlCodeSense.AddItem(new Item("REMOVE",0,"REMOVE","REMOVE - Keyword",
                     "Remove selected with SELECT keyword."));
                 mhqlCodeSense.AddItem(new Item("RETURN",0,"RETURN","RETURN - Keyword",
@@ -598,6 +603,8 @@ RETURN
                     "Sort items."));
                 mhqlCodeSense.AddItem(new Item("AND",0,"AND","AND - Keyword",
                     "Define other conditions for MUST keywords."));
+                mhqlCodeSense.AddItem(new Item("END",0,"END","END - Keyword",
+                    "Reports that MUST is over."));
                 mhqlCodeSense.AddItem(new Item("GROUPBY",0,"GROUPBY","GROUPBY - Keyword",
                     "Group by values."));
                 mhqlCodeSense.AddItem(new Item("FROM",0,"FROM","FROM - Keyword",
