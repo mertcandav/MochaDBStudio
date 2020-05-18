@@ -8,4 +8,6 @@
 <b>Dominate <a href="https://github.com/mertcandav/MochaDB">MochaDB</a> databases with MochaDB Studio!</b>
 </div>
 
+<br>
 
+[![preview](https://github.com/mertcandav/MochaDBStudio/blob/master/docs/example-gifs/preview.gif)](https://github.com/mertcandav/MochaDBStudio)
