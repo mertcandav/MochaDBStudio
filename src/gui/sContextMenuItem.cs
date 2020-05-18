@@ -54,6 +54,10 @@ namespace MochaDBStudio.gui {
                 } else {
                     e.Graphics.DrawString(Text,Font,foreBrush,ContentRectangle);
                 }
+
+                centerFormat.Alignment = StringAlignment.Far;
+                e.Graphics.DrawString(ShortcutKeyDisplayString,Font,
+                    Brushes.LightGray,ContentRectangle,centerFormat);
             }
         }
 

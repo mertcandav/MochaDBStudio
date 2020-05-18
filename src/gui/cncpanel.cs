@@ -84,7 +84,8 @@ namespace MochaDBStudio.gui {
                 mhqlCM.BackColor = Color.FromArgb(24,24,24);
                 mhqlCM.Items.Add(new sContextMenuItem("Run",
                     mhqlCM.BackColor,Color.Gray) {
-                    Image = Resources.Play
+                    Image = Resources.Play,
+                    ShortcutKeyDisplayString = "F5"
                 });
                 mhqlCM.ItemClicked += (object mhqlCM_Sender,ToolStripItemClickedEventArgs mhqlCM_e) => {
                     if(mhqlCM_e.ClickedItem.Text == "Run")
