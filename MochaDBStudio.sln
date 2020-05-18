@@ -15,6 +15,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{777EF638-166
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MochaDBStudio", "src\MochaDBStudio.csproj", "{851705E4-DC94-4770-BF9B-057984540267}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{C768414E-3EC2-4C20-80BE-2A1999133973}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "resources", "resources", "{D9C6BBFE-F7F2-4AF0-87F7-97276679D35F}"
+	ProjectSection(SolutionItems) = preProject
+		docs\resources\MochaDB_Logo.ico = docs\resources\MochaDB_Logo.ico
+		docs\resources\MochaDBStudio_Texted.png = docs\resources\MochaDBStudio_Texted.png
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +39,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{851705E4-DC94-4770-BF9B-057984540267} = {777EF638-166D-4D96-935E-62BFE08CDB4E}
+		{D9C6BBFE-F7F2-4AF0-87F7-97276679D35F} = {C768414E-3EC2-4C20-80BE-2A1999133973}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6C015094-03DF-4DE9-B793-B25685DEE8E0}
