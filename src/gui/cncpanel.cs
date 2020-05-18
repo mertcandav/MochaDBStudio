@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using MochaDB;
 using MochaDB.FileSystem;
 using MochaDB.Logging;
+using MochaDB.Mhql;
 using MochaDB.Querying;
 using MochaDB.Streams;
 using MochaDBStudio.dialogs;
@@ -694,10 +695,19 @@ RETURN
         /// Execute current MHQL code.
         /// </summary>
         public void ExecuteMHQL() {
-            MochaReader<object> results;
-            try { results = Database.ExecuteReader(mhqlEditor.Text); }
+            try {
+                var command = new MhqlCommand(mhqlEditor.Text);
+                if(command.IsExecuteCompatible()) {
+                    Database.ExecuteCommand(mhqlEditor.Text);
+                    mhqlRPanel.ShowResults(new MochaReader<object>());
+                    refreshMHQL();
+                } else {
+                    MochaReader<object> results;
+                    results = Database.ExecuteReader(mhqlEditor.Text);
+                    mhqlRPanel.ShowResults(results);
+                }
+            }
             catch(Exception excep) { errorbox.Show(excep.ToString()); return; }
-            mhqlRPanel.ShowResults(results);
         }
 
         #endregion
