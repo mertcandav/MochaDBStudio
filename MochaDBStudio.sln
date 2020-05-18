@@ -23,6 +23,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "resources", "resources", "{
 		docs\resources\MochaDBStudio_Texted.png = docs\resources\MochaDBStudio_Texted.png
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "example-gifs", "example-gifs", "{DDE9D56E-5B72-4715-9384-C70F851D862E}"
+	ProjectSection(SolutionItems) = preProject
+		docs\example-gifs\preview.gif = docs\example-gifs\preview.gif
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +45,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{851705E4-DC94-4770-BF9B-057984540267} = {777EF638-166D-4D96-935E-62BFE08CDB4E}
 		{D9C6BBFE-F7F2-4AF0-87F7-97276679D35F} = {C768414E-3EC2-4C20-80BE-2A1999133973}
+		{DDE9D56E-5B72-4715-9384-C70F851D862E} = {C768414E-3EC2-4C20-80BE-2A1999133973}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6C015094-03DF-4DE9-B793-B25685DEE8E0}
