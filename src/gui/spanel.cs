@@ -69,7 +69,8 @@ namespace MochaDBStudio.gui {
             if(my < 0 | mx < 0)
                 return;
             var form = (Form)Tag;
-            form.SetDesktopLocation(Cursor.Position.X - mx,Cursor.Position.Y - my);
+            if(form.WindowState == FormWindowState.Normal)
+                form.SetDesktopLocation(Cursor.Position.X - mx,Cursor.Position.Y - my);
         }
 
         #endregion
