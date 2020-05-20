@@ -128,7 +128,7 @@ namespace MochaDBStudio.dialogs {
                         Database.GetColumnAutoIntState(TableName,tableGrid.Columns[index].HeaderText);
 
                     tableGrid.Rows[e.RowIndex - 1].Cells[index].Value = autoIntValue + 1;
-                    datas[index] = null;
+                    datas[index] = "".ToMochaData();
 
                     continue;
                 }
