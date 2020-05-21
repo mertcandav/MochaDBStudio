@@ -82,7 +82,7 @@ namespace MochaDBStudio.dialogs {
                 return;
 
             string path = fs.Combine(pathTB.Text,name);
-            if(fs.ExistsFile(path + ".mochadb")) {
+            if(fs.ExistsFile(path + ".mhdb")) {
                 errorbox.Show(
 $@"[MochaDB-Studio]
 A database with this name already exists on this path.");

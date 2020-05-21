@@ -103,7 +103,7 @@ namespace MochaDBStudio.dialogs {
             using(OpenFileDialog opd = new OpenFileDialog()) {
                 opd.Title = "Select MochaDB database file.";
                 opd.Multiselect = false;
-                opd.Filter ="All MochaDB database files.|*.mochadb";
+                opd.Filter ="All MochaDB database files.|*.mhdb";
 
                 if(opd.ShowDialog()==DialogResult.OK) {
                     pathTB.Text=opd.FileName;
