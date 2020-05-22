@@ -104,7 +104,20 @@ namespace MochaDBStudio.dialogs {
                     e.RowIndex,value);
             } catch(Exception excep) {
                 tableGrid.Updating = false;
-                tableGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = tableGrid.Tag;
+                MochaDataType dataType =
+                    Database.GetColumnDataType(
+                        TableName,
+                        tableGrid.Columns[e.ColumnIndex].HeaderText);
+                if(dataType == MochaDataType.AutoInt) {
+                    if(tableGrid.Rows.Count == 1) {
+                        tableGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = 1;
+                    } else {
+                        var value = 1 + int.Parse(tableGrid.Rows[e.RowIndex-1].Cells[e.ColumnIndex].Value.ToString());
+                        tableGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = value;
+                    }
+                } else {
+                    tableGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = tableGrid.Tag;
+                }
                 errorbox.Show(excep.ToString());
             }
 #if DEBUG
