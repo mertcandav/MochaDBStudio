@@ -93,7 +93,7 @@ namespace MochaDBStudio.dialogs {
                 db.Dispose();
                 errorbox.Show("[Exception]\n" + excep.Message + excep);
             }
-        }
+        }  
 
         #endregion
 
@@ -127,7 +127,7 @@ namespace MochaDBStudio.dialogs {
     public sealed partial class ConnectDB_Dialog {
         #region Components
 
-        private stextbox
+        public stextbox
             pathTB,
             passwordTB;
 

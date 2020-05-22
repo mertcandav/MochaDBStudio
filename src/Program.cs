@@ -5,12 +5,15 @@ namespace MochaDBStudio {
     /// <summary>
     /// Base class for application.
     /// </summary>
-    public static class Program {
+    internal static class Program {
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
+        /// <param name="args">Start arguments.</param>
         [STAThread]
-        private static void Main() {
+        private static void Main(string[] args) {
+            Arguments = args;
+
             //Run application.
             RunApplication();
         }
@@ -24,5 +27,14 @@ namespace MochaDBStudio {
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Studio());
         }
+
+        #region Properties
+
+        /// <summary>
+        /// Start arguments.
+        /// </summary>
+        public static string[] Arguments { get; private set; }
+
+        #endregion
     }
 }

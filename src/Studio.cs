@@ -28,6 +28,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using MochaDB;
 using MochaDBStudio.dialogs;
+using MochaDBStudio.engine;
 using MochaDBStudio.gui;
 using MochaDBStudio.Properties;
 
@@ -51,6 +52,21 @@ namespace MochaDBStudio {
 
         protected override void OnLoad(EventArgs e) {
             base.OnLoad(e);
+
+            for(int dex = 0; dex < Program.Arguments.Length; dex++) {
+                var arg = Program.Arguments[dex];
+                var finfo = fs.GetFileInfo(arg);
+
+                if(finfo.Extension != ".mhdb")
+                    continue;
+                if(!finfo.Exists)
+                    continue;
+
+                ConnectDB_Dialog dialog = new ConnectDB_Dialog();
+                dialog.CNCList = connectionMenu;
+                dialog.pathTB.Text = arg;
+                dialog.ShowDialog();
+            }
 
             Focus();
         }
