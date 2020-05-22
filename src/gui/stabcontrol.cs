@@ -50,7 +50,7 @@ namespace MochaDBStudio.gui {
                 }
 
             if(SelectedIndex != -1)
-                using(var pen = new Pen(Color.Gray,2)) {
+                using(var pen = new Pen(Color.DeepSkyBlue,2)) {
                     var rect = GetRect(SelectedIndex);
                     e.Graphics.DrawLine(pen,lineX,rect.Y+rect.Height,lineX+(rect.Width),rect.Y+rect.Height);
                 }
