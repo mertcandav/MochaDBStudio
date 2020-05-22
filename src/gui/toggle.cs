@@ -19,7 +19,7 @@ namespace MochaDBStudio.gui {
             textingDrawing = true;
 
         private int
-            index = 50;
+            index = 45;
 
         #endregion
 
@@ -57,12 +57,12 @@ namespace MochaDBStudio.gui {
 
             //Checked Area.
             using(SolidBrush backBrush = new SolidBrush(Color.DodgerBlue)) {
-                if(!Checked) backBrush.Color = Color.Red;
+                if(!Checked) backBrush.Color = Color.Gray;
 
                 if(TextingDraw) {
-                    e.Graphics.FillPie(backBrush,Width - 50,0,20,Height - 1,0,360);
-                    e.Graphics.FillPie(backBrush,Width - 22,0.19f,20,Height - 1.7f,0,360);
-                    e.Graphics.FillRectangle(backBrush,Width - 38,0,27,Height - 1);
+                    e.Graphics.FillPie(backBrush,Width - 50,1,20,Height-2,0,360);
+                    e.Graphics.FillPie(backBrush,Width - 22,1,20,Height-2,0,360);
+                    e.Graphics.FillRectangle(backBrush,Width - 38,1,27,Height-2);
                 } else {
                     e.Graphics.FillPie(backBrush,0,0,20,Height - 1,0,360);
                     e.Graphics.FillPie(backBrush,Width - 20,0,20,Height - 1,0,360);
@@ -73,9 +73,9 @@ namespace MochaDBStudio.gui {
             //CheckState.
             using(SolidBrush backBrush = new SolidBrush(Color.Gainsboro)) {
                 if(TextingDraw) {
-                    e.Graphics.FillPie(backBrush,Width - index,0.19f,20,Height - 1.7f,0,360);
+                    e.Graphics.FillPie(backBrush,Width - index,4,12,12,0,360);
                 } else {
-                    e.Graphics.FillPie(backBrush,Width - index,0,20,Height - 1,0,360);
+                    e.Graphics.FillPie(backBrush,Width - index,4,12,12,0,360);
                 }
             }
 
@@ -99,12 +99,12 @@ namespace MochaDBStudio.gui {
                 if(TextingDraw) {
                     var task = new Task(() => {
                         if(value) {
-                            for(; index >= 22; index--) {
+                            for(; index >= 18; index--) {
                                 Invalidate();
                                 Thread.Sleep(1);
                             }
                         } else {
-                            for(; index <= 50; index++) {
+                            for(; index <= 45; index++) {
                                 Invalidate();
                                 Thread.Sleep(1);
                             }
@@ -114,12 +114,12 @@ namespace MochaDBStudio.gui {
                 } else {
                     var task = new Task(() => {
                         if(value) {
-                            for(; index <= 20; index++) {
+                            for(; index <= 18; index++) {
                                 Invalidate();
                                 Thread.Sleep(1);
                             }
                         } else {
-                            for(; index >= 0; index--) {
+                            for(; index >= 45; index--) {
                                 Invalidate();
                                 Thread.Sleep(1);
                             }
