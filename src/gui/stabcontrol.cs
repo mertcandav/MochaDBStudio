@@ -75,12 +75,12 @@ namespace MochaDBStudio.gui {
                         return;
 
                     if(rect.X <= lineX) {
-                        for(; lineX >= rect.X; lineX-=2) {
+                        for(; lineX >= rect.X; lineX-=4) {
                             Invalidate();
                             Thread.Sleep(1);
                         }
                     } else {
-                        for(; lineX <= rect.X; lineX+=2) {
+                        for(; lineX <= rect.X; lineX+=4) {
                             Invalidate();
                             Thread.Sleep(1);
                         }
