@@ -38,11 +38,11 @@ namespace MochaDBStudio.gui.editor {
         /// </summary>
         public virtual void MochaScript() {
             currentTb.VisibleRange.ClearStyle(parameterStyle,stringStyle,numberStyle,funcStyle,keywordStyle,commentStyle);
-            currentTb.VisibleRange.SetStyle(numberStyle,"[0-9]");
             currentTb.VisibleRange.SetStyle(commentStyle,@"//.*");
             currentTb.VisibleRange.SetStyle(stringStyle,@""".*""");
             currentTb.VisibleRange.SetStyle(keywordStyle,@":");
             currentTb.VisibleRange.SetStyle(parameterStyle,@"(:.*)|(:.*:)");
+            currentTb.VisibleRange.SetStyle(numberStyle,"[0-9]");
             currentTb.VisibleRange.SetStyle(funcStyle,@".*?:",
 RegexOptions.Multiline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
             currentTb.VisibleRange.SetStyle(keywordStyle,@"(if|else|True|False|Provider|elif|echo|compilerevent|Begin|Final|delete|func|

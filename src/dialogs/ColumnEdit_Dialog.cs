@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
-using System.Linq.Dynamic;
 using System.Windows.Forms;
 using MochaDB;
 using MochaDBStudio.gui;

@@ -19,7 +19,7 @@ namespace MochaDBStudio.gui {
             textingDrawing = true;
 
         private int
-            index = 45;
+            index = 46;
 
         #endregion
 
@@ -104,7 +104,7 @@ namespace MochaDBStudio.gui {
                                 Thread.Sleep(1);
                             }
                         } else {
-                            for(; index <= 45; index++) {
+                            for(; index <= 46; index++) {
                                 Invalidate();
                                 Thread.Sleep(1);
                             }
@@ -119,7 +119,7 @@ namespace MochaDBStudio.gui {
                                 Thread.Sleep(1);
                             }
                         } else {
-                            for(; index >= 45; index--) {
+                            for(; index >= 46; index--) {
                                 Invalidate();
                                 Thread.Sleep(1);
                             }

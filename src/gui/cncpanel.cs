@@ -364,6 +364,16 @@ RETURN
 
         #endregion
 
+        #region getMochaScriptButton
+
+        private void GetMochaScriptButton_Click(object sender,EventArgs e) {
+            MochaScript_Dialog dialog = new MochaScript_Dialog();
+            dialog.codeBox.Text = Database.GetMochaScript();
+            dialog.ShowDialog();
+        }
+
+        #endregion
+
         #region Database
 
         private void Database_Changed(object sender,EventArgs e) {
@@ -730,7 +740,8 @@ RETURN
         private sbutton
             mhqlTestButton,
             mhqlHardTestButton,
-            directFetchTestButton;
+            directFetchTestButton,
+            getMochaScriptButton;
 
         private stabcontrol
             tab;
@@ -1179,6 +1190,21 @@ RETURN
             descriptionTB.InputSize = new Size(descriptionTB.Width,200);
             descriptionTB.TextChanged +=DescriptionTB_TextChanged;
             settingsPage.Controls.Add(descriptionTB);
+
+            #endregion
+
+            #region getMochaScriptButton
+
+            getMochaScriptButton = new sbutton();
+            getMochaScriptButton.Text = "Get MochaScript";
+            getMochaScriptButton.Size = new Size(100,25);
+            getMochaScriptButton.BackColor = Color.Gray;
+            getMochaScriptButton.MouseEnterColor = Color.DimGray;
+            getMochaScriptButton.MouseDownColor = Color.DodgerBlue;
+            getMochaScriptButton.Location = new Point(descriptionTB.Location.X,
+                descriptionTB.Location.Y+descriptionTB.Height+20);
+            getMochaScriptButton.Click+=GetMochaScriptButton_Click;
+            settingsPage.Controls.Add(getMochaScriptButton);
 
             #endregion
         }
