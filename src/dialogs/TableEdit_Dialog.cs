@@ -117,7 +117,8 @@ namespace MochaDBStudio.dialogs {
         private void TableGrid_RowsAdded(object sender,DataGridViewRowsAddedEventArgs e) {
             if(tableGrid.Updating)
                 return;
-                        tableGrid.Updating = true;
+            
+            tableGrid.Updating = true;
             MochaData[] datas = new MochaData[tableGrid.ColumnCount];
 
             for(int index = 0; index < tableGrid.ColumnCount; index++) {
@@ -127,7 +128,7 @@ namespace MochaDBStudio.dialogs {
                         Database.GetColumnAutoIntState(TableName,tableGrid.Columns[index].HeaderText);
 
                     tableGrid.Rows[e.RowIndex - 1].Cells[index].Value = autoIntValue + 1;
-                    datas[index] = "".ToMochaData();
+                    datas[index] = null;
                     continue;
                 }
 
