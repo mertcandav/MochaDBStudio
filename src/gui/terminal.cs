@@ -345,8 +345,8 @@ namespace MochaDBStudio.gui {
             TerminalInput input = this[index];
             int Y = 0;
             for(int inputIndex = 0; inputIndex < index; inputIndex++)
-                Y += this[inputIndex].Height;
-            Rectangle Rect = new Rectangle(input.BaseWidth,Y,ValidateRect.Width,input.Height);
+                Y += this[inputIndex].Height + 5;
+            Rectangle Rect = new Rectangle(input.BaseWidth,Y,ValidateRect.Width,input.Height + 5);
             return Rect;
         }
 
