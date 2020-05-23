@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MochaDB;
@@ -98,20 +99,22 @@ namespace MochaDBStudio.gui {
             term.Select();
             term.UseUserInput=false;
             scriptEditor.Enabled = false;
+            ((Studio)Parent.Parent).scriptCM.Items[2].Enabled = false;
             term.AddInput(new TerminalInput(string.Empty,
                 "Debugging MochaScript code and running...",null,term.Font),false);
             new Task(() => {
                 term.Clear();
                 try {
-                    debugger.DebugRun();
-                    term.AddInput(new TerminalInput(string.Empty,
-                        "This MochaScript code debugged and runed sucessfully.\n",Color.LimeGreen,null,term.Font),false);
+                debugger.DebugRun();
+                term.AddInput(new TerminalInput(string.Empty,
+                    "This MochaScript code debugged and runed sucessfully.\n",Color.LimeGreen,null,term.Font),false);
                 } catch(Exception excep) {
                     term.AddInput(new TerminalInput(string.Empty,
                         excep.ToString() + "\n",Color.Red,null,term.Font),false);
                 }
                 term.UseUserInput=true;
                 scriptEditor.Enabled = true;
+                ((Studio)Parent.Parent).scriptCM.Items[2].Enabled = true;
                 scriptEditor.Select();
             }).Start();
         }
@@ -216,6 +219,7 @@ namespace MochaDBStudio.gui {
             term.BackColor = Color.FromArgb(40,40,40);
             term.BannedCommandNamespaces = new[] { "cnc" };
             term.InputProcessing+=Term_InputProcessing;
+            term.SetBase(fs.GetFileNameFromPath(Path));
             scriptContainer.Panel2.Controls.Add(term);
 
             #endregion

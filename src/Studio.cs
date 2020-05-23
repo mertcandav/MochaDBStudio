@@ -248,7 +248,7 @@ namespace MochaDBStudio {
         private slidemenu
             connectionMenu;
 
-        private sContextMenu
+        public sContextMenu
             generalCM,
             scriptCM,
             connectionCM,
