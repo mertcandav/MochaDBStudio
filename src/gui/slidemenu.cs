@@ -57,7 +57,7 @@ namespace MochaDBStudio.gui {
         public event EventHandler<EventArgs> CurrentItemChanged;
         protected virtual void OnCurrentItemChanged(object sender,EventArgs e) {
             if(CurrentItem != null)
-                ((cncpanel)((sbutton)sender).Tag).BringToFront();
+                ((Control)((sbutton)sender).Tag).BringToFront();
 
             // Invoke.
             CurrentItemChanged?.Invoke(sender,e);
@@ -148,8 +148,29 @@ namespace MochaDBStudio.gui {
             item.MouseEnterColor = Color.Gray;
             item.MouseDownColor = Color.DodgerBlue;
             item.Image = Resources.Database;
+            item.Tag2 = "Database";
             item.Click +=item_Click;
             Grid.Controls.Add((cncpanel)item.Tag);
+            Controls.Add(item);
+            CurrentItem = item;
+        }
+
+        /// <summary>
+        /// Add script item.
+        /// </summary>
+        /// <param name="item">Item to add.</param>
+        public void AddScriptItem(sbutton item) {
+            item.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left;
+            item.Size = new Size(Width-2,30);
+            item.Location = new Point(2,Controls.Count * 30);
+            item.BackColor = BackColor;
+            item.ForeColor = ForeColor;
+            item.MouseEnterColor = Color.Gray;
+            item.MouseDownColor = Color.DodgerBlue;
+            item.Image = Resources.Script;
+            item.Tag2 = "Script";
+            item.Click +=scriptitem_Click;
+            Grid.Controls.Add((scriptpanel)item.Tag);
             Controls.Add(item);
             CurrentItem = item;
         }
@@ -163,17 +184,27 @@ namespace MochaDBStudio.gui {
             Close();
         }
 
+        private void scriptitem_Click(object sender,EventArgs e) {
+            CurrentItem = sender as sbutton;
+            Close();
+        }
+
         #endregion
 
         #region Methods
 
         /// <summary>
-        /// Disconnect from current item.
+        /// Close from current item.
         /// </summary>
-        public void Disconnect() {
-            var ccpanel = (CurrentItem.Tag as cncpanel);
-            ccpanel.Database.Disconnect();
-            ccpanel.Dispose();
+        public void close() {
+            if(CurrentItem.Tag2 == "Database") {
+                var ccpanel = (CurrentItem.Tag as cncpanel);
+                ccpanel.Database.Disconnect();
+                ccpanel.Dispose();
+            } else {
+                var spanel = (CurrentItem.Tag as scriptpanel);
+                spanel.Dispose();
+            }
             var dex = Controls.IndexOf(CurrentItem);
             Controls.RemoveAt(dex);
             CurrentItem.Dispose();

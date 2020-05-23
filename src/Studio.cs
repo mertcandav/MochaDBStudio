@@ -57,15 +57,20 @@ namespace MochaDBStudio {
                 var arg = Program.Arguments[dex];
                 var finfo = fs.GetFileInfo(arg);
 
-                if(finfo.Extension != ".mhdb")
-                    continue;
                 if(!finfo.Exists)
                     continue;
 
-                ConnectDB_Dialog dialog = new ConnectDB_Dialog();
-                dialog.CNCList = connectionMenu;
-                dialog.pathTB.Text = arg;
-                dialog.ShowDialog();
+                if(finfo.Extension == ".mhdb") {
+                    ConnectDB_Dialog dialog = new ConnectDB_Dialog();
+                    dialog.CNCList = connectionMenu;
+                    dialog.pathTB.Text = arg;
+                    dialog.ShowDialog();
+                } else if(finfo.Extension == ".mhsc") {
+                    OpenScript_Dialog dialog = new OpenScript_Dialog();
+                    dialog.CNCList = connectionMenu;
+                    dialog.pathTB.Text = arg;
+                    dialog.OpenButton_Click(null,null);
+                }
             }
 
             Focus();
@@ -122,16 +127,38 @@ namespace MochaDBStudio {
         #region connectionCM
 
         private void ConnectionCM_ItemClicked(object sender,ToolStripItemClickedEventArgs e) {
-            if(e.ClickedItem.Text == "Create") {
-                var dialog = new CreateDB_Dialog();
-                dialog.CNCList = connectionMenu;
-                dialog.ShowDialog();
-            } else if(e.ClickedItem.Text == "Connect") {
+            if(e.ClickedItem.Text == "Disconnect") {
+                connectionMenu.close();
+            }
+        }
+
+        #endregion
+
+        #region generalCM
+
+        private void GeneralCM_ItemClicked(object sender,ToolStripItemClickedEventArgs e) {
+            if(e.ClickedItem.Text == "Connect MochaDB") {
                 var dialog = new ConnectDB_Dialog();
                 dialog.CNCList = connectionMenu;
                 dialog.ShowDialog();
-            } else if(e.ClickedItem.Text == "Disconnect") {
-                connectionMenu.Disconnect();
+            } else if(e.ClickedItem.Text == "Open MochaScript") {
+                var dialog = new OpenScript_Dialog();
+                dialog.CNCList = connectionMenu;
+                dialog.ShowDialog();
+            }
+        }
+
+        #endregion
+
+        #region scriptCM
+
+        private void ScriptCM_ItemClicked(object sender,ToolStripItemClickedEventArgs e) {
+            if(e.ClickedItem.Text == "Debug & Run") {
+                ((scriptpanel)(connectionMenu.CurrentItem.Tag)).DebugAsync();
+            } else if(e.ClickedItem.Text == "Save") {
+                ((scriptpanel)(connectionMenu.CurrentItem.Tag)).Save();
+            } else if(e.ClickedItem.Text == "Exit") {
+                connectionMenu.close();
             }
         }
 
@@ -153,7 +180,27 @@ namespace MochaDBStudio {
         #region connectionMenu
 
         private void ConnectionMenu_CurrentItemChanged(object sender,EventArgs e) {
-            connectionCM.Items[2].Enabled = sender != null;
+            if(sender != null) {
+                if(connectionMenu.CurrentItem.Tag2 == "Database") {
+                    connectionButton.Location = new Point(
+                        generalButton.Location.X+generalButton.Width,0);
+                    helpButton.Location = new Point(
+                        connectionButton.Location.X+connectionButton.Width,0);
+                    connectionButton.BringToFront();
+                } else {
+                    scriptButton.Location = new Point(
+                        generalButton.Location.X+generalButton.Width,0);
+                    helpButton.Location = new Point(
+                        scriptButton.Location.X+scriptButton.Width,0);
+                    scriptButton.BringToFront();
+                }
+            } else {
+                generalButton.BringToFront();
+                connectionButton.Location = generalButton.Location;
+                scriptButton.Location = generalButton.Location;
+                helpButton.Location = new Point(
+                    generalButton.Location.X+generalButton.Width,0);
+            }
         }
 
         #endregion
@@ -171,6 +218,8 @@ namespace MochaDBStudio {
             closeButton,
             fsButton,
             minimizeButton,
+            generalButton,
+            scriptButton,
             connectionButton,
             helpButton,
             iconButton;
@@ -179,6 +228,8 @@ namespace MochaDBStudio {
             connectionMenu;
 
         private sContextMenu
+            generalCM,
+            scriptCM,
             connectionCM,
             helpCM;
 
@@ -275,23 +326,49 @@ namespace MochaDBStudio {
 
             #endregion
 
+            #region generalCM
+
+            generalCM = new sContextMenu();
+            generalCM.ForeColor = Color.White;
+            generalCM.BackColor = titlePanel.BackColor;
+            generalCM.Items.Add(new sContextMenuItem("Connect MochaDB",
+                generalCM.BackColor,Color.Gray) {
+                Image = Resources.Connect
+            });
+            generalCM.Items.Add(new sContextMenuItem("Open MochaScript",
+                generalCM.BackColor,Color.Gray) {
+                Image = Resources.Connect
+            });
+            generalCM.ItemClicked+=GeneralCM_ItemClicked;
+
+            #endregion
+
+            #region generalButton
+
+            generalButton = new sbutton();
+            generalButton.Font = new Font("Microsoft Sans Serif",9);
+            generalButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Top;
+            generalButton.Text = "General";
+            generalButton.ForeColor = Color.White;
+            generalButton.BackColor = titlePanel.BackColor;
+            generalButton.MouseEnterColor = Color.Gray;
+            generalButton.MouseDownColor = Color.DodgerBlue;
+            generalButton.Size = new Size(70,titlePanel.Height);
+            generalButton.Location = new Point(iconButton.Width + 5,0);
+            generalButton.ContextMenu = generalCM;
+            generalButton.DisableClick = true;
+            titlePanel.Controls.Add(generalButton);
+
+            #endregion
+
             #region connectionCM
 
             connectionCM = new sContextMenu();
             connectionCM.ForeColor = Color.White;
             connectionCM.BackColor = titlePanel.BackColor;
-            connectionCM.Items.Add(new sContextMenuItem("Create",
-                connectionCM.BackColor,Color.Gray) {
-                Image = Resources.Create
-            });
-            connectionCM.Items.Add(new sContextMenuItem("Connect",
-                connectionCM.BackColor,Color.Gray) {
-                Image = Resources.Connect
-            });
             connectionCM.Items.Add(new sContextMenuItem("Disconnect",
                 connectionCM.BackColor,Color.Gray) {
-                Image = Resources.Disconnect,
-                Enabled = false
+                Image = Resources.Disconnect
             });
             connectionCM.ItemClicked+=ConnectionCM_ItemClicked;
 
@@ -312,6 +389,47 @@ namespace MochaDBStudio {
             connectionButton.ContextMenu = connectionCM;
             connectionButton.DisableClick = true;
             titlePanel.Controls.Add(connectionButton);
+
+            #endregion
+
+            #region scriptCM
+
+            scriptCM = new sContextMenu();
+            scriptCM.ForeColor = Color.White;
+            scriptCM.BackColor = titlePanel.BackColor;
+            scriptCM.Items.Add(new sContextMenuItem("Debug & Run",
+                connectionCM.BackColor,Color.Gray) {
+                Image = Resources.Play,
+                ShortcutKeyDisplayString = "F5"
+            });
+            scriptCM.Items.Add(new sContextMenuItem("Save",
+                connectionCM.BackColor,Color.Gray) {
+                Image = Resources.Save,
+                ShortcutKeyDisplayString = "Ctrl+S"
+            });
+            scriptCM.Items.Add(new sContextMenuItem("Exit",
+                scriptCM.BackColor,Color.Gray) {
+                Image = Resources.Disconnect
+            });
+            scriptCM.ItemClicked+=ScriptCM_ItemClicked;
+
+            #endregion
+
+            #region scriptButton
+
+            scriptButton = new sbutton();
+            scriptButton.Font = new Font("Microsoft Sans Serif",9);
+            scriptButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Top;
+            scriptButton.Text = "Script";
+            scriptButton.ForeColor = Color.White;
+            scriptButton.BackColor = titlePanel.BackColor;
+            scriptButton.MouseEnterColor = Color.Gray;
+            scriptButton.MouseDownColor = Color.DodgerBlue;
+            scriptButton.Size = new Size(70,titlePanel.Height);
+            scriptButton.Location = new Point(iconButton.Width + 5,0);
+            scriptButton.ContextMenu = scriptCM;
+            scriptButton.DisableClick = true;
+            titlePanel.Controls.Add(scriptButton);
 
             #endregion
 
@@ -376,6 +494,8 @@ namespace MochaDBStudio {
             connectionMenu.Close();
 
             #endregion
+
+            generalButton.BringToFront();
         }
     }
 }

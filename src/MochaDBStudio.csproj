@@ -102,6 +102,9 @@
     <Compile Include="dialogs\MochaScript_Dialog.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="dialogs\OpenScript_Dialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="dialogs\SectorEdit_Dialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -161,6 +164,9 @@
     <Compile Include="gui\codesense\Range.cs" />
     <Compile Include="gui\codesense\TextBoxWrapper.cs" />
     <Compile Include="gui\resultPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="gui\scriptpanel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="gui\stooltip.cs">
@@ -308,6 +314,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Play.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Script.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

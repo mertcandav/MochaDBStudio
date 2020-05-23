@@ -83,10 +83,23 @@ namespace MochaDBStudio.gui {
 
         #region Properties
 
+        public override string Text {
+            get => base.Text;
+            set {
+                base.Text=value;
+                Invalidate();
+            }
+        }
+
         /// <summary>
         /// ContextMenu.
         /// </summary>
         public sContextMenu ContextMenu { get; set; }
+
+        /// <summary>
+        /// Tag 2.
+        /// </summary>
+        public object Tag2 { get; set; }
 
         /// <summary>
         /// Disable mouse left click.

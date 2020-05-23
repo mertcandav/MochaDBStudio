@@ -597,11 +597,11 @@ RETURN
                     new Item("USE",0,"USE","USE - Keyword",
                     "Use the x struct(s)."));
                 mhqlCodeSense.AddItem(
-                    new Item("USE *\nRETURN",2,"USE","USE - Keyword",
+                    new Item("USE *\nRETURN",2,"USE","USE - Snippet",
                     "Use the x struct(s)."));
                 mhqlCodeSense.AddItem(new Item("MUST",0,"MUST","MUST - Keyword",
                     "Define a conditions."));
-                mhqlCodeSense.AddItem(new Item("MUST 0() END",2,"MUST","MUST - Keyword",
+                mhqlCodeSense.AddItem(new Item("MUST 0() END",2,"MUST","MUST - Snippet",
                     "Define a conditions snippet."));
                 mhqlCodeSense.AddItem(new Item("REMOVE",0,"REMOVE","REMOVE - Keyword",
                     "Remove selected with SELECT keyword."));
@@ -635,7 +635,7 @@ RETURN
                     "Returns a specified numerical bigger and equal condition."));
                 mhqlCodeSense.AddItem(new Item("BIGGER",1,"BIGGER","BIGGER - Function",
                     "Returns a specified numerical lower and equal condition."));
-                mhqlCodeSense.AddItem(new Item("USE *\nRETURN",2,"BODY","BODY - Function",
+                mhqlCodeSense.AddItem(new Item("USE *\nRETURN",2,"BODY","BODY - Snippet",
                     "USE body snippet."));
 
                 var tables = Database.GetTables();
