@@ -65,11 +65,13 @@ namespace MochaDBStudio {
                     dialog.CNCList = connectionMenu;
                     dialog.pathTB.Text = arg;
                     dialog.ShowDialog();
+                    dialog.Dispose();
                 } else if(finfo.Extension == ".mhsc") {
                     OpenScript_Dialog dialog = new OpenScript_Dialog();
                     dialog.CNCList = connectionMenu;
                     dialog.pathTB.Text = arg;
                     dialog.OpenButton_Click(null,null);
+                    dialog.Dispose();
                 }
             }
 
@@ -127,6 +129,8 @@ namespace MochaDBStudio {
         #region connectionCM
 
         private void ConnectionCM_ItemClicked(object sender,ToolStripItemClickedEventArgs e) {
+            connectionCM.Close();
+
             if(e.ClickedItem.Text == "Disconnect") {
                 connectionMenu.close();
             }
@@ -137,14 +141,27 @@ namespace MochaDBStudio {
         #region generalCM
 
         private void GeneralCM_ItemClicked(object sender,ToolStripItemClickedEventArgs e) {
+            generalCM.Close();
             if(e.ClickedItem.Text == "Connect MochaDB") {
                 var dialog = new ConnectDB_Dialog();
                 dialog.CNCList = connectionMenu;
                 dialog.ShowDialog();
+                dialog.Dispose();
             } else if(e.ClickedItem.Text == "Open MochaScript") {
                 var dialog = new OpenScript_Dialog();
                 dialog.CNCList = connectionMenu;
                 dialog.ShowDialog();
+                dialog.Dispose();
+            } else if(e.ClickedItem.Text == "Create MochaDB") {
+                var dialog = new CreateDB_Dialog();
+                dialog.CNCList = connectionMenu;
+                dialog.ShowDialog();
+                dialog.Dispose();
+            } else if(e.ClickedItem.Text == "Create MochaScript") {
+                var dialog = new CreateScript_Dialog();
+                dialog.CNCList = connectionMenu;
+                dialog.ShowDialog();
+                dialog.Dispose();
             }
         }
 
@@ -153,6 +170,8 @@ namespace MochaDBStudio {
         #region scriptCM
 
         private void ScriptCM_ItemClicked(object sender,ToolStripItemClickedEventArgs e) {
+            scriptCM.Close();
+
             if(e.ClickedItem.Text == "Debug & Run") {
                 ((scriptpanel)(connectionMenu.CurrentItem.Tag)).DebugAsync();
             } else if(e.ClickedItem.Text == "Save") {
@@ -167,6 +186,8 @@ namespace MochaDBStudio {
         #region helpCM
 
         private void HelpCM_ItemClicked(object sender,ToolStripItemClickedEventArgs e) {
+            helpCM.Close();
+
             if(e.ClickedItem.Text == "MochaDB Documentation") {
                 Process.Start("https://github.com/mertcandav/MochaDB/wiki");
             } else if(e.ClickedItem.Text == "About MochaDB Studio") {
@@ -337,7 +358,15 @@ namespace MochaDBStudio {
             });
             generalCM.Items.Add(new sContextMenuItem("Open MochaScript",
                 generalCM.BackColor,Color.Gray) {
-                Image = Resources.Connect
+                Image = Resources.Script
+            });
+            generalCM.Items.Add(new sContextMenuItem("Create MochaDB",
+                generalCM.BackColor,Color.Gray) {
+                Image = Resources.Create
+            });
+            generalCM.Items.Add(new sContextMenuItem("Create MochaScript",
+                generalCM.BackColor,Color.Gray) {
+                Image = Resources.Create
             });
             generalCM.ItemClicked+=GeneralCM_ItemClicked;
 

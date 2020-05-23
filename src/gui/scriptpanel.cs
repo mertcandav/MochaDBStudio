@@ -41,7 +41,9 @@ namespace MochaDBStudio.gui {
         #region Overrides
 
         protected override void Dispose(bool disposing) {
-            debugger.Dispose();
+            if(debugger != null)
+                debugger.Dispose();
+
             base.Dispose(disposing);
         }
 
