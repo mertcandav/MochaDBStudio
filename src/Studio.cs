@@ -100,12 +100,27 @@ namespace MochaDBStudio {
 
         #endregion
 
+        #region titlePanel
+
+        private void TitlePanel_MouseDoubleClick(object sender,MouseEventArgs e) {
+            if(e.Button == MouseButtons.Left) {
+                FsButton_Click(null,null);
+            }
+        }
+
+        #endregion
+
         #region fsButton
 
         private void FsButton_Click(object sender,System.EventArgs e) {
             WindowState =
-                WindowState == FormWindowState.Maximized ?
-                    FormWindowState.Normal : FormWindowState.Maximized;
+                WindowState == FormWindowState.Normal ?
+                    FormWindowState.Maximized :
+                    FormWindowState.Normal;
+           fsButton.Text =
+                WindowState == FormWindowState.Normal ?
+                    "⬜" :
+                    "❐";
         }
 
         #endregion
@@ -225,6 +240,17 @@ namespace MochaDBStudio {
         }
 
         #endregion
+
+        #region Location override
+
+        protected override void OnLocationChanged(EventArgs e) {
+            if(fsButton.Text != "⬜")
+                fsButton.Text = "⬜";
+
+            base.OnLocationChanged(e);
+        }
+
+        #endregion
     }
 
     // Designer.
@@ -274,6 +300,7 @@ namespace MochaDBStudio {
             titlePanel.Dock = DockStyle.Top;
             titlePanel.Height = 30;
             titlePanel.BackColor = Color.FromArgb(24,24,24);
+            titlePanel.MouseDoubleClick+=TitlePanel_MouseDoubleClick;
             titlePanel.Moveable = true;
             titlePanel.Tag = this;
             Controls.Add(titlePanel);
@@ -316,8 +343,7 @@ namespace MochaDBStudio {
 
             fsButton = new sbutton();
             fsButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right | AnchorStyles.Top;
-            fsButton.Text = "□";
-            fsButton.Font = new Font(fsButton.Font.Name,13);
+            fsButton.Text = "⬜";
             fsButton.ForeColor = Color.White;
             fsButton.BackColor = titlePanel.BackColor;
             fsButton.MouseEnterColor = Color.Gray;

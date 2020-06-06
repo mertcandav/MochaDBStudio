@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
+using MochaDBStudio.engine;
 
 namespace MochaDBStudio.gui {
     /// <summary>
@@ -44,15 +45,6 @@ namespace MochaDBStudio.gui {
 
         #region Mouse Override
 
-        protected override void OnMouseDoubleClick(MouseEventArgs e) {
-            base.OnMouseDoubleClick(e);
-
-            ((Form)Tag).WindowState =
-                ((Form)Tag).WindowState == FormWindowState.Maximized ?
-                FormWindowState.Normal :
-                FormWindowState.Maximized;
-        }
-
         protected override void OnMouseDown(MouseEventArgs e) {
             mx = e.X;
             my = e.Y + 40;
@@ -66,11 +58,8 @@ namespace MochaDBStudio.gui {
         protected override void OnMouseMove(MouseEventArgs e) {
             if(!Moveable)
                 return;
-            if(my < 0 | mx < 0)
-                return;
-            var form = (Form)Tag;
-            if(form.WindowState == FormWindowState.Normal)
-                form.SetDesktopLocation(Cursor.Position.X - mx,Cursor.Position.Y - my);
+            api.ReleaseCapture();
+            api.SendMessage(((Control)Parent).Handle,api.WM_NCLBUTTONDOWN,api.HT_CAPTION,0);
         }
 
         #endregion
