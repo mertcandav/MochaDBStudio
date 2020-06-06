@@ -266,8 +266,8 @@ namespace MochaDBStudio.gui {
                 for(short counter = 1; counter <= 5; counter++) {
                     sw.Start();
                     Database.ExecuteScalar(
-@"
-SELECT ""[A-z]""
+$@"
+SELECT {(double.Parse(MochaDatabase.Version) < double.Parse("3.4.6") ? "\"[A-z]\"" : "([A-z])")}
 RETURN
 ");
                     sw.Stop();
@@ -303,12 +303,12 @@ RETURN
                 for(short counter = 1; counter <= 5; counter++) {
                     sw.Start();
                     Database.ExecuteScalar(
-@"
+$@"
 @TABLES
 @STACKS
 @SECTORS
-SELECT ""[A-z]""
-RETURN
+SELECT {(double.Parse(MochaDatabase.Version) < double.Parse("3.4.6") ? "\"[A-z]\"" : "([A-z])")}
+                RETURN
 ");
                     sw.Stop();
                     total += sw.ElapsedMilliseconds;

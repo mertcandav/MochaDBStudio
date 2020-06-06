@@ -16,8 +16,8 @@ namespace MochaDBStudio.gui {
 
         private const int WM_CHAR = 0x102;
 
-        public VScrollBar VerScroll;
-        public HScrollBar HorScroll;
+        public sscrollbar VerScroll;
+        public sscrollbar HorScroll;
 
         private readonly Font BaseFont = new Font("Consolas",13,FontStyle.Bold,GraphicsUnit.Pixel);
         private readonly Font InputFont = new Font("Consolas",13,FontStyle.Regular,GraphicsUnit.Pixel);
@@ -48,21 +48,22 @@ namespace MochaDBStudio.gui {
             caretIndex = 0;
             useUserInput=true;
 
-            VerScroll = new VScrollBar();
+            VerScroll = new sscrollbar();
             VerScroll.Dock = DockStyle.Right;
             VerScroll.Width = 13;
             VerScroll.Visible = false;
             VerScroll.Maximum = 0;
-            VerScroll.ValueChanged += VerScroll_ValueChanged;
+            VerScroll.Scroll += VerScroll_ValueChanged;
 
             Controls.Add(VerScroll);
 
-            HorScroll = new HScrollBar();
+            HorScroll = new sscrollbar();
             HorScroll.Dock = DockStyle.Bottom;
+            HorScroll.Orientation = ScrollOrientation.Horizontal;
             HorScroll.Height = 13;
             HorScroll.Visible = false;
             HorScroll.Maximum = 0;
-            HorScroll.ValueChanged += HorScroll_ValueChanged;
+            HorScroll.Scroll += HorScroll_ValueChanged;
 
             Controls.Add(HorScroll);
         }
@@ -189,6 +190,18 @@ namespace MochaDBStudio.gui {
             }
 
             base.OnMouseClick(e);
+        }
+
+        protected override void OnMouseWheel(MouseEventArgs e) {
+            int v = e.Delta / 120 * (30) / 10;
+
+            if(VerScroll.Orientation == ScrollOrientation.Vertical) {
+                VerScroll.Value -= v;
+            } else {
+                VerScroll.Value += v;
+            }
+
+            base.OnMouseWheel(e);
         }
 
         #endregion

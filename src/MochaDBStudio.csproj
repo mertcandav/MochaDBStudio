@@ -117,6 +117,8 @@
     <Compile Include="dialogs\TableEdit_Dialog.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="engine\api.cs" />
+    <Compile Include="engine\convert.cs" />
     <Compile Include="engine\fs.cs" />
     <Compile Include="gui\Animator.cs" />
     <Compile Include="gui\areapanel.cs">
@@ -169,6 +171,7 @@
     <Compile Include="gui\scriptpanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="gui\sscrollbar.cs" />
     <Compile Include="gui\stooltip.cs">
       <SubType>Component</SubType>
     </Compile>

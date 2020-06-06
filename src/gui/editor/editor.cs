@@ -2390,7 +2390,7 @@ namespace MochaDBStudio.gui.editor {
 
         public void OnScroll(ScrollEventArgs se,bool alignByLines) {
 
-            if(se.ScrollOrientation == ScrollOrientation.VerticalScroll) {
+            if(se.ScrollOrientation == System.Windows.Forms.ScrollOrientation.VerticalScroll) {
                 //align by line height
                 int newValue = se.NewValue;
                 if(alignByLines)
@@ -2398,7 +2398,7 @@ namespace MochaDBStudio.gui.editor {
                 //
                 VerticalScroll.Value = Math.Max(VerticalScroll.Minimum,Math.Min(VerticalScroll.Maximum,newValue));
             }
-            if(se.ScrollOrientation == ScrollOrientation.HorizontalScroll)
+            if(se.ScrollOrientation == System.Windows.Forms.ScrollOrientation.HorizontalScroll)
                 HorizontalScroll.Value = Math.Max(HorizontalScroll.Minimum,Math.Min(HorizontalScroll.Maximum,se.NewValue));
 
             UpdateScrollbars();
@@ -4363,7 +4363,7 @@ namespace MochaDBStudio.gui.editor {
                     new ScrollEventArgs(direction > 0 ? ScrollEventType.SmallDecrement : ScrollEventType.SmallIncrement,
                                         VerticalScroll.Value,
                                         newScrollPos,
-                                        ScrollOrientation.VerticalScroll);
+                                        System.Windows.Forms.ScrollOrientation.VerticalScroll);
 
                 OnScroll(ea);
             }
@@ -6281,13 +6281,13 @@ window.status = ""#print"";
             var xea = new ScrollEventArgs(ScrollEventType.ThumbPosition,
                 HorizontalScroll.Value,
                 middleClickScrollingOriginScroll.X,
-                ScrollOrientation.HorizontalScroll);
+                System.Windows.Forms.ScrollOrientation.HorizontalScroll);
             OnScroll(xea);
 
             var yea = new ScrollEventArgs(ScrollEventType.ThumbPosition,
                 VerticalScroll.Value,
                 middleClickScrollingOriginScroll.Y,
-                ScrollOrientation.VerticalScroll);
+                System.Windows.Forms.ScrollOrientation.VerticalScroll);
             OnScroll(yea);
         }
 
@@ -6357,12 +6357,12 @@ window.status = ""#print"";
             var xea = new ScrollEventArgs(xScrollOffset < 0 ? ScrollEventType.SmallIncrement : ScrollEventType.SmallDecrement,
                 HorizontalScroll.Value,
                 HorizontalScroll.Value + xScrollOffset,
-                ScrollOrientation.HorizontalScroll);
+                System.Windows.Forms.ScrollOrientation.HorizontalScroll);
 
             var yea = new ScrollEventArgs(yScrollOffset < 0 ? ScrollEventType.SmallDecrement : ScrollEventType.SmallIncrement,
                 VerticalScroll.Value,
                 VerticalScroll.Value + yScrollOffset,
-                ScrollOrientation.VerticalScroll);
+                System.Windows.Forms.ScrollOrientation.VerticalScroll);
 
             if((middleClickScollDirection & (ScrollDirection.Down | ScrollDirection.Up)) > 0)
                 //DoScrollVertical(1 + Math.Abs(yScrollOffset), Math.Sign(distanceY));
