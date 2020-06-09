@@ -14,8 +14,8 @@ namespace MochaDBStudio.gui {
         private volatile int
             lineX = 10;
 
-        private Task
-            oldTask;
+        private Thread
+            oldThread;
 
         #endregion
 
@@ -62,14 +62,12 @@ namespace MochaDBStudio.gui {
 
         protected override void OnSelectedIndexChanged(EventArgs e) {
             base.OnSelectedIndexChanged(e);
-            Refresh();
             if(SelectedIndex != -1) {
-                if(oldTask != null) {
-                    oldTask.Wait();
-                    oldTask.Dispose();
+                if(oldThread != null) {
+                    oldThread.Abort();
                 }
 
-                oldTask = new Task(() => {
+                oldThread = new Thread(() => {
                     var rect = GetRect(SelectedIndex);
                     if(rect.X == lineX)
                         return;
@@ -88,7 +86,7 @@ namespace MochaDBStudio.gui {
                     lineX = rect.X;
                     Invalidate();
                 });
-                oldTask.Start();
+                oldThread.Start();
             }
         }
 
