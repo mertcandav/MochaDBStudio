@@ -6,6 +6,12 @@ namespace MochaDBStudio.gui {
     /// DataGridView for MochaDB Studio.
     /// </summary>
     public partial class sgrid:DataGridView {
+        #region Fields
+
+        private bool suspendRowEvents;
+
+        #endregion
+
         #region Constructors
 
         /// <summary>
@@ -20,11 +26,23 @@ namespace MochaDBStudio.gui {
 
         #region Override
 
+        protected override void OnRowsRemoved(DataGridViewRowsRemovedEventArgs e) {
+            if(!suspendRowEvents)
+                base.OnRowsRemoved(e);
+        }
+
+        protected override void OnRowsAdded(DataGridViewRowsAddedEventArgs e) {
+            if(!suspendRowEvents)
+                base.OnRowsAdded(e);
+        }
+
         protected override void OnCellEndEdit(DataGridViewCellEventArgs e) {
             base.OnCellEndEdit(e);
             if(AllowUserToAddRows) {
+                suspendRowEvents = true;
                 AllowUserToAddRows = false;
                 AllowUserToAddRows = true;
+                suspendRowEvents = false;
             }
         }
 
