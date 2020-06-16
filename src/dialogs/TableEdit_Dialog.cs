@@ -156,16 +156,17 @@ namespace MochaDBStudio.dialogs {
         }
 
         private void TableGrid_RowsRemoved(object sender,DataGridViewRowsRemovedEventArgs e) {
-            if(tableGrid.Updating)
+            /*if(tableGrid.Updating)
                 return;
 
-            tableGrid.Updating = true;
+            tableGrid.Updating = true;*/
 
 #if DEBUG
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 #endif
-            Database.RemoveRow(TableName,e.RowIndex);
+            if(!Database.RemoveRow(TableName,e.RowIndex))
+                Database.RemoveRow(TableName,e.RowIndex-1);
 #if DEBUG
             stopwatch.Stop();
             Console.WriteLine("Table_RowsRemoved: " + stopwatch.ElapsedMilliseconds);
