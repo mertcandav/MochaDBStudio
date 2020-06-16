@@ -99,6 +99,8 @@ namespace MochaDBStudio.dialogs {
 #endif
             try {
                 var value = tableGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
+                if(value == tableGrid.Tag)
+                    return;
                 value = value == null ? string.Empty : value.ToString();
                 Database.UpdateData(TableName,tableGrid.Columns[e.ColumnIndex].HeaderText,
                     e.RowIndex,value);
