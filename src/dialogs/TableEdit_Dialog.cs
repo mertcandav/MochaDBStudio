@@ -158,10 +158,10 @@ namespace MochaDBStudio.dialogs {
         }
 
         private void TableGrid_RowsRemoved(object sender,DataGridViewRowsRemovedEventArgs e) {
-            /*if(tableGrid.Updating)
+            if(tableGrid.Updating)
                 return;
 
-            tableGrid.Updating = true;*/
+            tableGrid.Updating = true;
 
 #if DEBUG
             var stopwatch = new Stopwatch();
