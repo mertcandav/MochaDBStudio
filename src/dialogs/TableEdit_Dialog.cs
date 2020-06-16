@@ -149,6 +149,7 @@ namespace MochaDBStudio.dialogs {
                 datas[index] = data;
                 tableGrid.Rows[e.RowIndex - 1].Cells[index].Value = data.Data;
             }
+            tableGrid.Tag = datas[tableGrid.CurrentCell.ColumnIndex];
 
             Database.AddRow(TableName,new MochaRow(datas));
             tableGrid.Updating = false;
