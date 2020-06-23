@@ -61,6 +61,7 @@
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>MochaDBStudio.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
+  <PropertyGroup />
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
