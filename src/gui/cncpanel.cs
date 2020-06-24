@@ -223,20 +223,25 @@ namespace MochaDBStudio.gui {
         private void ExplorerTree_NodeMouseDoubleClick(object sender,TreeNodeMouseClickEventArgs e) {
             if(e.Node.Tag == "Table") {
                 var dialog = new TableEdit_Dialog(Database,e.Node.Text);
+                dialog.Size = FindForm().Size;
                 dialog.ShowDialog();
             } else if(e.Node.Tag == "Column") {
                 var dialog = new ColumnEdit_Dialog(Database,e.Node.Parent.Parent.Text,e.Node.Text);
+                dialog.Size = FindForm().Size;
                 dialog.ShowDialog();
             } else if(e.Node.Tag == "Sector") {
                 var dialog = new SectorEdit_Dialog(Database,e.Node.Text);
+                dialog.Size = FindForm().Size;
                 dialog.ShowDialog();
             } else if(e.Node.Tag == "Stack") {
                 var dialog = new StackEdit_Dialog(Database,e.Node.Text);
+                dialog.Size = FindForm().Size;
                 dialog.ShowDialog();
             } else if(e.Node.Tag == "StackItem") {
                 var parts = e.Node.FullPath.Split(new[] { '/' },3);
                 var dialog = new StackItemEdit_Dialog(Database,
                     parts[1],e.Node.FullPath.Substring(e.Node.FullPath.IndexOf('/',e.Node.FullPath.IndexOf('/')+1)+1));
+                dialog.Size = FindForm().Size;
                 dialog.ShowDialog();
             }
         }

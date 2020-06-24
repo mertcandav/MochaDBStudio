@@ -124,6 +124,7 @@ namespace MochaDBStudio {
         #region fsButton
 
         private void FsButton_Click(object sender,System.EventArgs e) {
+            this.MaximizedBounds = Screen.FromHandle(this.Handle).WorkingArea;
             WindowState =
                 WindowState == FormWindowState.Normal ?
                     FormWindowState.Maximized :
