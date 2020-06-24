@@ -16,8 +16,11 @@ namespace MochaDBStudio.gui {
         /// </summary>
         public sbutton() {
             SetStyle(
-                ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer |
-                ControlStyles.ResizeRedraw,true);
+                ControlStyles.AllPaintingInWmPaint |
+                ControlStyles.OptimizedDoubleBuffer |
+                ControlStyles.ResizeRedraw |
+                ControlStyles.SupportsTransparentBackColor,
+                true);
         }
 
         #endregion

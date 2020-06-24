@@ -24,6 +24,7 @@ namespace MochaDBStudio.gui {
             input = new TextBox();
             BackColor = Color.White;
             ForeColor = Color.Black;
+            Cursor = Cursors.IBeam;
             input.BorderStyle = BorderStyle.None;
             input.Font = Font;
             input.SizeChanged+=Input_SizeChanged;

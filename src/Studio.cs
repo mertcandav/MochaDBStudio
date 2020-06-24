@@ -37,6 +37,17 @@ namespace MochaDBStudio {
     /// Main window of application.
     /// </summary>
     public sealed partial class Studio:sform {
+        #region Fields
+
+        private const short
+            gripSize = 16,
+            captionSize = 32;
+
+        private const int
+            SIZE_PROCESS = 0x84;
+
+        #endregion
+
         #region Constructors
 
         /// <summary>
@@ -241,6 +252,42 @@ namespace MochaDBStudio {
 
         #endregion
 
+        #region System override
+
+        protected override void WndProc(ref Message m) {
+            if(m.Msg == SIZE_PROCESS && WindowState == FormWindowState.Normal) {
+                Point pos = new Point(m.LParam.ToInt32());
+                pos = PointToClient(pos);
+                if( // Bottom-Right
+                     pos.X >= ClientSize.Width - gripSize + 10 &&
+                     pos.Y >= ClientSize.Height - gripSize + 10) {
+                    m.Result = (IntPtr)17;
+                    return;
+                } else if( // Bottom-Left
+                    pos.X <= ClientRectangle.X + 20 - gripSize &&
+                    pos.Y >= ClientSize.Height - gripSize + 10) {
+                    m.Result = (IntPtr)16;
+                    return;
+                } else if( // Right.
+                    pos.X >= ClientSize.Width - gripSize + 10) {
+                    m.Result = (IntPtr)11;
+                    return;
+                } else if( // Left.
+                    pos.X <= ClientRectangle.X + 20 - gripSize) {
+                    m.Result = (IntPtr)10;
+                    return;
+                } else if( // Bottom.
+                    pos.Y >= ClientSize.Height - gripSize + 10) {
+                    m.Result = (IntPtr)15;
+                    return;
+                }
+            }
+
+            base.WndProc(ref m);
+        }
+
+        #endregion
+
         #region Location override
 
         protected override void OnLocationChanged(EventArgs e) {
@@ -288,6 +335,7 @@ namespace MochaDBStudio {
         public void Init() {
             #region Base
 
+            BackColor = Color.FromArgb(24,24,24);
             Text = "MochaDB Studio";
             Size = new Size(810,470);
             MinimumSize = Size;
@@ -299,7 +347,7 @@ namespace MochaDBStudio {
             titlePanel = new spanel();
             titlePanel.Dock = DockStyle.Top;
             titlePanel.Height = 30;
-            titlePanel.BackColor = Color.FromArgb(24,24,24);
+            titlePanel.BackColor = BackColor;
             titlePanel.MouseDoubleClick+=TitlePanel_MouseDoubleClick;
             titlePanel.Moveable = true;
             titlePanel.Tag = this;
@@ -527,8 +575,8 @@ namespace MochaDBStudio {
 
             gridPanel = new spanel();
             gridPanel.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
-            gridPanel.Location = new Point(0,titlePanel.Height);
-            gridPanel.Size = new Size(Width,Height-gridPanel.Location.Y);
+            gridPanel.Location = new Point(3,titlePanel.Height);
+            gridPanel.Size = new Size(Width-6,Height-gridPanel.Location.Y-3);
             gridPanel.BackColor = Color.FromArgb(60,60,60);
             gridPanel.BackgroundImage = Resources.MochaDB_LogoGray;
             Controls.Add(gridPanel);

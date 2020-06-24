@@ -49,6 +49,11 @@ namespace MochaDBStudio.gui {
         private void Init() {
             #region Base
 
+            SetStyle(
+                ControlStyles.AllPaintingInWmPaint |
+                ControlStyles.OptimizedDoubleBuffer |
+                ControlStyles.ResizeRedraw,
+                true);
             StartPosition = FormStartPosition.CenterScreen;
             FormBorderStyle = FormBorderStyle.None;
             Icon = Resources.MochaDB_Logo;

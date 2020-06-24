@@ -273,6 +273,12 @@ namespace MochaDBStudio.gui {
         public void Init() {
             #region Base
 
+            SetStyle(
+                ControlStyles.AllPaintingInWmPaint |
+                ControlStyles.OptimizedDoubleBuffer |
+                ControlStyles.ResizeRedraw |
+                ControlStyles.SupportsTransparentBackColor,
+                true);
             ForeColor = Color.White;
             BackColor = Color.FromArgb(50,50,50);
             Font = new Font("Arial",10);
