@@ -83,14 +83,16 @@ namespace MochaDBStudio.dialogs {
                 CNCList.AddItem(new sbutton() { Text = fs.GetFileNameFromPath(pathTB.Text),Tag = connectionPanel });
                 Close();
             } catch(MochaException excep) {
-                db.Dispose();
-                if(excep.Message == "MochaDB database password does not match the password specified!" |
+                if(db != null)
+                    db.Dispose();
+                if(excep.Message == "MochaDB database password does not match the password specified!" ||
                    excep.Message == "The MochaDB database is password protected!")
                     passwordTB.BorderColor = Color.Red;
                 else
                     errorbox.Show("[MochaException]\n" + excep.Message);
             } catch(Exception excep) {
-                db.Dispose();
+                if(db != null)
+                    db.Dispose();
                 errorbox.Show("[Exception]\n" + excep.Message + excep);
             }
         }  

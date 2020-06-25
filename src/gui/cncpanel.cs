@@ -126,7 +126,15 @@ namespace MochaDBStudio.gui {
         #region passwordTB
 
         private void PasswordTB_TextChanged(object sender,EventArgs e) {
-            Database.SetPassword(passwordTB.Text);
+            try {
+                Database.SetPassword(passwordTB.Text);
+            } catch(MochaException excep) {
+                passwordTB.Text = Database.GetPassword();
+                errorbox.Show("[MochaException]\n" + excep.Message);
+            } catch(Exception excep) {
+                passwordTB.Text = Database.GetPassword();
+                errorbox.Show("[Exception]\n" + excep.Message + excep);
+            }
         }
 
         #endregion

@@ -56,6 +56,14 @@ namespace MochaDBStudio.dialogs {
 
         #endregion
 
+        #region passwordTB
+
+        private void PasswordTB_TextChanged(object sender,EventArgs e) {
+            passwordTB.BorderColor = Color.DodgerBlue;
+        }
+
+        #endregion
+
         #region pathTB
 
         private void PathTB_TextChanged(object sender,EventArgs e) {
@@ -89,12 +97,20 @@ A database with this name already exists on this path.");
                 return;
             }
 
-            MochaDatabase.CreateMochaDB(path,descriptionTB.Text,passwordTB.Text);
-            MochaDatabase db = new MochaDatabase($"path={path}; password={passwordTB.Text};logs=false;AutoConnect=true");
+            try {
+                MochaDatabase.CreateMochaDB(path,descriptionTB.Text,passwordTB.Text);
+                MochaDatabase db = new MochaDatabase($"path={path}; password={passwordTB.Text};logs=false;AutoConnect=true");
 
-            var connectionPanel = new cncpanel(db);
-            CNCList.AddItem(new sbutton() { Text = name,Tag = connectionPanel });
-            Close();
+                var connectionPanel = new cncpanel(db);
+                CNCList.AddItem(new sbutton() { Text = name,Tag = connectionPanel });
+                Close();
+            } catch(MochaException excep) {
+                if(excep.Message == "The password did not meet the password conventions!")
+                    passwordTB.BorderColor = Color.Red;
+                errorbox.Show("[MochaException]\n" + excep.Message);
+            } catch(Exception excep) {
+                errorbox.Show("[Exception]\n" + excep.Message + excep);
+            }
         }
 
         #endregion
@@ -193,6 +209,7 @@ A database with this name already exists on this path.");
             passwordTB.Location = new Point(20,pathTB.Location.Y + pathTB.Height + 60);
             passwordTB.Size = new Size(Width - (passwordTB.Location.X * 2)-40,20);
             passwordTB.PasswordChar = '●';
+            passwordTB.TextChanged+=PasswordTB_TextChanged;
             Controls.Add(passwordTB);
 
             #endregion
