@@ -180,7 +180,7 @@ namespace MochaDBStudio.gui {
                 }
             } catch(Exception excep) {
                 e.CancelEdit=true;
-                errorbox.Show(excep.Message);
+                errorbox.Show(excep.ToString());
             }
         }
 
