@@ -70,7 +70,8 @@ namespace MochaDBStudio.gui {
 
             /*if(tab.SelectedTab == dashboardPage) {
                 refreshDashboard();
-            } else */if(tab.SelectedTab == explorerPage) {
+            } else */
+            if(tab.SelectedTab == explorerPage) {
                 if(reshExplorer)
                     refreshExplorer();
             } else if(tab.SelectedTab == terminalPage) {
@@ -732,8 +733,7 @@ SELECT ([A-z])");
                     results = Database.ExecuteReader(mhqlEditor.Text);
                     mhqlRPanel.ShowResults(results);
                 }
-            }
-            catch(Exception excep) { errorbox.Show(excep.ToString()); return; }
+            } catch(Exception excep) { errorbox.Show(excep.ToString()); return; }
         }
 
         #endregion

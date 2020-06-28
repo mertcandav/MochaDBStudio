@@ -104,9 +104,9 @@ namespace MochaDBStudio.gui {
             new Task(() => {
                 term.Clear();
                 try {
-                debugger.DebugRun();
-                term.AddInput(new TerminalInput(string.Empty,
-                    "This MochaScript code debugged and runed sucessfully.\n",Color.LimeGreen,null,term.Font),false);
+                    debugger.DebugRun();
+                    term.AddInput(new TerminalInput(string.Empty,
+                        "This MochaScript code debugged and runed sucessfully.\n",Color.LimeGreen,null,term.Font),false);
                 } catch(Exception excep) {
                     term.AddInput(new TerminalInput(string.Empty,
                         excep.ToString() + "\n",Color.Red,null,term.Font),false);

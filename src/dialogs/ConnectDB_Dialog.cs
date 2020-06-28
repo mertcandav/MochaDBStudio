@@ -95,7 +95,7 @@ namespace MochaDBStudio.dialogs {
                     db.Dispose();
                 errorbox.Show("[Exception]\n" + excep.Message + excep);
             }
-        }  
+        }
 
         #endregion
 

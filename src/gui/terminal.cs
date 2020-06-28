@@ -268,7 +268,7 @@ namespace MochaDBStudio.gui {
         protected override bool ProcessKeyMessage(ref Message m) {
             if(UseUserInput && m.Msg == WM_CHAR) {
                 int CharValue = m.WParam.ToInt32();
-                
+
                 if(!IsBannedChar(CharValue)) {
                     Input = Input.Insert(CaretIndex,((char)CharValue).ToString());
                     CaretIndex++;

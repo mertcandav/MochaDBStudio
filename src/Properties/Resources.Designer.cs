@@ -280,7 +280,7 @@ namespace MochaDBStudio.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 2.0.0.
+        ///   Looks up a localized string similar to 2.1.0.
         /// </summary>
         internal static string Version {
             get {

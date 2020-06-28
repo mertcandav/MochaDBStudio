@@ -132,7 +132,7 @@ namespace MochaDBStudio.dialogs {
         private void TableGrid_RowsAdded(object sender,DataGridViewRowsAddedEventArgs e) {
             if(tableGrid.Updating)
                 return;
-            
+
             tableGrid.Updating = true;
             MochaData[] datas = new MochaData[tableGrid.ColumnCount];
 

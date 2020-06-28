@@ -129,10 +129,10 @@ namespace MochaDBStudio {
                 WindowState == FormWindowState.Normal ?
                     FormWindowState.Maximized :
                     FormWindowState.Normal;
-           fsButton.Text =
-                WindowState == FormWindowState.Normal ?
-                    "⬜" :
-                    "❐";
+            fsButton.Text =
+                 WindowState == FormWindowState.Normal ?
+                     "⬜" :
+                     "❐";
         }
 
         #endregion
