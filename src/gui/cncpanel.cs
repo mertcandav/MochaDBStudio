@@ -277,11 +277,7 @@ namespace MochaDBStudio.gui {
                 long total = 0;
                 for(short counter = 1; counter <= 5; counter++) {
                     sw.Start();
-                    Database.ExecuteScalar(
-$@"
-SELECT {(double.Parse(MochaDatabase.Version) < double.Parse("3.4.6") ? "\"[A-z]\"" : "([A-z])")}
-RETURN
-");
+                    Database.ExecuteScalar("SELECT ([A-z])");
                     sw.Stop();
                     total += sw.ElapsedMilliseconds;
                 }
@@ -319,9 +315,7 @@ $@"
 @TABLES
 @STACKS
 @SECTORS
-SELECT {(double.Parse(MochaDatabase.Version) < double.Parse("3.4.6") ? "\"[A-z]\"" : "([A-z])")}
-                RETURN
-");
+SELECT ([A-z])");
                     sw.Stop();
                     total += sw.ElapsedMilliseconds;
                 }
@@ -608,17 +602,12 @@ SELECT {(double.Parse(MochaDatabase.Version) < double.Parse("3.4.6") ? "\"[A-z]\
                 mhqlCodeSense.AddItem(
                     new Item("USE",0,"USE","USE - Keyword",
                     "Use the x struct(s)."));
-                mhqlCodeSense.AddItem(
-                    new Item("USE *\nRETURN",2,"USE","USE - Snippet",
-                    "Use the x struct(s)."));
                 mhqlCodeSense.AddItem(new Item("MUST",0,"MUST","MUST - Keyword",
                     "Define a conditions."));
-                mhqlCodeSense.AddItem(new Item("MUST 0() END",2,"MUST","MUST - Snippet",
+                mhqlCodeSense.AddItem(new Item("MUST 0()",2,"MUST","MUST - Snippet",
                     "Define a conditions snippet."));
                 mhqlCodeSense.AddItem(new Item("REMOVE",0,"REMOVE","REMOVE - Keyword",
                     "Remove selected with SELECT keyword."));
-                mhqlCodeSense.AddItem(new Item("RETURN",0,"RETURN","RETURN - Keyword",
-                    "Return result(s)."));
                 mhqlCodeSense.AddItem(new Item("ASC",0,"ASC","ASC - Keyword",
                     "Ascending define for ORDERBY keyword."));
                 mhqlCodeSense.AddItem(new Item("DESC",0,"DESC","DESC - Keyword",
@@ -627,28 +616,42 @@ SELECT {(double.Parse(MochaDatabase.Version) < double.Parse("3.4.6") ? "\"[A-z]\
                     "Sort items."));
                 mhqlCodeSense.AddItem(new Item("AND",0,"AND","AND - Keyword",
                     "Define other conditions for MUST keywords."));
-                mhqlCodeSense.AddItem(new Item("END",0,"END","END - Keyword",
-                    "Reports that MUST is over."));
                 mhqlCodeSense.AddItem(new Item("GROUPBY",0,"GROUPBY","GROUPBY - Keyword",
                     "Group by values."));
                 mhqlCodeSense.AddItem(new Item("FROM",0,"FROM","FROM - Keyword",
                     "Define table for USE keyword."));
                 mhqlCodeSense.AddItem(new Item("AS",0,"AS","AS - Keyword",
                     "Rename item."));
-                mhqlCodeSense.AddItem(new Item("EQUAL",1,"EQUAL","EQUAL - Function",
-                    "Returns a specified numerical equal to condition."));
-                mhqlCodeSense.AddItem(new Item("ENDW",1,"ENDW","ENDW - Function",
+                mhqlCodeSense.AddItem(new Item("$EQUAL(",1,"EQUAL(,)","EQUAL - Function",
+                    "\"Is it equal?\" Returns the condition."));
+                mhqlCodeSense.AddItem(new Item("$NOTEQUAL(",1,"NOTEQUAL(,)","NOTEQUAL - Function",
+                    "\"Is it not equal?\" Returns the condition."));
+                mhqlCodeSense.AddItem(new Item("$STARTW(",1,"STARTW(,)","STARTW - Function",
+                    "\"Does it start with...?\" Returns the condition."));
+                mhqlCodeSense.AddItem(new Item("$NOTSTARTW(",1,"NOTSTARTW(,)","NOTSTARTW - Function",
+                    "\"Does it not start with...?\" Returns the condition."));
+                mhqlCodeSense.AddItem(new Item("$ENDW(",1,"ENDW(,)","ENDW - Function",
                     "Does it end with...? Returns the condition."));
-                mhqlCodeSense.AddItem(new Item("STARTW",1,"STARTW","STARTW - Function",
-                    "Does it start with ...? Returns the condition."));
-                mhqlCodeSense.AddItem(new Item("BETWEEN",1,"BETWEEN","BETWEEN - Function",
-                    "Returns a specified numerical range condition."));
-                mhqlCodeSense.AddItem(new Item("LOWER",1,"LOWER","LOWER - Function",
-                    "Returns a specified numerical bigger and equal condition."));
-                mhqlCodeSense.AddItem(new Item("BIGGER",1,"BIGGER","BIGGER - Function",
-                    "Returns a specified numerical lower and equal condition."));
-                mhqlCodeSense.AddItem(new Item("USE *\nRETURN",2,"BODY","BODY - Snippet",
-                    "USE body snippet."));
+                mhqlCodeSense.AddItem(new Item("$NOTENDW(",1,"NOTENDW(,)","NOTENDW - Function",
+                    "Does it not end with...? Returns the condition."));
+                mhqlCodeSense.AddItem(new Item("$BETWEEN(",1,"BETWEEN(,,)","BETWEEN - Function",
+                    "Returns a specified numerical range condition. The data of the column in which it is used must contain a numerical value."));
+                mhqlCodeSense.AddItem(new Item("$LOWER(",1,"LOWER(,)","LOWER - Function",
+                    "Returns a specified numerical lower and equal condition. The data of the column in which it is used must contain a numerical value."));
+                mhqlCodeSense.AddItem(new Item("$BIGGER(",1,"BIGGER(,)","BIGGER - Function",
+                    "Returns a specified numerical bigger and equal condition. The data of the column in which it is used must contain a numerical value."));
+                mhqlCodeSense.AddItem(new Item("$CONTAINS(",1,"CONTAINS(,)","CONTAINS - Function",
+                    "\"Does it include?\" Returns the condition"));
+                mhqlCodeSense.AddItem(new Item("$NOTCONTAINS(",1,"NOTCONTAINS(,)","NOTCONTAINS - Function",
+                    "\"Doesn't it include?\" Returns the condition"));
+                mhqlCodeSense.AddItem(new Item("COUNT()",1,"COUNT()","COUNT - Function",
+                    "Returns the number of data grouped."));
+                mhqlCodeSense.AddItem(new Item("MAX(1)",1,"MAX()","MAX - Function",
+                    "Returns the greatest value among grouped data."));
+                mhqlCodeSense.AddItem(new Item("MIN(1)",1,"MIN()","MIN - Function",
+                    "Returns the minimum value among grouped data."));
+                mhqlCodeSense.AddItem(new Item("AVG(1)",1,"AVG()","AVG - Function",
+                    "Returns the average value grouped data."));
 
                 var tables = Database.GetTables();
                 for(int index = 0; index < tables.Count; index++) {

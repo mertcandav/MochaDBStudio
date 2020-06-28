@@ -190,10 +190,9 @@ namespace MochaDBStudio.dialogs {
             tableGrid.Updating = true;
             try { tableGrid.Columns.Clear(); } catch { return; }
             var table = Database.ExecuteScalar($@"
-                    USE {TableName}
-                    RETURN") as MochaTableResult;
+                    USE {TableName}") as MochaTableResult;
             for(int columnIndex = 0; columnIndex < table.Columns.Length; columnIndex++)
-                tableGrid.Columns.Add(table.Columns[columnIndex].Name,table.Columns[columnIndex].Name);
+                tableGrid.Columns.Add(string.Empty,table.Columns[columnIndex].MHQLAsText);
             for(int rowIndex = 0; rowIndex<table.Rows.Length; rowIndex++) {
                 tableGrid.Rows.Add(table.Rows[rowIndex].Datas.ToArray());
             }
