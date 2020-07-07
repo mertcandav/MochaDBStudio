@@ -154,10 +154,7 @@ namespace MochaDBStudio.gui {
             string tag = e.Node.Tag as string;
             e.CancelEdit =
                 tag=="Tables" ? true :
-                tag=="Columns" ? true :
-                tag=="Sectors" ? true :
-                tag=="Stacks" ? true :
-                tag=="Attributes" ? true : false;
+                tag=="Columns" ? true : false;
         }
 
         private void ExplorerTree_AfterLabelEdit(object sender,NodeLabelEditEventArgs e) {
@@ -171,13 +168,6 @@ namespace MochaDBStudio.gui {
                     Database.RenameTable(e.Node.Text,e.Label.Trim());
                 } else if(explorerTree.SelectedNode.Tag=="Column") {
                     Database.RenameColumn(e.Node.Parent.Parent.Text,e.Node.Text,e.Label.Trim());
-                } else if(explorerTree.SelectedNode.Tag=="Sector") {
-                    Database.RenameSector(e.Node.Text,e.Label.Trim());
-                } else if(explorerTree.SelectedNode.Tag=="Stack") {
-                    Database.RenameStack(e.Node.Text,e.Label.Trim());
-                } else if(explorerTree.SelectedNode.Tag=="StackItem") {
-                    Database.RenameStackItem(GetStackItemStackName(explorerTree.SelectedNode),e.Label.Trim(),
-                        GetStackItemPath(explorerTree.SelectedNode));
                 }
             } catch(Exception excep) {
                 e.CancelEdit=true;
@@ -188,10 +178,7 @@ namespace MochaDBStudio.gui {
         private void ExplorerTree_KeyDown(object sender,KeyEventArgs e) {
             if(e.KeyCode == Keys.Delete) {
                 if(explorerTree.SelectedNode.Tag!="Table" &
-                   explorerTree.SelectedNode.Tag!="Column" &
-                   explorerTree.SelectedNode.Tag!="Stack" &
-                   explorerTree.SelectedNode.Tag!="Sector" &
-                   explorerTree.SelectedNode.Tag!="StackItem")/* &
+                   explorerTree.SelectedNode.Tag!="Column")/* &
                    explorerTree.SelectedNode.Tag.ToString().EndsWith("Attribute") == false)*/
                     return;
 
@@ -199,13 +186,6 @@ namespace MochaDBStudio.gui {
                     Database.RemoveTable(explorerTree.SelectedNode.Text);
                 else if(explorerTree.SelectedNode.Tag=="Column")
                     Database.RemoveColumn(explorerTree.SelectedNode.Parent.Parent.Text,explorerTree.SelectedNode.Text);
-                else if(explorerTree.SelectedNode.Tag=="Sector")
-                    Database.RemoveSector(explorerTree.SelectedNode.Text);
-                else if(explorerTree.SelectedNode.Tag=="Stack")
-                    Database.RemoveStack(explorerTree.SelectedNode.Text);
-                else if(explorerTree.SelectedNode.Tag=="StackItem")
-                    Database.RemoveStackItem(GetStackItemStackName(explorerTree.SelectedNode),
-                        GetStackItemPath(explorerTree.SelectedNode));
                 /*else if(explorerTree.SelectedNode.Tag=="TableAttribute")
                     Database.RemoveTableAttribute(explorerTree.SelectedNode.Parent.Parent.Text,
                         explorerTree.SelectedNode.Text);
@@ -235,20 +215,6 @@ namespace MochaDBStudio.gui {
                 dialog.ShowDialog();
             } else if(e.Node.Tag == "Column") {
                 var dialog = new ColumnEdit_Dialog(Database,e.Node.Parent.Parent.Text,e.Node.Text);
-                dialog.Size = FindForm().Size;
-                dialog.ShowDialog();
-            } else if(e.Node.Tag == "Sector") {
-                var dialog = new SectorEdit_Dialog(Database,e.Node.Text);
-                dialog.Size = FindForm().Size;
-                dialog.ShowDialog();
-            } else if(e.Node.Tag == "Stack") {
-                var dialog = new StackEdit_Dialog(Database,e.Node.Text);
-                dialog.Size = FindForm().Size;
-                dialog.ShowDialog();
-            } else if(e.Node.Tag == "StackItem") {
-                var parts = e.Node.FullPath.Split(new[] { '/' },3);
-                var dialog = new StackItemEdit_Dialog(Database,
-                    parts[1],e.Node.FullPath.Substring(e.Node.FullPath.IndexOf('/',e.Node.FullPath.IndexOf('/')+1)+1));
                 dialog.Size = FindForm().Size;
                 dialog.ShowDialog();
             }
@@ -311,12 +277,7 @@ namespace MochaDBStudio.gui {
                 long total = 0;
                 for(short counter = 1; counter <= 5; counter++) {
                     sw.Start();
-                    Database.ExecuteScalar(
-$@"
-@TABLES
-@STACKS
-@SECTORS
-SELECT ([A-z])");
+                    Database.ExecuteScalar($@"SELECT ()");
                     sw.Stop();
                     total += sw.ElapsedMilliseconds;
                 }
@@ -371,16 +332,6 @@ SELECT ([A-z])");
 
         #endregion
 
-        #region getMochaScriptButton
-
-        private void GetMochaScriptButton_Click(object sender,EventArgs e) {
-            MochaScript_Dialog dialog = new MochaScript_Dialog();
-            dialog.codeBox.Text = Database.GetMochaScript();
-            dialog.ShowDialog();
-        }
-
-        #endregion
-
         #region Database
 
         private void Database_Changed(object sender,EventArgs e) {
@@ -414,92 +365,35 @@ SELECT ([A-z])");
         /// Refresh Explorer tab.
         /// </summary>
         public void refreshExplorer() {
-            TreeNode GetMochaStackItemNODE(MochaStackItem item) {
-                TreeNode
-                    node = new TreeNode(item.Name),
-                    attrNode,
-                    attrsNode;
-
-                node.Tag="StackItem";
-                node.ImageIndex = 4;
-                node.SelectedImageIndex=node.ImageIndex;
-
-                attrsNode = new TreeNode();
-                attrsNode.Text ="Attributes";
-                attrsNode.Tag="Attributes";
-                attrsNode.ImageIndex = 0;
-                attrsNode.SelectedImageIndex=attrsNode.ImageIndex;
-                node.Nodes.Add(attrsNode);
-
-                for(int attrDex = 0; attrDex < item.Attributes.Count; attrDex++) {
-                    attrNode = new TreeNode();
-                    attrNode.Text = item.Attributes[attrDex].Name;
-                    attrNode.ImageIndex = 5;
-                    attrNode.SelectedImageIndex=attrNode.ImageIndex;
-                    attrNode.Tag="Attribute";
-                    attrsNode.Nodes.Add(attrNode);
-                }
-
-                if(item.Items.Count>0)
-                    for(int index = 0; index < item.Items.Count; index++) {
-                        var curitem = item.Items[index];
-                        node.Nodes.Add(GetMochaStackItemNODE(curitem));
-                    }
-
-                return node;
-            }
-
-            explorerTree.Nodes[0].Nodes.Clear();
-            explorerTree.Nodes[1].Nodes.Clear();
-            explorerTree.Nodes[2].Nodes.Clear();
+            explorerTree.Nodes.Clear();
 
             TreeNode
                 columnsNode,
-                attributesNode,
                 cacheNode,
-                columnNode,
-                attributeNode;
+                columnNode;
 
             // 
             // Tables
             // 
 
-            MochaCollectionResult<MochaColumn> columns;
-            MochaCollectionResult<IMochaAttribute> attributes;
+            MochaColumn[] columns;
             var tables = Database.GetTables();
-            for(int index = 0; index < tables.Count; index++) {
+            for(int index = 0; index < tables.Length; index++) {
                 columnsNode = new TreeNode();
                 columnsNode.Text ="Columns";
                 columnsNode.Tag="Columns";
                 columnsNode.ImageIndex = 0;
                 columnsNode.SelectedImageIndex=columnsNode.ImageIndex;
 
-                attributesNode = new TreeNode();
-                attributesNode.Text ="Attributes";
-                attributesNode.Tag="Attributes";
-                attributesNode.ImageIndex = 0;
-                attributesNode.SelectedImageIndex=attributesNode.ImageIndex;
-
                 cacheNode = new TreeNode();
                 cacheNode.Text =tables[index].Name;
                 cacheNode.Tag="Table";
                 cacheNode.ImageIndex = 2;
                 cacheNode.SelectedImageIndex=cacheNode.ImageIndex;
-                cacheNode.Nodes.Add(attributesNode);
                 cacheNode.Nodes.Add(columnsNode);
 
-                attributes = Database.GetTableAttributes(cacheNode.Text);
-                for(int attrDex = 0; attrDex < attributes.Count; attrDex++) {
-                    attributeNode = new TreeNode();
-                    attributeNode.Text = attributes[attrDex].Name;
-                    attributeNode.ImageIndex = 5;
-                    attributeNode.SelectedImageIndex=attributeNode.ImageIndex;
-                    attributeNode.Tag="Attribute";
-                    attributesNode.Nodes.Add(attributeNode);
-                }
-
                 columns = Database.GetColumns(cacheNode.Text);
-                for(int columnIndex = 0; columnIndex < columns.Count; columnIndex++) {
+                for(int columnIndex = 0; columnIndex < columns.Length; columnIndex++) {
                     columnNode = new TreeNode();
                     columnNode.Text =columns[columnIndex].Name;
                     columnNode.ImageIndex = 4;
@@ -508,78 +402,7 @@ SELECT ([A-z])");
                     columnsNode.Nodes.Add(columnNode);
                 }
 
-                explorerTree.Nodes[0].Nodes.Add(cacheNode);
-            }
-
-            // 
-            // Stacks
-            // 
-
-            var stacks = Database.GetStacks();
-            for(int index = 0; index < stacks.Count; index++) {
-                cacheNode = new TreeNode();
-                cacheNode.Text =stacks[index].Name;
-                cacheNode.Tag="Stack";
-                cacheNode.ImageIndex=3;
-                cacheNode.SelectedImageIndex=cacheNode.ImageIndex;
-
-                attributesNode = new TreeNode();
-                attributesNode.Text ="Attributes";
-                attributesNode.Tag="Attributes";
-                attributesNode.ImageIndex = 0;
-                attributesNode.SelectedImageIndex=attributesNode.ImageIndex;
-                cacheNode.Nodes.Add(attributesNode);
-
-                attributes = Database.GetStackAttributes(cacheNode.Text);
-                for(int attrDex = 0; attrDex < attributes.Count; attrDex++) {
-                    attributeNode = new TreeNode();
-                    attributeNode.Text = attributes[attrDex].Name;
-                    attributeNode.ImageIndex = 5;
-                    attributeNode.SelectedImageIndex=attributeNode.ImageIndex;
-                    attributeNode.Tag="Attribute";
-                    attributesNode.Nodes.Add(attributeNode);
-                }
-
-                var stack = stacks[index];
-                if(stacks[index].Items.Count >0)
-                    for(int itemIndex = 0; itemIndex < stacks[index].Items.Count; itemIndex++) {
-                        var curitem = stack.Items[itemIndex];
-                        cacheNode.Nodes.Add(GetMochaStackItemNODE(curitem));
-                    }
-
-                explorerTree.Nodes[1].Nodes.Add(cacheNode);
-            }
-
-            // 
-            // Sectors
-            // 
-
-            var sectors = Database.GetSectors();
-            for(int index = 0; index < sectors.Count; index++) {
-                cacheNode = new TreeNode();
-                cacheNode.Text =sectors[index].Name;
-                cacheNode.Tag="Sector";
-                cacheNode.ImageIndex=4;
-                cacheNode.SelectedImageIndex=cacheNode.ImageIndex;
-
-                attributesNode = new TreeNode();
-                attributesNode.Text ="Attributes";
-                attributesNode.Tag="Attributes";
-                attributesNode.ImageIndex = 0;
-                attributesNode.SelectedImageIndex=attributesNode.ImageIndex;
-                cacheNode.Nodes.Add(attributesNode);
-
-                attributes = Database.GetSectorAttributes(cacheNode.Text);
-                for(int attrDex = 0; attrDex < attributes.Count; attrDex++) {
-                    attributeNode = new TreeNode();
-                    attributeNode.Text = attributes[attrDex].Name;
-                    attributeNode.ImageIndex = 5;
-                    attributeNode.SelectedImageIndex=attributeNode.ImageIndex;
-                    attributeNode.Tag="Attribute";
-                    attributesNode.Nodes.Add(attributeNode);
-                }
-
-                explorerTree.Nodes[2].Nodes.Add(cacheNode);
+                explorerTree.Nodes.Add(cacheNode);
             }
 
             reshExplorer = false;
@@ -598,17 +421,12 @@ SELECT ([A-z])");
                 mhqlCodeSense.Items = new string[0];
 
                 mhqlCodeSense.AddItem(
-                    new Item("SELECT",0,"SELECT","SELECT - Keyword",
-                    "Select structures with regex."));
-                mhqlCodeSense.AddItem(
                     new Item("USE",0,"USE","USE - Keyword",
                     "Use the x struct(s)."));
                 mhqlCodeSense.AddItem(new Item("MUST",0,"MUST","MUST - Keyword",
                     "Define a conditions."));
                 mhqlCodeSense.AddItem(new Item("MUST 0()",2,"MUST","MUST - Snippet",
                     "Define a conditions snippet."));
-                mhqlCodeSense.AddItem(new Item("REMOVE",0,"REMOVE","REMOVE - Keyword",
-                    "Remove selected with SELECT keyword."));
                 mhqlCodeSense.AddItem(new Item("ASC",0,"ASC","ASC - Keyword",
                     "Ascending define for ORDERBY keyword."));
                 mhqlCodeSense.AddItem(new Item("DESC",0,"DESC","DESC - Keyword",
@@ -623,6 +441,14 @@ SELECT ([A-z])");
                     "Define table for USE keyword."));
                 mhqlCodeSense.AddItem(new Item("AS",0,"AS","AS - Keyword",
                     "Rename item."));
+                mhqlCodeSense.AddItem(new Item("SUBCOL",0,"SUBCOL","SUBCOL - Keyword",
+                    "When written alone, it takes the columns from the first column to the highest number given."));
+                mhqlCodeSense.AddItem(new Item("DELCOL",0,"DELCOL","DELCOL - Keyword",
+                    "When written alone, it deletes the columns from the first line to the highest number given."));
+                mhqlCodeSense.AddItem(new Item("SUBROW",0,"SUBROW","SUBROW - Keyword",
+                    "When written alone, it takes the rows from the first line to the highest number given."));
+                mhqlCodeSense.AddItem(new Item("DELROW",0,"DElROW","DELROW - Keyword",
+                    "When written alone, it deletes the rows from the first line to the highest number given."));
                 mhqlCodeSense.AddItem(new Item("$EQUAL(",1,"EQUAL(,)","EQUAL - Function",
                     "\"Is it equal?\" Returns the condition."));
                 mhqlCodeSense.AddItem(new Item("$NOTEQUAL(",1,"NOTEQUAL(,)","NOTEQUAL - Function",
@@ -655,7 +481,7 @@ SELECT ([A-z])");
                     "Returns the average value grouped data."));
 
                 var tables = Database.GetTables();
-                for(int index = 0; index < tables.Count; index++) {
+                for(int index = 0; index < tables.Length; index++) {
                     var table = tables[index];
                     mhqlCodeSense.AddItem(
                         new Item(table.Name,3,table.Name,
@@ -667,22 +493,6 @@ SELECT ([A-z])");
                             new Item($"{table.Name}.{column.Name}",5,$"{table.Name}.{column.Name}",
                             $"{column.Name} - Column",$"Column of {table.Name} table."));
                     }
-                }
-
-                var stacks = Database.GetStacks();
-                for(int index = 0; index < stacks.Count; index++) {
-                    var stack = stacks[index];
-                    mhqlCodeSense.AddItem(
-                        new Item(stack.Name,4,stack.Name,
-                        $"{stack.Name} - Stack","Stack"));
-                }
-
-                var sectors = Database.GetSectors();
-                for(int index = 0; index < sectors.Count; index++) {
-                    var sector = sectors[index];
-                    mhqlCodeSense.AddItem(
-                        new Item(sector.Name,5,sector.Name,
-                        $"{sector.Name} - Sector","Sector"));
                 }
 
                 mhqlCodeSense.SortItems();
@@ -701,38 +511,13 @@ SELECT ([A-z])");
         }
 
         /// <summary>
-        /// Return stack item path.
-        /// </summary>
-        /// <param name="node">StackItem node.</param>
-        public string GetStackItemPath(TreeNode node) {
-            string cachepath = node.FullPath.Remove(0,node.FullPath.IndexOf("Stacks/")+7);
-            return cachepath.Remove(0,cachepath.IndexOf("/")+1);
-        }
-
-        /// <summary>
-        /// Return stack name of stack item.
-        /// </summary>
-        /// <param name="node">StackItem node.</param>
-        public string GetStackItemStackName(TreeNode node) {
-            string cachepath = node.FullPath.Remove(0,node.FullPath.IndexOf("Stacks/")+7);
-            return cachepath.Substring(0,cachepath.IndexOf("/"));
-        }
-
-        /// <summary>
         /// Execute current MHQL code.
         /// </summary>
         public void ExecuteMHQL() {
             try {
-                var command = new MhqlCommand(mhqlEditor.Text);
-                if(command.IsExecuteCompatible()) {
-                    Database.ExecuteCommand(mhqlEditor.Text);
-                    mhqlRPanel.ShowResults(new MochaReader<object>());
-                    refreshMHQL();
-                } else {
-                    MochaReader<object> results;
-                    results = Database.ExecuteReader(mhqlEditor.Text);
-                    mhqlRPanel.ShowResults(results);
-                }
+                MochaReader<object> results;
+                results = Database.ExecuteReader(mhqlEditor.Text);
+                mhqlRPanel.ShowResults(results);
             } catch(Exception excep) { errorbox.Show(excep.ToString()); return; }
         }
 
@@ -755,8 +540,7 @@ SELECT ([A-z])");
         private sbutton
             mhqlTestButton,
             mhqlHardTestButton,
-            directFetchTestButton,
-            getMochaScriptButton;
+            directFetchTestButton;
 
         private stabcontrol
             tab;
@@ -1205,21 +989,6 @@ SELECT ([A-z])");
             descriptionTB.InputSize = new Size(descriptionTB.Width,200);
             descriptionTB.TextChanged +=DescriptionTB_TextChanged;
             settingsPage.Controls.Add(descriptionTB);
-
-            #endregion
-
-            #region getMochaScriptButton
-
-            getMochaScriptButton = new sbutton();
-            getMochaScriptButton.Text = "Get MochaScript";
-            getMochaScriptButton.Size = new Size(100,25);
-            getMochaScriptButton.BackColor = Color.Gray;
-            getMochaScriptButton.MouseEnterColor = Color.DimGray;
-            getMochaScriptButton.MouseDownColor = Color.DodgerBlue;
-            getMochaScriptButton.Location = new Point(descriptionTB.Location.X,
-                descriptionTB.Location.Y+descriptionTB.Height+20);
-            getMochaScriptButton.Click+=GetMochaScriptButton_Click;
-            settingsPage.Controls.Add(getMochaScriptButton);
 
             #endregion
         }

@@ -155,26 +155,6 @@ namespace MochaDBStudio.gui {
             CurrentItem = item;
         }
 
-        /// <summary>
-        /// Add script item.
-        /// </summary>
-        /// <param name="item">Item to add.</param>
-        public void AddScriptItem(sbutton item) {
-            item.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left;
-            item.Size = new Size(Width-2,30);
-            item.Location = new Point(2,Controls.Count * 30);
-            item.BackColor = BackColor;
-            item.ForeColor = ForeColor;
-            item.MouseEnterColor = Color.Gray;
-            item.MouseDownColor = Color.DodgerBlue;
-            item.Image = Resources.Script;
-            item.Tag2 = "Script";
-            item.Click +=scriptitem_Click;
-            Grid.Controls.Add((scriptpanel)item.Tag);
-            Controls.Add(item);
-            CurrentItem = item;
-        }
-
         #endregion
 
         #region Item events
@@ -201,9 +181,6 @@ namespace MochaDBStudio.gui {
                 var ccpanel = (CurrentItem.Tag as cncpanel);
                 ccpanel.Database.Disconnect();
                 ccpanel.Dispose();
-            } else {
-                var spanel = (CurrentItem.Tag as scriptpanel);
-                spanel.Dispose();
             }
             var dex = Controls.IndexOf(CurrentItem);
             Controls.RemoveAt(dex);

@@ -77,12 +77,6 @@ namespace MochaDBStudio {
                     dialog.pathTB.Text = arg;
                     dialog.ShowDialog();
                     dialog.Dispose();
-                } else if(finfo.Extension == ".mhsc") {
-                    OpenScript_Dialog dialog = new OpenScript_Dialog();
-                    dialog.CNCList = connectionMenu;
-                    dialog.pathTB.Text = arg;
-                    dialog.OpenButton_Click(null,null);
-                    dialog.Dispose();
                 }
             }
 
@@ -174,37 +168,11 @@ namespace MochaDBStudio {
                 dialog.CNCList = connectionMenu;
                 dialog.ShowDialog();
                 dialog.Dispose();
-            } else if(e.ClickedItem.Text == "Open MochaScript") {
-                var dialog = new OpenScript_Dialog();
-                dialog.CNCList = connectionMenu;
-                dialog.ShowDialog();
-                dialog.Dispose();
             } else if(e.ClickedItem.Text == "Create MochaDB") {
                 var dialog = new CreateDB_Dialog();
                 dialog.CNCList = connectionMenu;
                 dialog.ShowDialog();
                 dialog.Dispose();
-            } else if(e.ClickedItem.Text == "Create MochaScript") {
-                var dialog = new CreateScript_Dialog();
-                dialog.CNCList = connectionMenu;
-                dialog.ShowDialog();
-                dialog.Dispose();
-            }
-        }
-
-        #endregion
-
-        #region scriptCM
-
-        private void ScriptCM_ItemClicked(object sender,ToolStripItemClickedEventArgs e) {
-            scriptCM.Close();
-
-            if(e.ClickedItem.Text == "Debug & Run") {
-                ((scriptpanel)(connectionMenu.CurrentItem.Tag)).DebugAsync();
-            } else if(e.ClickedItem.Text == "Save") {
-                ((scriptpanel)(connectionMenu.CurrentItem.Tag)).Save();
-            } else if(e.ClickedItem.Text == "Exit") {
-                connectionMenu.close();
             }
         }
 
@@ -242,12 +210,6 @@ namespace MochaDBStudio {
                         scriptButton.Location.X+scriptButton.Width,0);
                     scriptButton.BringToFront();
                 }
-            } else {
-                generalButton.BringToFront();
-                connectionButton.Location = generalButton.Location;
-                scriptButton.Location = generalButton.Location;
-                helpButton.Location = new Point(
-                    generalButton.Location.X+generalButton.Width,0);
             }
         }
 
@@ -431,15 +393,7 @@ namespace MochaDBStudio {
                 generalCM.BackColor,Color.Gray) {
                 Image = Resources.Connect
             });
-            generalCM.Items.Add(new sContextMenuItem("Open MochaScript",
-                generalCM.BackColor,Color.Gray) {
-                Image = Resources.Script
-            });
             generalCM.Items.Add(new sContextMenuItem("Create MochaDB",
-                generalCM.BackColor,Color.Gray) {
-                Image = Resources.Create
-            });
-            generalCM.Items.Add(new sContextMenuItem("Create MochaScript",
                 generalCM.BackColor,Color.Gray) {
                 Image = Resources.Create
             });
@@ -493,47 +447,6 @@ namespace MochaDBStudio {
             connectionButton.ContextMenu = connectionCM;
             connectionButton.DisableClick = true;
             titlePanel.Controls.Add(connectionButton);
-
-            #endregion
-
-            #region scriptCM
-
-            scriptCM = new sContextMenu();
-            scriptCM.ForeColor = Color.White;
-            scriptCM.BackColor = titlePanel.BackColor;
-            scriptCM.Items.Add(new sContextMenuItem("Debug & Run",
-                connectionCM.BackColor,Color.Gray) {
-                Image = Resources.Play,
-                ShortcutKeyDisplayString = "F5"
-            });
-            scriptCM.Items.Add(new sContextMenuItem("Save",
-                connectionCM.BackColor,Color.Gray) {
-                Image = Resources.Save,
-                ShortcutKeyDisplayString = "Ctrl+S"
-            });
-            scriptCM.Items.Add(new sContextMenuItem("Exit",
-                scriptCM.BackColor,Color.Gray) {
-                Image = Resources.Disconnect
-            });
-            scriptCM.ItemClicked+=ScriptCM_ItemClicked;
-
-            #endregion
-
-            #region scriptButton
-
-            scriptButton = new sbutton();
-            scriptButton.Font = new Font("Microsoft Sans Serif",9);
-            scriptButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Top;
-            scriptButton.Text = "Script";
-            scriptButton.ForeColor = Color.White;
-            scriptButton.BackColor = titlePanel.BackColor;
-            scriptButton.MouseEnterColor = Color.Gray;
-            scriptButton.MouseDownColor = Color.DodgerBlue;
-            scriptButton.Size = new Size(70,titlePanel.Height);
-            scriptButton.Location = new Point(iconButton.Width + 5,0);
-            scriptButton.ContextMenu = scriptCM;
-            scriptButton.DisableClick = true;
-            titlePanel.Controls.Add(scriptButton);
 
             #endregion
 

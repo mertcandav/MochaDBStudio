@@ -97,25 +97,7 @@
     <Compile Include="dialogs\CreateDB_Dialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="dialogs\CreateScript_Dialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="dialogs\errorbox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="dialogs\MochaScript_Dialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="dialogs\OpenScript_Dialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="dialogs\SectorEdit_Dialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="dialogs\StackEdit_Dialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="dialogs\StackItemEdit_Dialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="dialogs\TableEdit_Dialog.cs">
@@ -170,9 +152,6 @@
     <Compile Include="gui\codesense\Range.cs" />
     <Compile Include="gui\codesense\TextBoxWrapper.cs" />
     <Compile Include="gui\resultPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="gui\scriptpanel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="gui\sscrollbar.cs">
