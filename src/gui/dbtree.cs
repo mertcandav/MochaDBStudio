@@ -43,11 +43,6 @@ namespace MochaDBStudio.gui {
         private ImageList
             images;
 
-        private TreeNode
-            tablesNode,
-            stacksNode,
-            sectorsNode;
-
         #endregion
 
         /// <summary>
@@ -74,42 +69,6 @@ namespace MochaDBStudio.gui {
             images.Images.Add("Sector",Resources.Sector);
             images.Images.Add("Key",Resources.Key);
             ImageList = images;
-
-            #endregion
-
-            #region tableNode
-
-            tablesNode = new TreeNode();
-            tablesNode.Text="Tables";
-            tablesNode.Tag="Tables";
-            tablesNode.ImageIndex = 0;
-            tablesNode.SelectedImageIndex = 0;
-
-            Nodes.Add(tablesNode);
-
-            #endregion
-
-            #region stacksNode
-
-            stacksNode = new TreeNode();
-            stacksNode.Text="Stacks";
-            stacksNode.Tag="Stacks";
-            stacksNode.ImageIndex = 0;
-            stacksNode.SelectedImageIndex = 0;
-
-            Nodes.Add(stacksNode);
-
-            #endregion
-
-            #region sectorsNode
-
-            sectorsNode = new TreeNode();
-            sectorsNode.Text="Sectors";
-            sectorsNode.Tag="Sectors";
-            stacksNode.ImageIndex = 0;
-            stacksNode.SelectedImageIndex = 0;
-
-            Nodes.Add(sectorsNode);
 
             #endregion
         }

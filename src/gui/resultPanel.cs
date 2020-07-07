@@ -102,7 +102,7 @@ namespace MochaDBStudio.gui {
                         columnsNode.Nodes.Add(columnNode);
                     }
 
-                    explorerTree.Nodes[0].Nodes.Add(cacheNode);
+                    explorerTree.Nodes.Add(cacheNode);
                 }
             }
 
