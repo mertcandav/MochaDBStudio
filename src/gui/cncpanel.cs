@@ -421,6 +421,9 @@ namespace MochaDBStudio.gui {
                 mhqlCodeSense.Items = new string[0];
 
                 mhqlCodeSense.AddItem(
+                    new Item("SELECT",0,"SELECT","SELECT - Keyword",
+                    "Select structures with regex."));
+                mhqlCodeSense.AddItem(
                     new Item("USE",0,"USE","USE - Keyword",
                     "Use the x struct(s)."));
                 mhqlCodeSense.AddItem(new Item("MUST",0,"MUST","MUST - Keyword",
