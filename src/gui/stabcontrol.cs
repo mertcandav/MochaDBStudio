@@ -63,7 +63,7 @@ namespace MochaDBStudio.gui {
         protected override void OnSelectedIndexChanged(EventArgs e) {
             base.OnSelectedIndexChanged(e);
             if(SelectedIndex != -1) {
-                if(oldThread != null) {
+                /*if(oldThread != null) {
                     oldThread.Abort();
                 }
 
@@ -86,7 +86,10 @@ namespace MochaDBStudio.gui {
                     lineX = rect.X;
                     Invalidate();
                 });
-                oldThread.Start();
+                oldThread.Start();*/
+                var rect = GetRect(SelectedIndex);
+                lineX = rect.X;
+                Invalidate();
             }
         }
 

@@ -97,7 +97,7 @@ namespace MochaDBStudio.gui {
             set {
                 check = value;
                 if(TextingDraw) {
-                    var task = new Task(() => {
+                    /*var task = new Task(() => {
                         if(value) {
                             for(; index >= 18; index--) {
                                 Invalidate();
@@ -110,9 +110,10 @@ namespace MochaDBStudio.gui {
                             }
                         }
                     });
-                    task.Start();
+                    task.Start();*/
+                    index = value ? 18 : 46;
                 } else {
-                    var task = new Task(() => {
+                    /*var task = new Task(() => {
                         if(value) {
                             for(; index <= 18; index++) {
                                 Invalidate();
@@ -125,8 +126,10 @@ namespace MochaDBStudio.gui {
                             }
                         }
                     });
-                    task.Start();
+                    task.Start();*/
+                    index = value ? 18 : 46;
                 }
+                Invalidate();
             }
         }
 
