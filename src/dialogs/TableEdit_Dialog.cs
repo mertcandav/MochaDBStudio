@@ -97,24 +97,29 @@ namespace MochaDBStudio.dialogs {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 #endif
+            MochaDataType dataType =
+                Database.GetColumnDataType(
+                TableName,
+                tableGrid.Columns[e.ColumnIndex].HeaderText);
             try {
                 var value = tableGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
                 if(value != tableGrid.Tag) {
-                    value = value == null ? string.Empty : value.ToString();
+                    if(
+                        dataType == MochaDataType.Decimal ||
+                        dataType == MochaDataType.Double ||
+                        dataType == MochaDataType.Float)
+                        tableGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = value.ToString().Replace('.',',');
+                    value = value ?? string.Empty;
                     Database.UpdateData(TableName,tableGrid.Columns[e.ColumnIndex].HeaderText,
                         e.RowIndex,value);
                 }
             } catch(Exception excep) {
                 tableGrid.Updating = false;
-                MochaDataType dataType =
-                    Database.GetColumnDataType(
-                        TableName,
-                        tableGrid.Columns[e.ColumnIndex].HeaderText);
                 if(dataType == MochaDataType.AutoInt) {
                     if(tableGrid.Rows.Count == 1) {
                         tableGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = 1;
                     } else {
-                        var value = 1 + int.Parse(tableGrid.Rows[e.RowIndex-1].Cells[e.ColumnIndex].Value.ToString());
+                        var value = 1 + decimal.Parse(tableGrid.Rows[e.RowIndex-1].Cells[e.ColumnIndex].Value.ToString());
                         tableGrid.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = value;
                     }
                 } else {
