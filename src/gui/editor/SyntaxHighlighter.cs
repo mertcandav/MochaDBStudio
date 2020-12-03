@@ -61,12 +61,9 @@ String|Char|Long|Integer|Short|ULong|UInteger|UShort|Decimal|Double|Float|Boolea
       currentTb.VisibleRange.SetStyle(tagStyle,@"\@\w.*?(( )|\n|$)");
       currentTb.VisibleRange.SetStyle(numberStyle,"[0-9]*");
       currentTb.VisibleRange.SetStyle(keywordStyle,
-@"\b(USE|SUBCOL|DELCOL|SUBROW|DELROW|ORDERBY|ASC|DESC|MUST|AND|GROUPBY|FROM|AS|SELECT|REMOVE)\b",
+@"\b(USE|ORDERBY|MUST|GROUPBY|SELECT|SUBROW|SUBCOL|DELROW|DELCOL|ADDROW|CORDERBY|ASC|DESC|AND|FROM|AS|" +
+@"TRUE|FALSE|IN|INEQ)\b",
 RegexOptions.IgnoreCase|RegexOptions.CultureInvariant);
-      currentTb.VisibleRange.SetStyle(parameterStyle,
-          @"\b(\$BIGGER|\$LOWER|\$BIGGER|\$BETWEEN|\$EQUAL|\$NOTEQUAL|\$STARTW|\$ENDW|
-\$NOTSTARTW|\$NOTENDW|\$CONTAINS|\$NOTCONTAINS|COUNT|MIN|AVG|MAX|SUM)\(.*\)\b",
-          RegexOptions.Multiline | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
       currentTb.VisibleRange.SetStyle(funcStyle,@"\(|\)",RegexOptions.Multiline);
       currentTb.VisibleRange.SetStyle(commentStyle,@"/\*.*\*/",RegexOptions.Singleline);
       currentTb.VisibleRange.SetStyle(stringStyle,@""".*""");

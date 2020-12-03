@@ -452,8 +452,20 @@ namespace MochaDBStudio.gui {
             "When written alone, it deletes the columns from the first line to the highest number given."));
         mhqlCodeSense.AddItem(new Item("SUBROW",0,"SUBROW","SUBROW - Keyword",
             "When written alone, it takes the rows from the first line to the highest number given."));
-        mhqlCodeSense.AddItem(new Item("DELROW",0,"DElROW","DELROW - Keyword",
+        mhqlCodeSense.AddItem(new Item("DELROW",0,"DELROW","DELROW - Keyword",
             "When written alone, it deletes the rows from the first line to the highest number given."));
+        mhqlCodeSense.AddItem(new Item("ADDROW",0,"ADDROW","ADDROW - Keyword",
+            "Adds a specified number of new lines and sets the default value of the data type."));
+        mhqlCodeSense.AddItem(new Item("CORDERBY",0,"CORDERBY","CORDERBY - Keyword",
+            "Reports that there will be column sorting."));
+        mhqlCodeSense.AddItem(new Item("TRUE",0,"TRUE","TRUE - Keyword",
+            "TRUE must value."));
+        mhqlCodeSense.AddItem(new Item("FALSE",0,"FALSE","FALSE - Keyword",
+            "FALSE must value."));
+        mhqlCodeSense.AddItem(new Item("IN",0,"IN","IN - Keyword",
+            "It can only be used alongside MUST. Subquery declare."));
+        mhqlCodeSense.AddItem(new Item("INEQ",0,"INEQ","INEQ - Keyword",
+            "It can only be used alongside MUST. Subquery declare. It is exactly the same as IN but with one extra requirement, the returned table must have only one row."));
         mhqlCodeSense.AddItem(new Item("$EQUAL(",1,"EQUAL(,)","EQUAL - Function",
             "\"Is it equal?\" Returns the condition."));
         mhqlCodeSense.AddItem(new Item("$NOTEQUAL(",1,"NOTEQUAL(,)","NOTEQUAL - Function",

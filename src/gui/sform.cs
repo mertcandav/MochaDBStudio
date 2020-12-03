@@ -28,13 +28,13 @@ namespace MochaDBStudio.gui {
     }
 
     protected override void OnShown(EventArgs e) {
-      Animator.FormFadeShow(this,25);
+      Animator.FormFadeShow(this,15);
 
       base.OnShown(e);
     }
 
     protected override void OnFormClosing(FormClosingEventArgs e) {
-      Animator.FormFadeHide(this,25);
+      Animator.FormFadeHide(this,15);
 
       base.OnFormClosing(e);
     }
