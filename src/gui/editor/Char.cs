@@ -1,29 +1,29 @@
 ﻿using System;
 
 namespace MochaDBStudio.gui.editor {
+  /// <summary>
+  /// Char and style
+  /// </summary>
+  public struct Char {
+    #region Tanımlar
+
+    public char c;
+
     /// <summary>
-    /// Char and style
+    /// Style bit mask
     /// </summary>
-    public struct Char {
-        #region Tanımlar
+    /// <remarks>Bit 1 in position n means that this char will rendering by FusionTextBox.Styles[n]</remarks>
+    public StyleIndex style;
 
-        public char c;
+    #endregion
 
-        /// <summary>
-        /// Style bit mask
-        /// </summary>
-        /// <remarks>Bit 1 in position n means that this char will rendering by FusionTextBox.Styles[n]</remarks>
-        public StyleIndex style;
+    #region Ana Yükleme
 
-        #endregion
-
-        #region Ana Yükleme
-
-        public Char(char c) {
-            this.c = c;
-            style = StyleIndex.None;
-        }
-
-        #endregion
+    public Char(char c) {
+      this.c = c;
+      style = StyleIndex.None;
     }
+
+    #endregion
+  }
 }

@@ -5,172 +5,172 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace MochaDBStudio.gui.codesense {
-    /// <summary>
-    /// This autocomplete item appears after dot
-    /// </summary>
-    public class MethodAutocompleteItem:Item {
-        #region Fields
+  /// <summary>
+  /// This autocomplete item appears after dot
+  /// </summary>
+  public class MethodAutocompleteItem:Item {
+    #region Fields
 
-        private string firstPart;
-        private string lowercaseText;
+    private string firstPart;
+    private string lowercaseText;
 
-        #endregion
+    #endregion
 
-        #region Constructors
+    #region Constructors
 
-        public MethodAutocompleteItem(string text) : base(text) {
-            lowercaseText = Text.ToLower();
-        }
+    public MethodAutocompleteItem(string text) : base(text) {
+      lowercaseText = Text.ToLower();
+    }
 
-        #endregion
+    #endregion
 
-        public override CompareResult Compare(string fragmentText) {
-            int i = fragmentText.LastIndexOf('.');
-            if(i < 0)
-                return CompareResult.Hidden;
-            string lastPart = fragmentText.Substring(i + 1);
-            firstPart = fragmentText.Substring(0,i);
+    public override CompareResult Compare(string fragmentText) {
+      int i = fragmentText.LastIndexOf('.');
+      if(i < 0)
+        return CompareResult.Hidden;
+      string lastPart = fragmentText.Substring(i + 1);
+      firstPart = fragmentText.Substring(0,i);
 
-            if(lastPart == "") return CompareResult.Visible;
-            if(Text.StartsWith(lastPart,StringComparison.InvariantCultureIgnoreCase))
-                return CompareResult.VisibleAndSelected;
-            if(lowercaseText.Contains(lastPart.ToLower()))
-                return CompareResult.Visible;
+      if(lastPart == "") return CompareResult.Visible;
+      if(Text.StartsWith(lastPart,StringComparison.InvariantCultureIgnoreCase))
+        return CompareResult.VisibleAndSelected;
+      if(lowercaseText.Contains(lastPart.ToLower()))
+        return CompareResult.Visible;
 
-            return CompareResult.Hidden;
-        }
+      return CompareResult.Hidden;
+    }
 
-        public override string GetTextForReplace() {
-            return firstPart + "." + Text;
+    public override string GetTextForReplace() {
+      return firstPart + "." + Text;
+    }
+  }
+
+  /// <summary>
+  /// Autocomplete item for code snippets
+  /// </summary>
+  /// <remarks>Snippet can contain special char ^ for caret position.</remarks>
+  public class SnippetAutocompleteItem:Item {
+    public SnippetAutocompleteItem(string snippet) {
+      Text = snippet.Replace("\r","");
+      ToolTipTitle = "Code snippet:";
+      ToolTipText = Text;
+    }
+
+    public override string ToString() {
+      return MenuText ?? Text.Replace("\n"," ").Replace("^","");
+    }
+
+    public override string GetTextForReplace() {
+      return Text;
+    }
+
+    public override void OnSelected(SelectedEventArgs e) {
+      var tb = Parent.TargetControlWrapper;
+      //
+      if(!Text.Contains("^"))
+        return;
+      var text = tb.Text;
+      for(int i = Parent.Fragment.Start; i < text.Length; i++)
+        if(text[i] == '^') {
+          tb.SelectionStart = i;
+          tb.SelectionLength = 1;
+          tb.SelectedText = "";
+          return;
         }
     }
 
     /// <summary>
-    /// Autocomplete item for code snippets
+    /// Compares fragment text with this item
     /// </summary>
-    /// <remarks>Snippet can contain special char ^ for caret position.</remarks>
-    public class SnippetAutocompleteItem:Item {
-        public SnippetAutocompleteItem(string snippet) {
-            Text = snippet.Replace("\r","");
-            ToolTipTitle = "Code snippet:";
-            ToolTipText = Text;
-        }
+    public override CompareResult Compare(string fragmentText) {
+      if(Text.StartsWith(fragmentText,StringComparison.InvariantCultureIgnoreCase) &&
+             Text != fragmentText)
+        return CompareResult.Visible;
 
-        public override string ToString() {
-            return MenuText ?? Text.Replace("\n"," ").Replace("^","");
-        }
+      return CompareResult.Hidden;
+    }
+  }
 
-        public override string GetTextForReplace() {
-            return Text;
-        }
+  /// <summary>
+  /// This class finds items by substring
+  /// </summary>
+  public class SubstringAutocompleteItem:Item {
+    protected readonly string lowercaseText;
+    protected readonly bool ignoreCase;
 
-        public override void OnSelected(SelectedEventArgs e) {
-            var tb = Parent.TargetControlWrapper;
-            //
-            if(!Text.Contains("^"))
-                return;
-            var text = tb.Text;
-            for(int i = Parent.Fragment.Start; i < text.Length; i++)
-                if(text[i] == '^') {
-                    tb.SelectionStart = i;
-                    tb.SelectionLength = 1;
-                    tb.SelectedText = "";
-                    return;
-                }
-        }
-
-        /// <summary>
-        /// Compares fragment text with this item
-        /// </summary>
-        public override CompareResult Compare(string fragmentText) {
-            if(Text.StartsWith(fragmentText,StringComparison.InvariantCultureIgnoreCase) &&
-                   Text != fragmentText)
-                return CompareResult.Visible;
-
-            return CompareResult.Hidden;
-        }
+    public SubstringAutocompleteItem(string text,bool ignoreCase = true)
+        : base(text) {
+      this.ignoreCase = ignoreCase;
+      if(ignoreCase)
+        lowercaseText = text.ToLower();
     }
 
-    /// <summary>
-    /// This class finds items by substring
-    /// </summary>
-    public class SubstringAutocompleteItem:Item {
-        protected readonly string lowercaseText;
-        protected readonly bool ignoreCase;
+    public override CompareResult Compare(string fragmentText) {
+      if(ignoreCase) {
+        if(lowercaseText.Contains(fragmentText.ToLower()))
+          return CompareResult.Visible;
+      } else {
+        if(Text.Contains(fragmentText))
+          return CompareResult.Visible;
+      }
 
-        public SubstringAutocompleteItem(string text,bool ignoreCase = true)
-            : base(text) {
-            this.ignoreCase = ignoreCase;
-            if(ignoreCase)
-                lowercaseText = text.ToLower();
-        }
+      return CompareResult.Hidden;
+    }
+  }
 
-        public override CompareResult Compare(string fragmentText) {
-            if(ignoreCase) {
-                if(lowercaseText.Contains(fragmentText.ToLower()))
-                    return CompareResult.Visible;
-            } else {
-                if(Text.Contains(fragmentText))
-                    return CompareResult.Visible;
-            }
+  /// <summary>
+  /// This item draws multicolumn menu
+  /// </summary>
+  public class MulticolumnAutocompleteItem:SubstringAutocompleteItem {
+    public bool CompareBySubstring { get; set; }
+    public string[] MenuTextByColumns { get; set; }
+    public int[] ColumnWidth { get; set; }
 
-            return CompareResult.Hidden;
-        }
+    public MulticolumnAutocompleteItem(string[] menuTextByColumns,string insertingText,bool compareBySubstring = true,bool ignoreCase = true)
+        : base(insertingText,ignoreCase) {
+      this.CompareBySubstring = compareBySubstring;
+      this.MenuTextByColumns = menuTextByColumns;
     }
 
-    /// <summary>
-    /// This item draws multicolumn menu
-    /// </summary>
-    public class MulticolumnAutocompleteItem:SubstringAutocompleteItem {
-        public bool CompareBySubstring { get; set; }
-        public string[] MenuTextByColumns { get; set; }
-        public int[] ColumnWidth { get; set; }
+    public override CompareResult Compare(string fragmentText) {
+      if(CompareBySubstring)
+        return base.Compare(fragmentText);
 
-        public MulticolumnAutocompleteItem(string[] menuTextByColumns,string insertingText,bool compareBySubstring = true,bool ignoreCase = true)
-            : base(insertingText,ignoreCase) {
-            this.CompareBySubstring = compareBySubstring;
-            this.MenuTextByColumns = menuTextByColumns;
-        }
+      if(ignoreCase) {
+        if(Text.StartsWith(fragmentText,StringComparison.InvariantCultureIgnoreCase))
+          return CompareResult.VisibleAndSelected;
+      } else
+          if(Text.StartsWith(fragmentText))
+        return CompareResult.VisibleAndSelected;
 
-        public override CompareResult Compare(string fragmentText) {
-            if(CompareBySubstring)
-                return base.Compare(fragmentText);
+      return CompareResult.Hidden;
+    }
 
-            if(ignoreCase) {
-                if(Text.StartsWith(fragmentText,StringComparison.InvariantCultureIgnoreCase))
-                    return CompareResult.VisibleAndSelected;
-            } else
-                if(Text.StartsWith(fragmentText))
-                return CompareResult.VisibleAndSelected;
+    public override void OnPaint(PaintItemEventArgs e) {
+      if(ColumnWidth != null && ColumnWidth.Length != MenuTextByColumns.Length)
+        throw new Exception("ColumnWidth.Length != MenuTextByColumns.Length");
 
-            return CompareResult.Hidden;
-        }
+      int[] columnWidth = ColumnWidth;
+      if(columnWidth == null) {
+        columnWidth = new int[MenuTextByColumns.Length];
+        float step = e.TextRect.Width/MenuTextByColumns.Length;
+        for(int i = 0; i < MenuTextByColumns.Length; i++)
+          columnWidth[i] = (int)step;
+      }
 
-        public override void OnPaint(PaintItemEventArgs e) {
-            if(ColumnWidth != null && ColumnWidth.Length != MenuTextByColumns.Length)
-                throw new Exception("ColumnWidth.Length != MenuTextByColumns.Length");
+      //draw columns
+      Pen pen = Pens.Silver;
+      float x = e.TextRect.X;
+      e.StringFormat.FormatFlags = e.StringFormat.FormatFlags | StringFormatFlags.NoWrap;
 
-            int[] columnWidth = ColumnWidth;
-            if(columnWidth == null) {
-                columnWidth = new int[MenuTextByColumns.Length];
-                float step = e.TextRect.Width/MenuTextByColumns.Length;
-                for(int i = 0; i < MenuTextByColumns.Length; i++)
-                    columnWidth[i] = (int)step;
-            }
-
-            //draw columns
-            Pen pen = Pens.Silver;
-            float x = e.TextRect.X;
-            e.StringFormat.FormatFlags = e.StringFormat.FormatFlags | StringFormatFlags.NoWrap;
-
-            using(var brush = new SolidBrush(e.IsSelected ? e.Colors.SelectedForeColor : e.Colors.ForeColor))
-                for(int i = 0; i<MenuTextByColumns.Length; i++) {
-                    var width = columnWidth[i];
-                    var rect = new RectangleF(x,e.TextRect.Top,width,e.TextRect.Height);
-                    e.Graphics.DrawLine(pen,new PointF(x,e.TextRect.Top),new PointF(x,e.TextRect.Bottom));
-                    e.Graphics.DrawString(MenuTextByColumns[i],e.Font,brush,rect,e.StringFormat);
-                    x += width;
-                }
+      using(var brush = new SolidBrush(e.IsSelected ? e.Colors.SelectedForeColor : e.Colors.ForeColor))
+        for(int i = 0; i<MenuTextByColumns.Length; i++) {
+          var width = columnWidth[i];
+          var rect = new RectangleF(x,e.TextRect.Top,width,e.TextRect.Height);
+          e.Graphics.DrawLine(pen,new PointF(x,e.TextRect.Top),new PointF(x,e.TextRect.Bottom));
+          e.Graphics.DrawString(MenuTextByColumns[i],e.Font,brush,rect,e.StringFormat);
+          x += width;
         }
     }
+  }
 }
