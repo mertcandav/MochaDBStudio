@@ -28,13 +28,13 @@ namespace MochaDBStudio.gui {
     }
 
     protected override void OnShown(EventArgs e) {
-      Animator.FormFadeShow(this,15);
+      //Animator.FormFadeShow(this,15);
 
       base.OnShown(e);
     }
 
     protected override void OnFormClosing(FormClosingEventArgs e) {
-      Animator.FormFadeHide(this,15);
+      //Animator.FormFadeHide(this,15);
 
       base.OnFormClosing(e);
     }
@@ -58,7 +58,7 @@ namespace MochaDBStudio.gui {
       StartPosition = FormStartPosition.CenterScreen;
       FormBorderStyle = FormBorderStyle.None;
       Icon = Resources.MochaDB_Logo;
-      Opacity = 0;
+      //Opacity = 0;
 
       #endregion
     }
