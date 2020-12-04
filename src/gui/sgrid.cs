@@ -38,12 +38,6 @@ namespace MochaDBStudio.gui {
 
     protected override void OnCellEndEdit(DataGridViewCellEventArgs e) {
       base.OnCellEndEdit(e);
-      if(AllowUserToAddRows) {
-        suspendRowEvents = true;
-        AllowUserToAddRows = false;
-        AllowUserToAddRows = true;
-        suspendRowEvents = false;
-      }
     }
 
     #endregion

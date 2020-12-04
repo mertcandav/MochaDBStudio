@@ -58,7 +58,7 @@ namespace MochaDBStudio.gui {
           form.Opacity = TOpacity;
           Thread.Sleep(delay);
         }
-        form.Opacity = 1;
+        form.Opacity = 1d;
       });
       task.Start();
     }
