@@ -186,7 +186,7 @@ namespace MochaDBStudio {
       helpCM.Close();
 
       if(e.ClickedItem.Text == "MochaDB Documentation") {
-        Process.Start("https://github.com/mertcandav/MochaDB/wiki");
+        Process.Start("https://github.com/mertcandav/MochaDB/tree/master/docs");
       } else if(e.ClickedItem.Text == "About MochaDB Studio") {
         var dialog = new About_Dialog();
         dialog.ShowDialog();
